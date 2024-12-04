@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { IconAction } from './Icon';
 import Button from './Button';
 import { IconTitleSection } from './TitleSection';
+import { auth } from '../config/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 function CreateProject({closeModal, onSave}) {
   const [form, setForm] = useState({
@@ -354,41 +356,64 @@ function CreateNote({closeModal, onSave}) {
 }
 
 function Signup({ closeModal }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const signUp = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      document.getElementById('display').style.color = "green";
+      document.getElementById('display').innerHTML = "User Successfully Registered";
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      document.getElementById('display').style.color = "red";
+      document.getElementById('display').innerHTML = 'Error during sign-up: ' + error.message;
+    }
+  };
+
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='Sign Up' dataFeather='x' iconOnClick={closeModal} className='text-xl'/>
-        <form method="POST" className='flex flex-col gap-4'>
-          <label htmlFor="email" className='flex flex-col'>
+        <IconTitleSection title='Sign Up' dataFeather='x' iconOnClick={closeModal} />
+        <form method="POST" className='flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); signUp(); }}>
+          <label htmlFor="email" className='flex flex-col text-sm'>
             Email
             <input 
               type="email" 
               id="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
             />
           </label>
-          <label htmlFor="pin" className='flex flex-col'>
+          <label htmlFor="password" className='flex flex-col text-sm'>
             Password
             <input 
               type="password" 
-              id="pin" 
+              id="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
             />
           </label>
+          <p id='display'></p>
+          <Button text='Sign Up' onClick={signUp} />
         </form>
-        <hr className='border mt-8 mb-6'/>
+        <hr className='border mt-8 mb-6' />
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='at-sign' className='h-[2.5rem] w-[2.5rem]' />
+            <IconAction dataFeather='mail' className='h-[2.5rem] w-[2.5rem]' />
             <IconAction dataFeather='facebook' className='h-[2.5rem] w-[2.5rem]' />
-            <IconAction dataFeather='twitter' className='h-[2.5rem] w-[2.5rem]'  />
+            <IconAction dataFeather='twitter' className='h-[2.5rem] w-[2.5rem]' />
           </section>
         </section>
       </div>
     </div>
   );
 }
+
 
 function UserProfile({ closeModal, userName }) {
   return (

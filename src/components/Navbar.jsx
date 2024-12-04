@@ -5,18 +5,14 @@ import { Signup } from './Modal';
 import TaskNavBar from './TaskNavBar';
 import UserCard from './UserCard';
 import { UserProfile } from './Modal';
+import Button from './Button';
 
-function Navbar({userName = "Guest"}) {
+function Navbar() {
   const [showPopUp, setShowPopUp] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState(false);
   const location = useLocation(); 
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
-  };
-
-  const toggleUserProfile = () => {
-    setShowUserProfile(!showUserProfile);
   };
 
   if (location.pathname === '/TaskMain') {
@@ -31,30 +27,12 @@ function Navbar({userName = "Guest"}) {
           <a href="#" className="text-green-900 text-lg font-bold">UniTask</a>
         </span>
   
-        <section className="flex gap-4 items-center w-fit">
-          <p
-            onClick={togglePopUp}
-            className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-            >
-              Log In
-              {showPopUp && <Signup closeModal={togglePopUp} />}
-          </p>
-
-          <p
-            onClick={togglePopUp}
-            className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-            >
-              Sign Up
-              {showPopUp && <Signup closeModal={togglePopUp} />}
-          </p>
-
-          <UserCard 
-            className='border border-green-700 border-opacity-50'
-            name={userName}
-            onClick={toggleUserProfile}
-          />
-            {showUserProfile && <UserProfile userName={userName} closeModal={toggleUserProfile} />}
-        </section>
+        <Button
+          onClick={togglePopUp}
+          className="text-green-900 text-sm mx-4 font-bold hover:cursor-pointer hover:text-green-700"
+          text='Sign-up'
+        />
+        {showPopUp && <Signup closeModal={togglePopUp}/>}
  
       </div>
     </section>
