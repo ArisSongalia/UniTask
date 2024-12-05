@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { IconAction } from './Icon';
 import Button from './Button';
 import { IconTitleSection } from './TitleSection';
-import { auth } from '../config/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, googleProvider } from '../config/firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 function CreateProject({closeModal, onSave}) {
   const [form, setForm] = useState({
@@ -355,33 +356,50 @@ function CreateNote({closeModal, onSave}) {
   );
 }
 
-function Signup({ closeModal }) {
+function SignUp({ closeModal, switchToSignIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState({ text: '', color: '' });
 
-  const signUp = async () => {
+  const handleSignUp = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      document.getElementById('display').style.color = "green";
-      document.getElementById('display').innerHTML = "User Successfully Registered";
+      setMessage({ text: 'User Successfully Registered', color: 'green' });
       setEmail('');
       setPassword('');
+      closeModal();
+      switchToSignIn();
     } catch (error) {
-      document.getElementById('display').style.color = "red";
-      document.getElementById('display').innerHTML = 'Error during sign-up: ' + error.message;
+      setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+    }
+  };
+
+  const handleSignUpWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      setMessage({ text: 'User Successfully Registered', color: 'green' });
+    } catch (error) {
+      setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
   };
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='Sign Up' dataFeather='x' iconOnClick={closeModal} />
-        <form method="POST" className='flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); signUp(); }}>
+        <IconTitleSection title='Register' dataFeather='x' iconOnClick={closeModal} />
+        <form
+          method="POST"
+          className='flex flex-col gap-4'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignUp();
+          }}
+        >
           <label htmlFor="email" className='flex flex-col text-sm'>
             Email
-            <input 
-              type="email" 
-              id="email" 
+            <input
+              type="email"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
@@ -389,22 +407,96 @@ function Signup({ closeModal }) {
           </label>
           <label htmlFor="password" className='flex flex-col text-sm'>
             Password
-            <input 
-              type="password" 
-              id="password" 
+            <input
+              type="password"
+              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
             />
           </label>
-          <p id='display'></p>
-          <Button text='Sign Up' onClick={signUp} />
+
+          <p style={{ color: message.color }}>{message.text}</p>
+
+          <Button text='Register' onClick={handleSignUp} />
         </form>
         <hr className='border mt-8 mb-6' />
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='mail' className='h-[2.5rem] w-[2.5rem]' />
+            <IconAction dataFeather='mail' iconOnClick={handleSignUpWithGoogle} className='h-[2.5rem] w-[2.5rem]' />
+            <IconAction dataFeather='facebook' className='h-[2.5rem] w-[2.5rem]' />
+            <IconAction dataFeather='twitter' className='h-[2.5rem] w-[2.5rem]' />
+          </section>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function SignIn({ closeModal }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState({ text: '', color: '' });
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      closeModal();
+    } catch (error) {
+      setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
+    }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      setMessage({ text: 'User Successfully Registered', color: 'green' });
+    } catch (error) {
+      setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
+    }
+  };
+
+  return (
+    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
+      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
+        <IconTitleSection title='Login' dataFeather='x' iconOnClick={closeModal} />
+        <form
+          method="POST"
+          className='flex flex-col gap-4'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignIn();
+          }}
+        >
+          <label htmlFor="email" className='flex flex-col text-sm'>
+            Email
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
+            />
+          </label>
+          <label htmlFor="password" className='flex flex-col text-sm'>
+            Password
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className='mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none'
+            />
+          </label>
+          <p style={{ color: message.color }}>{message.text}</p>
+          <Button text='Login' onClick={handleSignIn} />
+        </form>
+        <hr className='border mt-8 mb-6' />
+        <section className="w-full flex flex-col gap-4 items-center">
+          <p>Or sign up with</p>
+          <section className='flex gap-2'>
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem]' />
             <IconAction dataFeather='facebook' className='h-[2.5rem] w-[2.5rem]' />
             <IconAction dataFeather='twitter' className='h-[2.5rem] w-[2.5rem]' />
           </section>
@@ -428,4 +520,4 @@ function UserProfile({ closeModal, userName }) {
 
 
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, Signup, UserProfile}
+export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, SignUp, SignIn, UserProfile}
