@@ -1,25 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
-import { SignUp, SignIn } from './Modal';
+import { SignIn, SignUp, handleSignOut } from './ModalAuth';
 import TaskNavBar from './TaskNavBar';
 import Button from './Button';
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
+
 import UserCard from './UserCard';
 
 function Navbar() {
   const [activeAuth, setActiveAuth] = useState(null);
   const closeModal = () => setActiveAuth(null);
-
- const handleSignOut = async () => {
-  try{
-    await signOut(auth)
-  }catch (error){
-    alert(error);
-  };
- };
 
 
   if (location.pathname === '/TaskMain') {
@@ -44,7 +34,7 @@ function Navbar() {
             className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
             text='Login'
           />
-          {activeAuth === 'SignIn' && <SignIn closeModal={closeModal} />}
+          {activeAuth === 'SignIn' && <SignIn closeModal={closeModal} switchToSignUp={() => setActiveAuth('SignUp')}/>}
 
           <Button
             onClick={() => setActiveAuth('SignUp')}
