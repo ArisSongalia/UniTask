@@ -12,11 +12,7 @@ function AssignedTasks() {
       />
 
       <section className="grid grid-cols-1 gap-2 w-full h-full pr-2 overflow-y-auto">
-        <ProgressAlertCard />
-        <ProgressAlertCard />
-        <ProgressAlertCard />
-        <ProgressAlertCard />
-        <ProgressAlertCard />
+
       </section>
     </div>
   );

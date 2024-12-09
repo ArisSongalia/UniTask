@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import feather from 'feather-icons';
-
+ 
 function IconAction({ className = '', dataFeather = 'edit-2', actionText = '', style = {}, iconOnClick, text = ""}) {
   useEffect(() => {
     feather.replace();
@@ -8,7 +8,7 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText = '', s
 
   return (
     <section 
-      className={`border border-opacity-50 rounded-full p-2 flex items-center justify-center text-green-900
+      className={`flex border border-opacity-50 rounded-full p-2 gap-2 items-center justify-center text-green-900
                   w-fit h-8 hover:cursor-pointer hover:bg-green-700 hover:text-white ${className}`} 
       aria-hidden="true" 
       aria-label={actionText}
@@ -20,7 +20,7 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText = '', s
         aria-hidden="true"
       ></i>
 
-      <p>&nbsp;{text}</p>
+      {text}
     </section>
   );
 }

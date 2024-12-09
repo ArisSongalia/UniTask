@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { auth, googleProvider, facebookProvider} from '../config/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signInWithPhoneNumber, RecaptchaVerifier, signOut } from 'firebase/auth';
+import { auth, googleProvider, facebookProvider, db} from '../config/firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { IconTitleSection } from './TitleSection';
 import Button from './Button';
 import { IconAction } from './Icon';
-import 'react-phone-input-2/lib/style.css'
+import { AlertBox } from './AlertCard';
 
 
 function SignUp({ closeModal, switchToSignIn }) {
@@ -12,15 +13,12 @@ function SignUp({ closeModal, switchToSignIn }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
 
-
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      setMessage({ text: 'User Successfully Registered', color: 'green' });
+      createUserWithEmailAndPassword(auth, email, password);
+      setMessage({ text: 'User Successfully Registered!', color: 'green' });
       setEmail('');
       setPassword('');
-      closeModal();
-      switchToSignIn();
     } catch (error) {
       setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
@@ -108,11 +106,16 @@ function SignIn({ closeModal, switchToSignUp }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
+  const [showCreateUsername, setShowCreateUsername] = useState(false)
+
+  const handleShowCreateUsername = () => {
+    setShowCreateUsername(!showCreateUsername);
+  };
 
   const handleSignIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      closeModal();
+      await signInWithEmailAndPassword(auth, email, password);  
+      setShowCreateUsername(true);
     } catch (error) {
       setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
     }
@@ -191,21 +194,102 @@ function SignIn({ closeModal, switchToSignUp }) {
           <div id="recaptcha-container"></div>
         </section>
       </div>
+      {showCreateUsername && (
+        <CreateUsername 
+          email={auth.currentUser?.email} 
+          user={auth.currentUser}
+          closeModal={handleShowCreateUsername} 
+        />
+      )};
+    </div>
+  );
+}
+
+function CreateUsername({ email, additionalData, closeModal, user }) {
+  const [username, setUsername] = useState('');
+  const [message, setMessage] = useState({ text: '', color: '' });
+
+  const handleSetUsername = (e) => {
+    const username = e.target.value.trim(); 
+    if (username === '') {
+      setMessage({ text: 'Username cannot be empty', color: 'red' });
+    } else {
+      setMessage({ text: '', color: '' });
+    }
+    setUsername(username);
+  };
+
+  const handleConfirm = async () => {
+    if (username.trim() === '') {
+      setMessage({ text: 'Please enter a valid username', color: 'red' });
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        email: auth.currentUser?.email || email, 
+        username: username,
+        ...additionalData,
+      });
+
+      setMessage({ text: 'Username saved successfully!: Closing Pop Up...', color: 'green' });
+      setTimeout(() => closeModal(), 2000);
+    } catch (error) {
+      alert({ text: `Error: ${error.message}`, color: 'red' });
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+        <span className="flex w-full justify-between items-center mb-6">
+          <IconTitleSection
+            title="Create Username"
+            iconOnClick={closeModal}
+            dataFeather="x"
+            className="mb-0"
+          />
+        </span>
+
+        <div className="flex flex-col gap-2">
+          <AlertBox
+            text="We recommend using an identifiable username and avoiding inappropriate language"
+            email={email}
+            className="mb-4"
+          />
+
+          <label htmlFor="username" className="flex flex-col gap-2">
+            <span>Please Enter Your Username</span>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={handleSetUsername}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </label>
+          <p style={{ color: message.color }}>{message.text}</p>
+
+          <Button text="Confirm" onClick={handleConfirm} />
+        </div>
+      </section>
     </div>
   );
 }
 
 
 const handleSignOut = async () => {
-try{
-  await signOut(auth)
-  alert('Logged Out')
-}catch (error){
-  alert(error);
+  try {
+    const email = auth.currentUser?.email; 
+    signOut(auth);
+    alert('Logged Out: ' + email);
+  } catch (error) {
+    alert("Error Signing out: " + error.message);
+  }
 };
-};
 
 
 
 
-export {SignIn, SignUp, handleSignOut};
+export {SignIn, SignUp, CreateUsername, handleSignOut};

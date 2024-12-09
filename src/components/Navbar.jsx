@@ -11,7 +11,6 @@ function Navbar() {
   const [activeAuth, setActiveAuth] = useState(null);
   const closeModal = () => setActiveAuth(null);
 
-
   if (location.pathname === '/TaskMain') {
     return <TaskNavBar />; 
   }
@@ -48,9 +47,7 @@ function Navbar() {
             className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
             text='Sign-Out'
           />
-
         </span>
- 
       </div>
     </section>
   );

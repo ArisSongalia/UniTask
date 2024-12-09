@@ -20,4 +20,18 @@ function AlertCard({text = 'Title', count = 0, className = '', user = 'User', ta
   )
 }
 
+function AlertBox({text = 'Title', className = '', email= 'User'}) {
+  return (
+  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-2xl
+                       p-4 justify-between h-auto shadow-sm ${className}`}>
+      <span >
+        <h2 className='font-semibold mb-2'>Welcome to UniTask! {email}</h2>
+        <p>{text}</p>
+      </span>
+    </section>
+  )
+}
+
 export default AlertCard
+
+export { AlertBox }

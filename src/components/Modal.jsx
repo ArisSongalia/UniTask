@@ -353,7 +353,6 @@ function CreateNote({closeModal, onSave}) {
   );
 }
 
-
 function UserProfile({ closeModal, userName }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
@@ -364,7 +363,5 @@ function UserProfile({ closeModal, userName }) {
     </div>
   );
 }
-
-
 
 export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile}

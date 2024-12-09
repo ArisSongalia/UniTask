@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyANEbqOmBO1iYDFXkYMUCC2vl3TaYRMgjs',
@@ -13,9 +14,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-facebookProvider.addScope('email');
-auth.languageCode = 'it';
-
-export { auth };
+const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
+
+
+auth.languageCode = 'it';
+
+export { auth, app, db};
