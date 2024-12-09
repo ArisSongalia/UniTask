@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { auth, googleProvider, facebookProvider, db} from '../config/firebase';
+import { auth, googleProvider, facebookProvider, db} from '../../config/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { IconTitleSection } from './TitleSection';
-import Button from './Button';
-import { IconAction } from './Icon';
-import { AlertBox } from './AlertCard';
+import { IconTitleSection } from '../TitleSection';
+import Button from '../Button';
+import { IconAction } from '../Icon';
+import { AlertBox } from '../AlertCard';
 
 
 function SignUp({ closeModal, switchToSignIn }) {
@@ -232,10 +232,10 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
         ...additionalData,
       });
 
-      setMessage({ text: 'Username saved successfully!: Closing Pop Up...', color: 'green' });
-      setTimeout(() => closeModal(), 2000);
+      alert('Username saved successfully!');
+      closeModal();
     } catch (error) {
-      alert({ text: `Error: ${error.message}`, color: 'red' });
+      setMessage({ text: `Error: ${error.message}`, color: 'red' });
     }
   };
 

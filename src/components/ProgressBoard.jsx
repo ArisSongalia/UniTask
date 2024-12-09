@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import ProgressCard from './ProgressCard'
 import TitleSection, { DisplayTitleSection } from './TitleSection'
-import { CreateTask } from './Modal'
+import { CreateTask } from './modal-group/Modal'
 
 function ProgressBoard() {
   const [showPopUp, setShowPopUp] = useState(false);

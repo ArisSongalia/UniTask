@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import Notes, { UserNotes } from './Notes'
 import TitleSection from './TitleSection'
-import { CreateNote } from './Modal'
+import { CreateNote } from './modal-group/Modal'
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);

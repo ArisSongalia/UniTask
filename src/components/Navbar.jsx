@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
-import { SignIn, SignUp, handleSignOut } from './ModalAuth';
+import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
 import TaskNavBar from './TaskNavBar';
 import Button from './Button';
-
+import FetchUserName from './FetchUserInfo';
 import UserCard from './UserCard';
 
 function Navbar() {
@@ -26,7 +26,6 @@ function Navbar() {
         </span>
   
         <span className="flex w-fit gap-2 items-center">
-          <UserCard />
 
           <Button
             onClick={() => setActiveAuth('SignIn')}
@@ -47,6 +46,8 @@ function Navbar() {
             className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
             text='Sign-Out'
           />
+
+          <UserCard username={<FetchUserName />}/>
         </span>
       </div>
     </section>

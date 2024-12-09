@@ -2,13 +2,12 @@ import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
 import Button from './Button';
 import React, { useState } from 'react';
-import Popup from './Popup';
+import Popup from './modal-group/Popup';
 
 function ProjectCard({ 
   title = 'Project Name', 
   description = 'Example text should go here',
   date = '00/00/00',
-  type,
 }) {
   const [showPopUp, setShowPopUp] = useState(false);
 

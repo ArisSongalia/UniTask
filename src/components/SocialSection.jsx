@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from './Button';
 import UserCard from './UserCard';
 import TitleSection from './TitleSection';
 

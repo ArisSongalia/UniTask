@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { IconAction } from './Icon';
-import Button from './Button';
-import { IconTitleSection } from './TitleSection';
+import { IconAction } from '../Icon';
+import Button from '../Button';
+import { IconTitleSection } from '../TitleSection';
 
 function CreateProject({closeModal, onSave}) {
   const [form, setForm] = useState({

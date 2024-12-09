@@ -1,6 +1,6 @@
 import React from 'react'
-import Icon from './Icon'
-import { IconTitleSection} from './TitleSection'
+import Icon from '../Icon'
+import { IconTitleSection} from '../TitleSection'
 
 function Popup({title, closeModal}) {
   return (

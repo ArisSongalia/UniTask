@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ProjectCard from './ProjectCard';
-import { CreateProject } from './Modal';
+import { CreateProject } from './modal-group/Modal';
 import { UserNotes } from './Notes';
-import { CreateNote } from './Modal'; 
+import { CreateNote } from './modal-group/Modal'; 
 import TitleSection from './TitleSection';
 
 function MainProjectSection() {

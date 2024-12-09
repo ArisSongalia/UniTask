@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NoteEdit, NoteFocus } from "./Modal";
+import { NoteEdit, NoteFocus } from "./modal-group/Modal";
 
 function Notes({ 
   className = "", 

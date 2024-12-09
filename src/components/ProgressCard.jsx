@@ -2,8 +2,7 @@ import React, {useState} from 'react'
 import { IconAction } from './Icon'
 import { Link } from 'react-router-dom';
 import Button from './Button'
-import Popup from './Popup';
-import TaskMain from '../pages/TaskMain';
+import Popup from './modal-group/Popup';
 
 function ProgressCard({title = 'Task Title'}) {
   const [isClicked, setIsClicked] = useState(false);
