@@ -15,7 +15,7 @@ function SignUp({ closeModal, switchToSignIn }) {
 
   const handleSignUp = async () => {
     try {
-      createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
       setMessage({ text: 'User Successfully Registered!', color: 'green' });
       setEmail('');
       setPassword('');
@@ -27,7 +27,7 @@ function SignUp({ closeModal, switchToSignIn }) {
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      setMessage({ text: 'User Successfully Registered', color: 'green' });
+      setShowCreateUsername(true);
     } catch (error) {
       setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
@@ -36,11 +36,11 @@ function SignUp({ closeModal, switchToSignIn }) {
   const handleSignInWithFacebook = async () => {
     try {
       await signInWithPopup(auth, facebookProvider);
-      setMessage({text: 'User Succesfully Registered', color: 'green'});
     } catch (error) {
       setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
   };
+
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
@@ -77,7 +77,7 @@ function SignUp({ closeModal, switchToSignIn }) {
 
           <p style={{ color: message.color }}>{message.text}</p>
 
-          <Button text='Register' onClick={handleSignUp} />
+          <Button text='Register' type='submit' />
           <p>
             Already have an account?&nbsp;       
             <span
@@ -92,8 +92,8 @@ function SignUp({ closeModal, switchToSignIn }) {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem]' text='Google'/>
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem]' text='Facebook'/>
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-yellow-800' text='Google'/>
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-blue-800' text='Facebook'/>
           </section>
           <div id="recaptcha-container"></div>
         </section>
@@ -121,24 +121,22 @@ function SignIn({ closeModal, switchToSignUp }) {
     }
   };
 
-  const handleSignInWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      setMessage({ text: 'User Successfully Registered', color: 'green' });
-    } catch (error) {
-      setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
-    }
-  };
+const handleSignInWithGoogle = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    setShowCreateUsername(true);
+  } catch (error) {
+    setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+  }
+};
 
-    const handleSignInWithFacebook = async () => {
-    try {
-      await signInWithPopup(auth, facebookProvider);
-      setMessage({text: 'User Succesfully Registered', color: 'green'});
-    } catch (error) {
-      setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
-    }
-  };
-
+const handleSignInWithFacebook = async () => {
+  try {
+    await signInWithPopup(auth, facebookProvider);
+  } catch (error) {
+    setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+  }
+};
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
@@ -173,7 +171,7 @@ function SignIn({ closeModal, switchToSignUp }) {
             />
           </label>
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button text='Login' onClick={handleSignIn} />
+          <Button text='Login' type='submit' />
           
           <p>
             Already have an account?&nbsp;       
@@ -188,8 +186,8 @@ function SignIn({ closeModal, switchToSignUp }) {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem]' text='Google' />
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem]' text='Facebook' />
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-yellow-800' text='Google' />
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-blue-800' text='Facebook' />
           </section>
           <div id="recaptcha-container"></div>
         </section>
@@ -200,7 +198,7 @@ function SignIn({ closeModal, switchToSignUp }) {
           user={auth.currentUser}
           closeModal={handleShowCreateUsername} 
         />
-      )};
+      )}
     </div>
   );
 }
@@ -234,6 +232,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
 
       alert('Username saved successfully!');
       closeModal();
+      window.location.reload();
     } catch (error) {
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
     }
@@ -242,7 +241,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center mb-6">
+        <span className="flex w-full justify-between items-center">
           <IconTitleSection
             title="Create Username"
             iconOnClick={closeModal}
@@ -284,6 +283,7 @@ const handleSignOut = async () => {
     const email = auth.currentUser?.email; 
     signOut(auth);
     alert('Logged Out: ' + email);
+    window.location.reload();
   } catch (error) {
     alert("Error Signing out: " + error.message);
   }
