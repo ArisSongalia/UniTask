@@ -2,6 +2,7 @@ import React from 'react'
 import Icon from './Icon'
 import { useState } from 'react'
 import { UserProfile } from './modal-group/Modal'
+import userIcon from '../assets/default-icon.png';
 
 function UserCard({className='', username = 'User Name'}) {
   const [showUserProfile, setShowUserProfile] = useState();
@@ -11,14 +12,12 @@ function UserCard({className='', username = 'User Name'}) {
 
   return (
     <section 
-      className={`flex items-center border hover:bg-green-50 p-2 w-[fit]  rounded-xl hover:cursor-pointer ${className}`}
+      className={`flex items-center border hover:bg-green-50 p-2 w-[fit]  rounded-lg hover:cursor-pointer ${className}`}
       onClick={toggleUserProfile}
     >
-      <span className='w-fit'>
-        <Icon dataFeather='user'/>
-      </span>
+      <img className='w-6 h-6' src={userIcon} alt="user-icon" />
 
-      <span className='text-xs font-semibold text-gray-800 px-2 w-full'>
+      <span className='text-xs font-semibold text-gray-800 px-3 w-full'>
         <p>{username}</p>
       </span>
 
