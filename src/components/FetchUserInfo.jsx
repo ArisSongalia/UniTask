@@ -41,7 +41,7 @@ function FetchUserName() {
   }
 
   if (!username) {
-    return <span>Guest</span>;
+    return <span>{auth.currentUser?.email}</span>;
   }
 
   return <span>{username}</span>;

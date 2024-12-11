@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
@@ -6,13 +6,28 @@ import TaskNavBar from './TaskNavBar';
 import Button from './Button';
 import FetchUserName from './FetchUserInfo';
 import UserCard from './UserCard';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 function Navbar() {
   const [activeAuth, setActiveAuth] = useState(null);
+  const [user, setUser] = useState(null);
+
   const closeModal = () => setActiveAuth(null);
 
+  // Monitor authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    // Cleanup listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
+  // Show TaskNavBar if on /TaskMain route
   if (location.pathname === '/TaskMain') {
-    return <TaskNavBar />; 
+    return <TaskNavBar />;
   }
 
   return (
@@ -24,31 +39,39 @@ function Navbar() {
             UniTask
           </Link>
         </span>
-  
+
         <span className="flex w-fit gap-2 items-center">
+          {user ? (
+            <>
+              <Button
+                onClick={handleSignOut}
+                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
+                text="Sign-Out"
+              />
+              <UserCard username={<FetchUserName />} />
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => setActiveAuth('SignIn')}
+                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
+                text="Login"
+              />
 
-          <Button
-            onClick={() => setActiveAuth('SignIn')}
-            className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-            text='Login'
-          />
-          {activeAuth === 'SignIn' && <SignIn closeModal={closeModal} switchToSignUp={() => setActiveAuth('SignUp')}/>}
-
-          <Button
-            onClick={() => setActiveAuth('SignUp')}
-            className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-            text='Register'
-          />
-          {activeAuth === 'SignUp' && <SignUp closeModal={closeModal} switchToSignIn={() => setActiveAuth('SignIn')}/>}
-
-          <Button
-            onClick={handleSignOut}
-            className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-            text='Sign-Out'
-          />
-
-          <UserCard username={<FetchUserName />}/>
+              <Button
+                onClick={() => setActiveAuth('SignUp')}
+                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
+                text="Register"
+              />
+            </>
+          )}
         </span>
+        {activeAuth === 'SignUp' && (
+          <SignUp closeModal={closeModal} switchToSignIn={() => setActiveAuth('SignIn')} />
+        )}
+        {activeAuth === 'SignIn' && (
+          <SignIn closeModal={closeModal} switchToSignUp={() => setActiveAuth('SignUp')} />
+        )}
       </div>
     </section>
   );

@@ -12,13 +12,18 @@ function SignUp({ closeModal, switchToSignIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
+  const [showCreateUsername, setShowCreateUsername] = useState(false)
+
+  const handleShowCreateUsername = () => {
+    setShowCreateUsername(!showCreateUsername);
+  };
 
   const handleSignUp = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      setMessage({ text: 'User Successfully Registered!', color: 'green' });
       setEmail('');
       setPassword('');
+      setShowCreateUsername(true)
     } catch (error) {
       setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
@@ -86,18 +91,25 @@ function SignUp({ closeModal, switchToSignIn }) {
               Login
             </span>
           </p>
-
         </form>
+
         <hr className='border mt-8 mb-6' />
+
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
             <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-yellow-800' text='Google'/>
             <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-blue-800' text='Facebook'/>
           </section>
-          <div id="recaptcha-container"></div>
         </section>
       </div>
+      {showCreateUsername && (
+        <CreateUsername 
+          email={auth.currentUser?.email} 
+          user={auth.currentUser}
+          closeModal={handleShowCreateUsername} 
+        />
+      )}
     </div>
   );
 }
@@ -111,6 +123,7 @@ function SignIn({ closeModal, switchToSignUp }) {
   const handleShowCreateUsername = () => {
     setShowCreateUsername(!showCreateUsername);
   };
+
 
   const handleSignIn = async () => {
     try {
