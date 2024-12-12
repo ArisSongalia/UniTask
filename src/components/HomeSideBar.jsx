@@ -1,5 +1,5 @@
 import React from 'react'
-import AlertCard from './AlertCard';
+import AlertCard from './Cards';
 import AssignedTasks from './AssignedTasks';
 
 function HomeSideBar({}) {

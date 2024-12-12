@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
+import { FetchUserName } from '../FetchData';
+import {doc, setDoc} from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
 
-function CreateProject({closeModal, onSave}) {
+function CreateProject({closeModal}) {
+  const user = auth.currentUser;
+  const [message, setMessage] = useState({text: '', color: ''});
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -16,17 +22,21 @@ function CreateProject({closeModal, onSave}) {
     setForm({...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleCreateProject = async (e) => {
     e.preventDefault();
-    onSave(form);
-    setForm({
-      title: "",
-      description: "",
-      date: "",
-      type: null,
-    });
-    alert("Task Created");
-    closeModal();
+    try {
+      await setDoc(doc(db, 'projects', user.uid), {
+        title: form.title,
+        description: form.description,
+        date: form.date,
+        type: form.type,
+        owner: user.uid,
+      });
+      alert ("Project Created Succesfully");
+      closeModal();
+    } catch (error) {
+      setMessage({text: `Error Creating Project: ${error.message}`, color: "red"})
+    }
   }
 
   return (
@@ -37,7 +47,7 @@ function CreateProject({closeModal, onSave}) {
           <IconAction dataFeather="x" iconOnClick={closeModal} />
         </span>
 
-        <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
           <label htmlFor="task-title" className="flex flex-col text-gray-600">
             Title
             <input 
@@ -104,7 +114,7 @@ function CreateProject({closeModal, onSave}) {
               </label>
             </div>
           </label>
-
+          <p style={{ color: message.color }}>{message.text}</p>
           <Button type="submit" text="Create Project" className="py-3"/>
         </form>
       </section>
@@ -353,12 +363,12 @@ function CreateNote({closeModal, onSave}) {
   );
 }
 
-function UserProfile({ closeModal, userName }) {
+function UserProfile({ closeModal }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className=''/>
-        <p>{userName}</p>
+        <p><FetchUserName /></p>
       </div>
     </div>
   );

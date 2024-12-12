@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import ProjectCard from './ProjectCard';
+import ProjectCard from './Cards';
 import { CreateProject } from './modal-group/Modal';
 import { UserNotes } from './Notes';
 import { CreateNote } from './modal-group/Modal'; 
 import { IconTitleSection } from './TitleSection';
-import { CreateProjectCard } from './ProjectCard';
-import { CreateNoteCard } from './Notes';
+import { CreateCard } from './Cards';
+import { doc } from 'firebase/firestore';
+import { db, auth} from '../config/firebase';
+
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -15,17 +17,16 @@ function MainProjectSection() {
     setShowPopUp(!showPopUp);
   }
 
-  const handleSaveProject = (newProject) => {
-    setProject([...project, newProject]);
-    togglePopUp();
-  }
-
   return (
     <div className="w-full">
       <IconTitleSection title='Projects' dataFeather='filter'/>
-      {showPopUp && <CreateProject closeModal={togglePopUp} onSave={handleSaveProject}/> }
       <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
-      <CreateProjectCard onClick={togglePopUp}/>
+      <CreateCard 
+        onClick={togglePopUp} 
+        title='Create Project' 
+        description='Get started! Manage tasks individually or collaboratively.' 
+      />
+      {showPopUp && <CreateProject closeModal={togglePopUp}/>}
 
         {project.map((project, index) => (
           <ProjectCard 
@@ -56,11 +57,15 @@ function MainNotesSection() {
 
   return (
     <div className='w-full'>
-      <IconTitleSection title='Projects' dataFeather='filter'/>
-      {showPopUp && <CreateNote closeModal={togglePopUp} onSave={handleSaveNote} />}
-        
+      <IconTitleSection title='Projects' dataFeather='filter'/>     
       <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
-        <CreateNoteCard onClick={togglePopUp} />
+        <CreateCard  
+          onClick={togglePopUp} 
+          title='Write a Note' 
+          description='Write a note for you or yourself'
+        />
+        {showPopUp && <CreateNote closeModal={togglePopUp} onSave={handleSaveNote}/>}
+
         {notes.map((note, index) => (
           <UserNotes
             key={index}

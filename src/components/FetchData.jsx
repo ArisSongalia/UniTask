@@ -47,4 +47,4 @@ function FetchUserName() {
   return <span>{username}</span>;
 }
 
-export default FetchUserName;
+export { FetchUserName };

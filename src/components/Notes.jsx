@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NoteEdit, NoteFocus } from "./modal-group/Modal";
 import { CreateNote } from "./modal-group/Modal";
+import Icon from "./Icon";
 
 function Notes({ 
   className = "", 
@@ -87,31 +88,6 @@ function UserNotes({
   );
 }
 
-function CreateNoteCard({onClick}) {
-  const [showPopUp, setShowPopUp] = useState(false);
-
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
-  }
-  
-  return (
-    <div
-      className="flex flex-col bg-white rounded-xl overflow-hidden hover:cursor-pointer hover:border-opacity-100
-      flex-grow justify-between border-2 gap-4 border-green-600 border-opacity-50 p-4 h-[15rem]"
-      onClick={onClick}
-    >
-      <span className="flex flex-col justify-between gap-4 w-full items-center">
-        <span className='self-start justify-start gap-2 flex flex-col'>
-        <h2 className='font-semibold text-md'>Write a Note</h2>
-        <p className='text-sm'>Write a note for you or yourself</p>
-        </span>
-        {showPopUp && <CreateNote closeModal={togglePopUp}/>}
-      </span>
-    </div>
-  );
-}
-
-
 
 export default Notes;
-export { UserNotes, CreateNoteCard };
+export { UserNotes };

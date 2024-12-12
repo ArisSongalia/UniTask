@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { auth, googleProvider, facebookProvider, db} from '../../config/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { IconTitleSection } from '../TitleSection';
 import Button from '../Button';
 import { IconAction } from '../Icon';
-import { AlertBox } from '../AlertCard';
+import { AlertBox } from '../Cards';
 
 
 function SignUp({ closeModal, switchToSignIn }) {
@@ -29,22 +29,41 @@ function SignUp({ closeModal, switchToSignIn }) {
     }
   };
 
-  const handleSignInWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      setShowCreateUsername(true);
-    } catch (error) {
-      setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
-    }
-  };
+const handleSignInWithGoogle = async () => {
+  try {
+    const userCredintial = await signInWithPopup(auth, googleProvider);
 
-  const handleSignInWithFacebook = async () => {
-    try {
-      await signInWithPopup(auth, facebookProvider);
-    } catch (error) {
-      setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+    const user = userCredintial.user;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const userData = userDoc.data();
+
+    if (!userData?.username) {
+      setShowCreateUsername(true);
+    } else {
+      setMessage({text: "User succesfully signed in", color: "green"})
     }
-  };
+  } catch (error) {
+    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
+  }
+};
+
+const handleSignInWithFacebook = async () => {
+  try {
+    const userCredintial = await signInWithPopup(auth, facebookProvider);
+
+    const user = userCredintial.user;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const userData = userDoc.data();
+
+    if (!userData?.username) {
+      setShowCreateUsername(true);
+    } else {
+      setMessage({text: "User succesfully signed in", color: "green"})
+    }
+  } catch (error) {
+    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
+  }
+};
 
 
   return (
@@ -127,8 +146,17 @@ function SignIn({ closeModal, switchToSignUp }) {
 
   const handleSignIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);  
-      setShowCreateUsername(true);
+      const userCredintial = await signInWithEmailAndPassword(auth, email, password);  
+
+      const user = userCredintial.user;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.data();
+
+      if (!userData?.username) {
+        setShowCreateUsername(true);
+      } else {
+        setMessage({text: "User succesfully signed in", color: "green"})
+      }
     } catch (error) {
       setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
     }
@@ -136,18 +164,37 @@ function SignIn({ closeModal, switchToSignUp }) {
 
 const handleSignInWithGoogle = async () => {
   try {
-    await signInWithPopup(auth, googleProvider);
-    setShowCreateUsername(true);
+    const userCredintial = await signInWithPopup(auth, googleProvider);
+
+    const user = userCredintial.user;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const userData = userDoc.data();
+
+    if (!userData?.username) {
+      setShowCreateUsername(true);
+    } else {
+      setMessage({text: "User succesfully signed in", color: "green"})
+    }
   } catch (error) {
-    setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
   }
 };
 
 const handleSignInWithFacebook = async () => {
   try {
-    await signInWithPopup(auth, facebookProvider);
+    const userCredintial = await signInWithPopup(auth, facebookProvider);
+
+    const user = userCredintial.user;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const userData = userDoc.data();
+
+    if (!userData?.username) {
+      setShowCreateUsername(true);
+    } else {
+      setMessage({text: "User succesfully signed in", color: "green"})
+    }
   } catch (error) {
-    setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
+    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
   }
 };
 
@@ -204,7 +251,6 @@ const handleSignInWithFacebook = async () => {
             <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-yellow-800' text='Google' />
             <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-blue-800' text='Facebook' />
           </section>
-          <div id="recaptcha-container"></div>
         </section>
       </div>
       {showCreateUsername && (
