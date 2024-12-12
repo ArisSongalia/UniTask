@@ -23,9 +23,9 @@ function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', class
   )
 }
 
-function MultiTitleSection({ titles, dataFeather }) {
+function MultiTitleSection({ titles }) {
   return (
-    <section className="flex w-full mb-4 justify-between items-center">
+    <section className="flex w-full mb-4 justify-between items-center border-b-2 pb-2">
       <div className="flex gap-2 items-center">
         {titles.map((titleObj, index) => (
           <Button
@@ -38,7 +38,6 @@ function MultiTitleSection({ titles, dataFeather }) {
           />
         ))}
       </div>
-      <IconAction dataFeather={dataFeather} />
     </section>
   );
 }

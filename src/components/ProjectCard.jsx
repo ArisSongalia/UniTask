@@ -2,7 +2,9 @@ import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
 import Button from './Button';
 import React, { useState } from 'react';
-import Popup from './modal-group/Popup';
+import { CreateProject } from './modal-group/Modal';
+
+import createProjectBanner from '../assets/create-project-banner.jpg';
 
 function ProjectCard({ 
   title = 'Project Name', 
@@ -40,4 +42,30 @@ function ProjectCard({
   );
 }
 
+function CreateProjectCard({onClick}) {
+  const [showPopUp, setShowPopUp] = useState(false);
+
+  const togglePopUp = () => {
+    setShowPopUp(!showPopUp);
+  }
+  
+  return (
+    <div
+      className="flex flex-col bg-white rounded-xl overflow-hidden w-[12rem] hover:cursor-pointer hover:border-opacity-50
+      flex-grow justify-between border-2 gap-4 border-green-600 border-opacity-25 p-4 h-auto"
+      onClick={onClick}
+    >
+      <span className="flex flex-col justify-between gap-4 w-full items-center">
+        <img src={createProjectBanner} className='w-full h-[8rem]'/>
+        <span className='self-start justify-start gap-2 flex flex-col'>
+        <h2 className='font-semibold text-md'>Create Project</h2>
+        <p className='text-sm'>Get started! Manage tasks individually or collaboratively.</p>
+        </span>
+        {showPopUp && <CreateProject closeModal={togglePopUp}/>}
+      </span>
+    </div>
+  );
+}
+
 export default ProjectCard;
+export {CreateProjectCard};

@@ -21,10 +21,9 @@ function RecentTasks() {
   ];
 
   return (
-    <section className="flex flex-col flex-grow w-full bg-white p-4 h-auto rounded-2xl shadow-sm">
+    <section className="flex flex-col flex-grow w-full bg-white p-4 h-auto rounded-md shadow-sm">
       <MultiTitleSection
         titles={titles}
-        dataFeather="filter"
         onTitleClick={setActiveSection}
       />
       <div className="w-full">

@@ -3,7 +3,7 @@ import Button from './Button'
 
 function AlertCard({text = 'Title', count = 0, className = '', user = 'User', taskName = 'Task'}) {
   return (
-  <section className={`flex flex-col bg-green-800 w-full cursor-pointer rounded-2xl
+  <section className={`flex flex-col bg-green-800 w-full cursor-pointer rounded-md
                        p-4 justify-between text-white h-auto shadow-sm`}>
       <span >
         <h2 className='font-semibold mb-2'>{text}</h2>

@@ -195,7 +195,9 @@ const handleSignInWithFacebook = async () => {
             </span>
           </p>
         </form>
+
         <hr className='border mt-8 mb-6' />
+        
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>

@@ -3,7 +3,8 @@ import ProjectCard from './ProjectCard';
 import { CreateProject } from './modal-group/Modal';
 import { UserNotes } from './Notes';
 import { CreateNote } from './modal-group/Modal'; 
-import TitleSection from './TitleSection';
+import { IconTitleSection } from './TitleSection';
+import { CreateProjectCard } from './ProjectCard';
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -20,9 +21,11 @@ function MainProjectSection() {
 
   return (
     <div className="w-full">
-      <TitleSection title='Projects' buttonText='Create Project' buttonOnClick={togglePopUp}/>
+      <IconTitleSection title='Projects' dataFeather='filter'/>
       {showPopUp && <CreateProject closeModal={togglePopUp} onSave={handleSaveProject}/> }
       <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+      <CreateProjectCard onClick={togglePopUp}/>
+
         {project.map((project, index) => (
           <ProjectCard 
             key={index}

@@ -15,24 +15,21 @@ function Navbar() {
 
   const closeModal = () => setActiveAuth(null);
 
-  // Monitor authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
 
-    // Cleanup listener on component unmount
     return () => unsubscribe();
   }, []);
 
-  // Show TaskNavBar if on /TaskMain route
   if (location.pathname === '/TaskMain') {
     return <TaskNavBar />;
   }
 
   return (
     <section className="bg-white flex items-center justify-center w-full h-auto sticky top-0 shadow-sm">
-      <div className="flex items-center justify-between w-full p-4 max-w-screen-2xl">
+      <div className="flex items-center justify-between w-full py-2 px-4 max-w-screen-2xl">
         <span className="flex items-center gap-2">
           <img src={unitask} alt="UniTask Logo" className="w-8 h-8" />
           <Link to="/" className="text-green-900 text-lg font-bold">
