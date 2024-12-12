@@ -5,6 +5,7 @@ import { UserNotes } from './Notes';
 import { CreateNote } from './modal-group/Modal'; 
 import { IconTitleSection } from './TitleSection';
 import { CreateProjectCard } from './ProjectCard';
+import { CreateNoteCard } from './Notes';
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -55,10 +56,11 @@ function MainNotesSection() {
 
   return (
     <div className='w-full'>
-      <TitleSection title='Notes' buttonText='Add Note' buttonOnClick={togglePopUp} />
+      <IconTitleSection title='Projects' dataFeather='filter'/>
       {showPopUp && <CreateNote closeModal={togglePopUp} onSave={handleSaveNote} />}
         
       <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+        <CreateNoteCard onClick={togglePopUp} />
         {notes.map((note, index) => (
           <UserNotes
             key={index}
