@@ -3,7 +3,7 @@ import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { FetchUserName } from '../FetchData';
-import {doc, setDoc} from 'firebase/firestore';
+import {doc, setDoc, addDoc, collection} from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 
 function CreateProject({closeModal}) {
@@ -25,7 +25,7 @@ function CreateProject({closeModal}) {
   const handleCreateProject = async (e) => {
     e.preventDefault();
     try {
-      await setDoc(doc(db, 'projects', user.uid), {
+      await addDoc(collection(db, 'projects'), {
         title: form.title,
         description: form.description,
         date: form.date,
@@ -34,6 +34,7 @@ function CreateProject({closeModal}) {
       });
       alert ("Project Created Succesfully");
       closeModal();
+      window.location.reload()
     } catch (error) {
       setMessage({text: `Error Creating Project: ${error.message}`, color: "red"})
     }

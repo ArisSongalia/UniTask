@@ -60,6 +60,7 @@ function ProjectCard({
   title = 'Project Name', 
   description = 'Example text should go here',
   date = '00/00/00',
+  type = 'Solo / Shared'
 }) {
   const [showPopUp, setShowPopUp] = useState(false);
 
@@ -82,8 +83,9 @@ function ProjectCard({
         {showPopUp && <Popup closeModal={togglePopUp} title={title} />}
       </span>
       
-      <p className="text-sm flex-grow">
-        {description}
+      <p className="flex flex-col flex-grow justify-between">
+        <span>{description}</span>
+        <span className='font-semibold text-gray-500 text-sm'>{type}</span>
       </p>
       <Link to='TaskMain' className='w-full'>
         <Button text='Open Project' className='w-full'/>

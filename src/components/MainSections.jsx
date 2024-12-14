@@ -1,46 +1,55 @@
 import React, { useState } from 'react';
-import ProjectCard from './Cards';
+import { ProjectCard } from './Cards';
 import { CreateProject } from './modal-group/Modal';
 import { UserNotes } from './Notes';
 import { CreateNote } from './modal-group/Modal'; 
 import { IconTitleSection } from './TitleSection';
 import { CreateCard } from './Cards';
-import { doc } from 'firebase/firestore';
-import { db, auth} from '../config/firebase';
+import { FetchProjectData } from './FetchData';
 
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
-  const [project, setProject] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
-  }
+  };
 
   return (
     <div className="w-full">
       <IconTitleSection title='Projects' dataFeather='filter'/>
       <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
-      <CreateCard 
-        onClick={togglePopUp} 
-        title='Create Project' 
-        description='Get started! Manage tasks individually or collaboratively.' 
-      />
-      {showPopUp && <CreateProject closeModal={togglePopUp}/>}
+        <CreateCard 
+          onClick={togglePopUp} 
+          title='Create Project' 
+          description='Get started! Manage tasks individually or collaboratively.' 
+        />
+        {showPopUp && <CreateProject closeModal={togglePopUp}/>}
 
-        {project.map((project, index) => (
-          <ProjectCard 
-            key={index}
-            title={project.title}
-            description={project.description}
-            date={project.date}
-            type={project.type}
-          />
-        ))}
+        <FetchProjectData setProjectData={setProjects} setLoading={setLoading} />
+
+        {loading ? (
+          <span>Loading...</span>
+        ) : ( 
+          projects.length > 0 &&
+            projects.map((project, index) => (
+              <ProjectCard 
+                key={index}
+                title={project.title}
+                description={project.description}
+                date={project.date}
+                type={project.type}
+              />
+            ))
+        )
+        }
       </section>
     </div>
   );
 }
+
 
 function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
