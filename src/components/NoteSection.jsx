@@ -17,7 +17,7 @@ function NoteSection({className = ''}) {
   }
 
   return (
-    <div id='note-div' className={'flex flex-col p-4 bg-white rounded-2xl overflow-y-hidden h-full shadow-sm'}>
+    <div id='note-div' className={'flex flex-col p-4 bg-white rounded-md overflow-y-hidden h-full shadow-sm'}>
       <TitleSection title='Notes' buttonText='Add Note' buttonOnClick={togglePopUp}/>
       {showPopUp && <CreateNote closeModal={togglePopUp} onSave={handleSaveNote} />}
 

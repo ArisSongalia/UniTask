@@ -44,7 +44,7 @@ function CreateCard({ title = "Title", description = "Description", onClick}) {
   return (
     <div
       className="flex flex-col bg-white rounded-xl overflow-hidden hover:cursor-pointer hover:border-opacity-100
-      flex-grow justify-between border-2 gap-4 border-green-700 border-opacity-50 p-4 h-[15rem]"
+      flex-grow justify-between border-2 gap-4 border-green-700 border-opacity-50 p-4 h-[15rem] hover:text-green-950"
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full items-center">
@@ -76,24 +76,30 @@ function ProjectCard({
       className="flex flex-col bg-white rounded-xl overflow-hidden
         flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[15rem]"
     >
-      <span className="flex justify-between gap-4">
-        <span>
-          <h2 className="font-bold mb-2">{title}</h2>
-          <p className="text-xs font-semibold text-gray-600">{date}</p>
+      <section className="flex gap-4 w-full">
+        <span className='w-full max-w-[80%]'>
+          <h2 className="font-bold mb-2 overflow-hidden text-ellipsis">{title}</h2>
+          <span className='flex items-center gap-2'>
+            <p className="font-semibold text-gray-600 text-xs">{type}</p>
+            <p>•</p>
+            <p className="text-xs font-semibold text-gray-600">{date}</p>
+          </span>
         </span>
-        <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className='' />
+
+        <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="w-fit" />
         {showPopUp && <Popup closeModal={togglePopUp} title={title} />}
-      </span>
-      
-      <p className="flex flex-col flex-grow justify-between">
-        <span>{description}</span>
-        <span className='font-semibold text-gray-500 text-sm'>{type}</span>
-      </p>
-      <Link to='TaskMain' className='w-full'>
-        <Button text='Open Project' className='w-full'/>
+      </section>
+
+      <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">
+        <p className="text-sm text-gray-700 mb-2 break-words text-ellipsis pr-2">{description}</p>
+      </section>
+
+      <Link to="TaskMain" className="w-full">
+        <Button text="Open Project" className="w-full" />
       </Link>
     </div>
   );
+
 }
 
 function UserCard({className='', username = 'User Name'}) {

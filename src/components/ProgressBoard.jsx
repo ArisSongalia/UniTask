@@ -12,7 +12,7 @@ function ProgressBoard() {
 
 
   return (
-    <section className='flex flex-col bg-white rounded-2xl p-4 h-auto w-full overflow-hidden shadow-sm'>
+    <section className='flex flex-col bg-white rounded-md p-4 h-auto w-full overflow-hidden shadow-sm'>
       <TitleSection 
         dataFeather='filter' 
         title='Progress Board' 

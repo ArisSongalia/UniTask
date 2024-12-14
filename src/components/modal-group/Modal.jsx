@@ -32,7 +32,6 @@ function CreateProject({closeModal}) {
         type: form.type,
         owner: user.uid,
       });
-      alert ("Project Created Succesfully");
       closeModal();
       window.location.reload()
     } catch (error) {
@@ -93,9 +92,9 @@ function CreateProject({closeModal}) {
                   onChange={handleChange}
                   type="radio" 
                   id="solo" 
-                  value="solo"
+                  value="Solo"
                   name='type'
-                  checked={form.type === "solo"}
+                  checked={form.type === "Solo"}
                   className=" hover:cursor-pointer" 
                 />
                 <span>Solo</span>
@@ -104,8 +103,8 @@ function CreateProject({closeModal}) {
               <label className="flex items-center space-x-2 hover:cursor-pointer">
                 <input 
                   onChange={handleChange}
-                  value="shared"
-                  checked={form.type === "shared"}
+                  value="Shared"
+                  checked={form.type === "Shared"}
                   type="radio" 
                   id="shared" 
                   name='type'

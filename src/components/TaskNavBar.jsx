@@ -6,7 +6,7 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
       <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
-        <span className='flex gap-4 items-center'>
+        <span className='flex gap-2 items-center'>
           <Link to='/'>
             <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
