@@ -1,6 +1,5 @@
 import React from 'react'
 import Project from '../components/Project'
-import TaskNavBar from '../components/TaskNavBar'
 
 
 function TaskMain() {

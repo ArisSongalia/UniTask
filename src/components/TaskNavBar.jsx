@@ -8,7 +8,7 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
       <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
         <span className='flex gap-4 items-center'>
           <Link to='/'>
-            <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem]' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
+            <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
           <span className='flex flex-col'>
             <h1 className='text-xl font-bold mb-1 text-green-700'>{title}</h1>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
 import TaskNavBar from './TaskNavBar';
@@ -12,8 +12,8 @@ import { auth } from '../config/firebase';
 function Navbar() {
   const [activeAuth, setActiveAuth] = useState(null);
   const [user, setUser] = useState(null);
-
   const closeModal = () => setActiveAuth(null);
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

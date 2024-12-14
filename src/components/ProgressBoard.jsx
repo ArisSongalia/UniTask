@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import ProgressCard from './ProgressCard'
+import { ProgressCard } from './Cards'
 import TitleSection, { DisplayTitleSection } from './TitleSection'
 import { CreateTask } from './modal-group/Modal'
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProgressAlertCard } from './ProgressCard';
+import { ProgressAlertCard } from './Cards';
 import { DisplayTitleSection } from './TitleSection';
 
 function AssignedTasks() {
