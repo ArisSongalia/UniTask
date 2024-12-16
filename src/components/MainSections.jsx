@@ -6,6 +6,7 @@ import { CreateNote } from './modal-group/Modal';
 import { IconTitleSection } from './TitleSection';
 import { CreateCard } from './Cards';
 import { FetchProjectData } from './FetchData';
+import { BarLoader } from 'react-spinners';
 
 
 function MainProjectSection() {
@@ -31,7 +32,7 @@ function MainProjectSection() {
         <FetchProjectData setProjectData={setProjects} setLoading={setLoading} />
 
         {loading ? (
-          <span>Loading...</span>
+          <span><BarLoader color='#228B22' size={20} /></span>
         ) : ( 
           projects.length > 0 &&
             projects.map((project, index) => (

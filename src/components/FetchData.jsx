@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from '../config/firebase';
 import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { BarLoader } from 'react-spinners';
+
 
 function FetchUserName() {
   const [username, setUsername] = useState('');
@@ -37,7 +39,7 @@ function FetchUserName() {
   }, []);
 
   if (loading) {
-    return <span>Loading...</span>;
+    return <span>...</span>;
   }
 
   if (!username) {

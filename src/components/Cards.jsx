@@ -43,8 +43,8 @@ function AlertBox({text = 'Title', className = '', email= 'User'}) {
 function CreateCard({ title = "Title", description = "Description", onClick}) {
   return (
     <div
-      className="flex flex-col bg-white rounded-xl overflow-hidden hover:cursor-pointer hover:border-opacity-100
-      flex-grow justify-between border-2 gap-4 border-green-700 border-opacity-50 p-4 h-[15rem] hover:text-green-950"
+      className="flex flex-col bg-green-50 rounded-xl overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
+      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 h-[15rem]"
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full items-center">

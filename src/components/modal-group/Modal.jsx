@@ -77,8 +77,8 @@ function CreateProject({closeModal}) {
             <input 
               onChange={handleChange}
               value={form.date}
-              type="datetime-local" 
-              name='date'
+              type="date" 
+              name="date"
               id="date" 
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
             />
