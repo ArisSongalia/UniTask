@@ -5,7 +5,7 @@ import { UserNotes } from './Notes';
 import { CreateNote } from './modal-group/Modal'; 
 import { IconTitleSection } from './TitleSection';
 import { CreateCard } from './Cards';
-import { FetchProjectData } from './FetchData';
+import { FetchProjectData, FetchNoteData } from './FetchData';
 import { BarLoader } from 'react-spinners';
 
 
@@ -54,15 +54,11 @@ function MainProjectSection() {
 
 function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
+  const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp); 
-  };
-
-  const handleSaveNote = (newNote) => {
-    setNotes([...notes, newNote]);
-    togglePopUp(); 
   };
 
   return (
@@ -74,18 +70,27 @@ function MainNotesSection() {
           title='Write a Note' 
           description='Write a note for you or yourself'
         />
-        {showPopUp && <CreateNote closeModal={togglePopUp} onSave={handleSaveNote}/>}
+        {showPopUp && <CreateNote closeModal={togglePopUp} />}
 
-        {notes.map((note, index) => (
-          <UserNotes
-            key={index}
-            title={note.title}
-            message={note.message}
-            user="You"
-            date={note.date}
-            file={note.file}
-          />
-        ))}
+        <FetchNoteData setNoteData={setNotes} setLoading={setLoading} />
+
+        {loading ? (
+          <span><BarLoader color='#228B22' size={20} /></span>
+        ) : (
+          notes.length > 0 &&
+            notes.map((note, index) => (
+              <UserNotes
+                key={index}
+                title={note.title}
+                message={note.message}
+                user="You"
+                date={note.date}
+                file={note.file}
+              />
+            ))
+        )}
+
+
       </section>
     </div>
   );

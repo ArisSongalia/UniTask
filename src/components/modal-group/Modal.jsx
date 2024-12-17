@@ -3,12 +3,13 @@ import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { FetchUserName } from '../FetchData';
-import {doc, setDoc, addDoc, collection} from 'firebase/firestore';
-import { auth, db } from '../../config/firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db, storage } from '../../config/firebase';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 function CreateProject({closeModal}) {
   const user = auth.currentUser;
-  const [message, setMessage] = useState({text: '', color: ''});
+  const [message, setMessage] = useState({text: "", color: ""});
 
   const [form, setForm] = useState({
     title: "",
@@ -121,6 +122,146 @@ function CreateProject({closeModal}) {
     </div>
   );
 }
+
+function CreateNote({ closeModal }) {
+  const user = auth.currentUser;
+  const [message, setMessage] = useState({ message: "", color: "" });
+  const [progress, setProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [form, setForm] = useState({
+    title: "",
+    message: "",
+    file: "",
+    date: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      setIsUploading(true);
+      setProgress(0); 
+      const storageRef = ref(storage, `files/${file.name}`);
+      const uploadFile = uploadBytesResumable(storageRef, file);
+
+  uploadFile.on(
+    "state_changed",
+    (snapshot) => {
+      const progressValue = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      console.log("Progress: ", progressValue, snapshot.bytesTransferred, snapshot.totalBytes); 
+      setProgress(progressValue);
+    },
+    (error) => {
+      console.error("File Upload Failed: ", error);
+      setMessage({ text: "File upload failed: " + error.message, color: "red" });
+      setIsUploading(false);
+    },
+    async () => {
+      try {
+        const downloadURL = await getDownloadURL(uploadFile.snapshot.ref);
+        setForm((prevForm) => ({ ...prevForm, file: downloadURL }));
+        setMessage({ text: "File uploaded successfully!", color: "green" });
+      } catch (error) {
+        console.error("Error fetching file URL: ", error);
+        setMessage({ text: "Failed to retrieve file URL.", color: "red" });
+      } finally {
+        setIsUploading(false);
+        setProgress(0);
+      }
+    }
+  );
+
+    }
+  };
+
+  const handleCreateUserNote = async (e) => {
+    e.preventDefault();
+    try {
+      await addDoc(collection(db, "notes"), {
+        title: form.title,
+        message: form.message,
+        date: form.date,
+        owner: user.uid,
+        file: form.file,
+      });
+      setMessage({ text: "Note created successfully!", color: "green" });
+      closeModal();
+    } catch (error) {
+      console.error("Error creating note:", error);
+      setMessage({ text: "Failed to create note: " + error.message, color: "red" });
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+        <span className="flex w-full justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Create Note</h2>
+          <IconAction dataFeather="x" iconOnClick={closeModal} />
+        </span>
+
+        <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
+          <label htmlFor="title" className="flex flex-col text-gray-600">
+            Title
+            <input
+              type="text"
+              value={form.title}
+              onChange={handleChange}
+              name="title"
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </label>
+
+          <label htmlFor="message" className="flex flex-col text-gray-600">
+            Message
+            <textarea
+              name="message"
+              value={form.message}
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none h-[10rem]"
+              required
+            />
+          </label>
+
+          <label htmlFor="file" className="flex flex-col text-gray-600">
+            Attach File
+            <input
+              type="file"
+              name="file"
+              onChange={handleFileChange}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+            />
+            <progress value={progress} max={100} className="w-full h-1 mt-2" />
+            <span className="text-gray-600 text-sm">{progress > 0 && `Uploading: ${progress}%`}</span>
+          </label>
+
+          <label htmlFor="date" className="flex flex-col text-gray-600">
+            Date
+            <input
+              type="datetime-local"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              required
+            />
+          </label>
+
+          <p style={{ color: message.color }}>{message.text}</p>
+          <Button type="submit" text={isUploading ? "Uploading..." : "Create Note"} className="py-3" />
+        </form>
+      </section>
+    </div>
+  );
+}
+
 
 function CreateTask({ closeModal }) {
   return (
@@ -259,105 +400,6 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
           </section>
           <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {user} - {date}</p>
         </section>
-      </section>
-    </div>
-  );
-}
-
-function CreateNote({closeModal, onSave}) {
-  const [form, setForm] = useState({
-    title: "",
-    message: "",
-    file: null,
-    date: "",
-  });
-
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-    setForm({ ...form, [name]: value});
-  };
-
-  const handleFileChange = (e) => {
-    setForm({ ...form, file: e.target.files[0] });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({
-      ...form,
-      file: form.file ? form.file.name : null,
-    });
-    setForm({
-      title: "",
-      message: "",
-      file: null,
-      date: "",
-    });
-    alert("Note Created");
-    closeModal();
-  };
-
-
-
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Create Note</h2>
-          <IconAction dataFeather="x" iconOnClick={closeModal} />
-        </span>
-
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-          <label htmlFor="title" className="flex flex-col text-gray-600">
-            Title
-            <input 
-              type="text" 
-              value={form.title}
-              onChange={handleChange}
-              name="title" 
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-              required
-            />
-          </label>
-
-          <label htmlFor="message" className="flex flex-col text-gray-600">
-           Message
-            <textarea
-              name="message" 
-              value={form.message}
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 
-              focus:outline-none h-[10rem]"
-              required
-            />
-          </label>
-
-          <label htmlFor="file" className="flex flex-col text-gray-600">
-            Attach File
-            <input 
-              type="file" 
-              name="file" 
-              onChange={handleFileChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 
-              focus:ring-green-500 focus:outline-none hover:cursor-pointer"
-            />
-          </label>
-
-          <label htmlFor="date" className="flex flex-col text-gray-600">
-            Date
-            <input 
-              type="datetime-local" 
-              name="date" 
-              value={form.date}
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 
-              focus:ring-green-500 focus:outline-none hover:cursor-pointer"
-              required
-            />
-          </label>
-
-          <Button type="submit" text="Create Note" className="py-3"/>
-        </form>
       </section>
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from '../config/firebase';
 import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { BarLoader } from 'react-spinners';
 
 
 function FetchUserName() {
@@ -50,14 +49,13 @@ function FetchUserName() {
 }
 
 
-function FetchProjectData({ setProjectData, setLoading }) {
-  
+function FetchProjectData({ setProjectData, setLoading }) { 
   useEffect(() => {
     const fetchProjectData = async (user) => {
       try {
         if (user) {
-          const projectsRef = collection(db, 'projects');
-          const q = query(projectsRef, where("owner", "==", user.uid))
+          const projectRef = collection(db, 'projects');
+          const q = query(projectRef, where("owner", "==", user.uid))
           
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
@@ -73,11 +71,11 @@ function FetchProjectData({ setProjectData, setLoading }) {
             setProjectData(projectData);
           } 
         } else {
-          alert("No logged-in user");
+          alert("No Logged-In User: Please Log-in");
         }
       } catch (error) {
-        console.error("Error fetching project data:", error);
-        alert("Error fetching project data");
+        console.error("Error Fetching Project Data:", error);
+        alert("Error Fetching Project Data");
       } finally {
         setLoading(false);
       }
@@ -98,5 +96,50 @@ function FetchProjectData({ setProjectData, setLoading }) {
   return null;
 }
 
+function FetchNoteData({setNoteData, setLoading}) {
+  useEffect(() => {
+    const fetchNoteData = async (user) => {
+      try {
+        if (user) {
+          const noteRef = collection(db, 'notes');
+          const q = query(noteRef, where("owner", "==", user.uid));
 
-export { FetchUserName, FetchProjectData };
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const NoteData = [];
+            querySnapshot.forEach((doc) => {
+              NoteData.push({
+                title: doc.data().title,
+                message: doc.data().message,
+                file: doc.data().file,
+                date: doc.data().date,
+              });
+            });
+            setNoteData(NoteData);
+          }
+        } else {
+          alert("")
+        }
+      } catch (error) {
+        console.error("Error Fetching User Note Data: ", error);
+        alert("Error Fetching User Note Data")
+      } finally {
+        setLoading(false)
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoading(true);
+        fetchNoteData(user);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+
+  }, [setNoteData, setLoading])
+}
+
+export { FetchUserName, FetchProjectData, FetchNoteData };
