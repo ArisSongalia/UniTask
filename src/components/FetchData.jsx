@@ -49,7 +49,7 @@ function FetchUserName() {
 }
 
 
-function FetchProjectData({ setProjectData, setLoading }) { 
+const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => { 
   useEffect(() => {
     const fetchProjectData = async (user) => {
       try {
@@ -91,12 +91,12 @@ function FetchProjectData({ setProjectData, setLoading }) {
     });
 
     return () => unsubscribe();
-  }, [setProjectData, setLoading]);
+  }, [setProjectData, setLoading, refreshKey]);
 
   return null;
 }
 
-function FetchNoteData({setNoteData, setLoading}) {
+const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
   useEffect(() => {
     const fetchNoteData = async (user) => {
       try {
@@ -139,7 +139,7 @@ function FetchNoteData({setNoteData, setLoading}) {
 
     return () => unsubscribe();
 
-  }, [setNoteData, setLoading])
+  }, [setNoteData, setLoading, refreshKey])
 }
 
-export { FetchUserName, FetchProjectData, FetchNoteData };
+export { FetchUserName, fetchProjectData, fetchNoteData };

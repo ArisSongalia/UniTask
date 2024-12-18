@@ -3,7 +3,7 @@ import { ProjectCard, CreateCard } from './Cards';
 import { CreateProject, CreateNote } from './modal-group/Modal';
 import { UserNotes } from './Notes';
 import { IconTitleSection } from './TitleSection';
-import { FetchProjectData, FetchNoteData } from './FetchData';
+import { fetchProjectData, fetchNoteData } from './FetchData';
 import { BarLoader } from 'react-spinners';
 import { RefreshComponentIcon } from './RefreshComponent';
 
@@ -17,7 +17,8 @@ function MainProjectSection() {
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
-  
+
+  fetchProjectData(setProjects, setLoading, refreshKey)
 
   return (
     <div className="w-full">
@@ -34,8 +35,6 @@ function MainProjectSection() {
           description='Get started! Manage tasks individually or collaboratively.' 
         />
         {showPopUp && <CreateProject closeModal={togglePopUp}/>}
-
-        <FetchProjectData setProjectData={setProjects} setLoading={setLoading} />
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
@@ -66,11 +65,14 @@ function MainNotesSection() {
     setShowPopUp(!showPopUp); 
   };
 
+  fetchNoteData(setNotes, setLoading, refreshKey);
+
   return (
     <div className='w-full'>
       <IconTitleSection 
         title='Notes' 
-        dataFeather='book' 
+        dataFeather='filter'
+        extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>}
       />  
       <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
         <CreateCard  
@@ -79,8 +81,6 @@ function MainNotesSection() {
           description='Write a note for you or yourself'
         />
         {showPopUp && <CreateNote closeModal={togglePopUp} />}
-
-        <FetchNoteData setNoteData={setNotes} setLoading={setLoading} />
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
