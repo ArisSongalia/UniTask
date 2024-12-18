@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NoteEdit, NoteFocus } from "./modal-group/Modal";
-import { CreateNote } from "./modal-group/Modal";
-import Icon from "./Icon";
+
 
 function Notes({ 
   className = "", 

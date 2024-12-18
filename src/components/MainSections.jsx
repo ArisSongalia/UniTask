@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
-import { ProjectCard } from './Cards';
-import { CreateProject } from './modal-group/Modal';
+import React, { useEffect, useState } from 'react';
+import { ProjectCard, CreateCard } from './Cards';
+import { CreateProject, CreateNote } from './modal-group/Modal';
 import { UserNotes } from './Notes';
-import { CreateNote } from './modal-group/Modal'; 
 import { IconTitleSection } from './TitleSection';
-import { CreateCard } from './Cards';
 import { FetchProjectData, FetchNoteData } from './FetchData';
 import { BarLoader } from 'react-spinners';
+import { RefreshComponentIcon } from './RefreshComponent';
 
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
+  
 
   return (
     <div className="w-full">
-      <IconTitleSection title='Projects' dataFeather='filter'/>
-      <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+      <IconTitleSection 
+        title='Projects' 
+        dataFeather='filter' 
+        extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>} 
+      />  
+      
+      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
         <CreateCard 
           onClick={togglePopUp} 
           title='Create Project' 
@@ -44,18 +50,17 @@ function MainProjectSection() {
                 type={project.type}
               />
             ))
-        )
-        }
+        )}
       </section>
     </div>
   );
 }
 
-
 function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp); 
@@ -63,8 +68,11 @@ function MainNotesSection() {
 
   return (
     <div className='w-full'>
-      <IconTitleSection title='Projects' dataFeather='filter'/>     
-      <section className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+      <IconTitleSection 
+        title='Notes' 
+        dataFeather='book' 
+      />  
+      <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
         <CreateCard  
           onClick={togglePopUp} 
           title='Write a Note' 
@@ -89,8 +97,6 @@ function MainNotesSection() {
               />
             ))
         )}
-
-
       </section>
     </div>
   );

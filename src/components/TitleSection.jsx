@@ -14,11 +14,14 @@ function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, cl
   )
 }
 
-function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', className= ''}) {
+function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', extraIcon, className= ''}) {
   return ( 
     <section className={`flex w-full mb-4 justify-between ${className}`}>
       <h2 className='font-semibold w-full max-w-[80%] overflow-hidden overflow-ellipsis'>{title}</h2>
-      <IconAction dataFeather={`${dataFeather}`} iconOnClick={iconOnClick}/>
+      <span className='flex gap-2'>
+        <IconAction dataFeather={`${dataFeather}`} iconOnClick={iconOnClick}/>
+        {extraIcon}
+      </span>
     </section>
   )
 }
