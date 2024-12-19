@@ -21,14 +21,15 @@ function MainProjectSection() {
   fetchProjectData(setProjects, setLoading, refreshKey)
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full h-full">
       <IconTitleSection 
         title='Projects' 
         dataFeather='filter' 
         extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>} 
+        className='sticky top-0 bg-white pb-2'
       />  
       
-      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
+      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 
           onClick={togglePopUp} 
           title='Create Project' 
@@ -73,6 +74,7 @@ function MainNotesSection() {
         title='Notes' 
         dataFeather='filter'
         extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>}
+        className='sticky top-0 bg-white pb-2'
       />  
       <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full ">
         <CreateCard  
