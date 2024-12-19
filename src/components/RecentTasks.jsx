@@ -26,7 +26,7 @@ function RecentTasks() {
         titles={titles}
         onTitleClick={setActiveSection}
       />
-      <div className="w-full">
+      <div className="w-full overflow-y-scroll pr-2">
         {activeSection === 'project' && <MainProjectSection />}
         {activeSection === 'notes' && <MainNotesSection />}
       </div>

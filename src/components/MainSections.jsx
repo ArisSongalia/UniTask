@@ -21,20 +21,20 @@ function MainProjectSection() {
   fetchProjectData(setProjects, setLoading, refreshKey)
 
   return (
-    <div className="w-full">
+    <div className="flex flex-col w-full">
       <IconTitleSection 
         title='Projects' 
         dataFeather='filter' 
         extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>} 
       />  
       
-      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
         <CreateCard 
           onClick={togglePopUp} 
           title='Create Project' 
           description='Get started! Manage tasks individually or collaboratively.' 
         />
-        {showPopUp && <CreateProject closeModal={togglePopUp}/>}
+        {showPopUp && <CreateProject closeModal={togglePopUp} setRefreshKey={setRefreshKey}/>}
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
@@ -68,19 +68,19 @@ function MainNotesSection() {
   fetchNoteData(setNotes, setLoading, refreshKey);
 
   return (
-    <div className='w-full'>
+    <div className='w-full h-fit'>
       <IconTitleSection 
         title='Notes' 
         dataFeather='filter'
         extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>}
       />  
-      <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full h-auto overflow-y-scroll pr-2">
+      <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full ">
         <CreateCard  
           onClick={togglePopUp} 
           title='Write a Note' 
           description='Write a note for you or yourself'
         />
-        {showPopUp && <CreateNote closeModal={togglePopUp} />}
+        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={setRefreshKey} />}
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>

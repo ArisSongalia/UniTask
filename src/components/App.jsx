@@ -7,7 +7,7 @@ import TaskMain from '../pages/TaskMain';
 function App({}) {
   return (
     <div id="main-container" 
-      className={`flex max-w-screen-2xl w-full p-4 h-[90vh] gap-4 self-center justify-center`}
+      className={`flex max-w-screen-2xl w-full p-4 h-[92vh] gap-4 self-center justify-center`}
       >
           <Routes>
             <Route path="/" 

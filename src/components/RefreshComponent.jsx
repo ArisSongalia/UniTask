@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { IconAction } from './Icon';
 
+const RefreshComponent = ({ setRefreshKey }) => {
+  const handleRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+
+  handleRefresh();
+};
+
 const RefreshComponentIcon = ({ setRefreshKey }) => {
   const handleRefresh = () => {
     setRefreshKey(prevKey => prevKey + 1);
@@ -13,4 +21,6 @@ const RefreshComponentIcon = ({ setRefreshKey }) => {
   );
 };
 
+
+export default RefreshComponent;
 export { RefreshComponentIcon };

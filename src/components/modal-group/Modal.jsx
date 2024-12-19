@@ -7,7 +7,7 @@ import { addDoc, collection } from 'firebase/firestore';
 import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
-function CreateProject({closeModal}) {
+function CreateProject({closeModal, setRefreshKey}) {
   const user = auth.currentUser;
   const [message, setMessage] = useState({text: "", color: ""});
 
@@ -33,8 +33,8 @@ function CreateProject({closeModal}) {
         type: form.type,
         owner: user.uid,
       });
+      setMessage({ text: "Project created successfully!", color: "green"});
       closeModal();
-      window.location.reload()
     } catch (error) {
       setMessage({text: `Error Creating Project: ${error.message}`, color: "red"})
     }
@@ -123,7 +123,7 @@ function CreateProject({closeModal}) {
   );
 }
 
-function CreateNote({ closeModal }) {
+function CreateNote({ closeModal, setRefreshKey }) {
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const [progress, setProgress] = useState(0);
@@ -189,8 +189,8 @@ function CreateNote({ closeModal }) {
         date: form.date,
         owner: user.uid,
         file: form.file,
-      });
-      setMessage({ text: "Note created successfully!", color: "green" });
+      }); 
+      setRefreshKey((prevKey) => prevKey + 1);
       closeModal();
     } catch (error) {
       console.error("Error creating note:", error);

@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
-      <section className="flex flex-col">
+      <section className="flex flex-col h-screen">
         <Navbar />
         <App />
       </section>
