@@ -3,13 +3,13 @@ import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { FetchUserName } from '../FetchData';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
-function CreateProject({closeModal, setRefreshKey}) {
+function CreateProject({ closeModal, setRefreshKey }) {
   const user = auth.currentUser;
-  const [message, setMessage] = useState({text: "", color: ""});
+  const [message, setMessage] = useState({ text: "", color: "" });
 
   const [form, setForm] = useState({
     title: "",
@@ -19,26 +19,30 @@ function CreateProject({closeModal, setRefreshKey}) {
   });
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setForm({...form, [name]: value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, 'projects'), {
+      const docRef = await addDoc(collection(db, 'projects'), {
         title: form.title,
         description: form.description,
         date: form.date,
         type: form.type,
         owner: user.uid,
       });
-      setMessage({ text: "Project created successfully!", color: "green"});
+
+      await updateDoc(docRef, { id: docRef.id });
+
+      setMessage({ text: "Project created successfully!", color: "green" });
+      setRefreshKey(prevKey => prevKey + 1);
       closeModal();
     } catch (error) {
-      setMessage({text: `Error Creating Project: ${error.message}`, color: "red"})
+      setMessage({ text: `Error Creating Project: ${error.message}`, color: "red" });
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -51,37 +55,40 @@ function CreateProject({closeModal, setRefreshKey}) {
         <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
           <label htmlFor="task-title" className="flex flex-col text-gray-600">
             Title
-            <input 
-              type="text" 
+            <input
+              type="text"
               onChange={handleChange}
               value={form.title}
               name='title'
-              id="task-title" 
+              id="task-title"
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
             />
           </label>
 
           <label htmlFor="project-description" className="flex flex-col text-gray-600">
             Description
-            <input 
+            <input
               onChange={handleChange}
               value={form.description}
-              type="text" 
+              type="text"
               name='description'
-              id="project-description" 
+              id="project-description"
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
             />
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
-            Date
-            <input 
+            Target Date
+            <input
               onChange={handleChange}
               value={form.date}
-              type="date" 
+              type="date"
               name="date"
-              id="date" 
+              id="date"
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              required
             />
           </label>
 
@@ -89,34 +96,36 @@ function CreateProject({closeModal, setRefreshKey}) {
             Task Type
             <div className="flex items-center space-x-4 mt-2">
               <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input 
+                <input
                   onChange={handleChange}
-                  type="radio" 
-                  id="solo" 
+                  type="radio"
+                  id="solo"
                   value="Solo"
                   name='type'
                   checked={form.type === "Solo"}
-                  className=" hover:cursor-pointer" 
+                  className=" hover:cursor-pointer"
+                  required
                 />
                 <span>Solo</span>
               </label>
-              
+
               <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input 
+                <input
                   onChange={handleChange}
                   value="Shared"
                   checked={form.type === "Shared"}
-                  type="radio" 
-                  id="shared" 
+                  type="radio"
+                  id="shared"
                   name='type'
-                  className=" hover:cursor-pointer" 
+                  className=" hover:cursor-pointer"
+                  required
                 />
                 <span>Shared</span>
               </label>
             </div>
           </label>
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Project" className="py-3"/>
+          <Button type="submit" text="Create Project" className="py-3" />
         </form>
       </section>
     </div>

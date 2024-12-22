@@ -65,7 +65,8 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
                 title: doc.data().title,
                 description: doc.data().description,
                 date: doc.data().date,
-                type: doc.data().type
+                type: doc.data().type,
+                id: doc.data().id,
               });
             });
             setProjectData(projectData);

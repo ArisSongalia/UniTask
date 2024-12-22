@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from './Button'
 import Icon from './Icon'
 import { IconAction } from './Icon';
@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
-
+import { getDocs, collection } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 
 function AlertCard({text = 'Title', count = 0, className = '', user = 'User', taskName = 'Task'}) {
@@ -62,8 +63,10 @@ function ProjectCard({
   title = 'Project Name', 
   description = 'Example text should go here',
   date = '00/00/00',
-  type = 'Solo / Shared'
-}) {
+  type = 'Solo / Shared',
+  id = '',
+  }) {
+
   const [showPopUp, setShowPopUp] = useState(false);
 
   const togglePopUp = (e) => {
@@ -87,7 +90,7 @@ function ProjectCard({
         </span>
 
         <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="w-fit" />
-        {showPopUp && <Popup closeModal={togglePopUp} title={title} />}
+        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} />}
       </section>
 
       <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">

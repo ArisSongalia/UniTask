@@ -48,6 +48,7 @@ function MainProjectSection() {
                 description={project.description}
                 date={project.date}
                 type={project.type}
+                id={project.id}
               />
             ))
         )}
