@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProjectCard, CreateCard } from './Cards';
 import { CreateProject, CreateNote } from './modal-group/Modal';
-import { UserNotes } from './Notes';
+import Notes from './Notes';
 import { IconTitleSection } from './TitleSection';
 import { fetchProjectData, fetchNoteData } from './FetchData';
 import { BarLoader } from 'react-spinners';
@@ -90,13 +90,13 @@ function MainNotesSection() {
         ) : (
           notes.length > 0 &&
             notes.map((note, index) => (
-              <UserNotes
+              <Notes
                 key={index}
                 title={note.title}
                 message={note.message}
-                user="You"
                 date={note.date}
                 file={note.file}
+                id={note.id}
               />
             ))
         )}

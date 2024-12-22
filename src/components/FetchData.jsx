@@ -114,6 +114,7 @@ const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
                 message: doc.data().message,
                 file: doc.data().file,
                 date: doc.data().date,
+                id: doc.data().id,
               });
             });
             setNoteData(NoteData);

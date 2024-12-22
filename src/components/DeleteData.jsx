@@ -1,7 +1,7 @@
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const deleteData = async ( id ) => {
+const deleteData = async ( id, collectionName ) => {
   
   try {
     console.log(id)
@@ -12,7 +12,7 @@ const deleteData = async ( id ) => {
       return;
     }
 
-    const docRef = doc(db, 'projects', id);
+    const docRef = doc(db, collectionName, id);
     await deleteDoc(docRef);
     alert("Successfully Deleted");
 

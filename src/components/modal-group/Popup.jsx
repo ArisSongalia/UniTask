@@ -6,7 +6,7 @@ import deleteData from '../DeleteData';
 function Popup({ title, closeModal, id }) {
 
   const handleDelete = async () => {
-    await deleteData(id);
+    await deleteData(id, 'projects');
     closeModal();
   };
 

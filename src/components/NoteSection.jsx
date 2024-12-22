@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import Notes, { UserNotes } from './Notes'
+import Notes from './Notes'
 import TitleSection from './TitleSection'
 import { CreateNote } from './modal-group/Modal'
 
@@ -23,7 +23,7 @@ function NoteSection({className = ''}) {
 
       <section className={`grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-2 w-full bg-white pr-2 rounded-xl overflow-y-auto ${className}`}>
         {notes.map((note, index) => (
-          <UserNotes
+          <Notes
             key={index}
             title={note.title}
             message={note.message}

@@ -6,6 +6,7 @@ import { FetchUserName } from '../FetchData';
 import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import deleteData from '../DeleteData';
 
 function CreateProject({ closeModal, setRefreshKey }) {
   const user = auth.currentUser;
@@ -36,7 +37,6 @@ function CreateProject({ closeModal, setRefreshKey }) {
 
       await updateDoc(docRef, { id: docRef.id });
 
-      setMessage({ text: "Project created successfully!", color: "green" });
       setRefreshKey(prevKey => prevKey + 1);
       closeModal();
     } catch (error) {
@@ -192,13 +192,16 @@ function CreateNote({ closeModal, setRefreshKey }) {
   const handleCreateUserNote = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, "notes"), {
+      const docRef = await addDoc(collection(db, "notes"), {
         title: form.title,
         message: form.message,
         date: form.date,
         owner: user.uid,
         file: form.file,
       }); 
+
+      await updateDoc(docRef, { id: docRef.id });
+
       setRefreshKey((prevKey) => prevKey + 1);
       closeModal();
     } catch (error) {
@@ -372,10 +375,14 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
 }
 
 
-function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main message goes here...', file, user = 'User', date = '00/00/0000'}) {
+function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main message goes here...', file, owner = "owner", date = '00/00/0000', id}) {
   const [showPopUp, setShowPopUp] = useState(false);
   const togglePopUp = () => {
     setShowPopUp(!showPopUp)
+  }
+
+  const handleDelete = async () => {
+    await deleteData( id, 'notes' )
   }
 
   return (
@@ -404,10 +411,11 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
                 <IconAction dataFeather="x" iconOnClick={closeModal} />
                 <IconAction dataFeather="edit" iconOnClick={togglePopUp}/>
                 {showPopUp && <CreateNote  closeModal={closeModal} title={title} message={main}/>}
+                <IconAction dataFeather="trash-2" iconOnClick={handleDelete}/>
               </span>
             </span>
           </section>
-          <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {user} - {date}</p>
+          <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {owner} - {date}</p>
         </section>
       </section>
     </div>
