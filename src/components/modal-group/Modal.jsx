@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
@@ -11,6 +11,7 @@ import deleteData from '../DeleteData';
 function CreateProject({ closeModal, setRefreshKey }) {
   const user = auth.currentUser;
   const [message, setMessage] = useState({ text: "", color: "" });
+  const dateRef = useRef('');
 
   const [form, setForm] = useState({
     title: "",
@@ -22,6 +23,11 @@ function CreateProject({ closeModal, setRefreshKey }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    const today = new Date().toISOString().split('T')[0];
+    if(dateRef.current) {
+      dateRef.current.setAttribute('min', today);
+    };
   };
 
   const handleCreateProject = async (e) => {
@@ -82,6 +88,7 @@ function CreateProject({ closeModal, setRefreshKey }) {
           <label htmlFor="date" className="flex flex-col text-gray-600">
             Target Date
             <input
+              ref={dateRef}
               onChange={handleChange}
               value={form.date}
               type="date"
@@ -103,7 +110,7 @@ function CreateProject({ closeModal, setRefreshKey }) {
                   value="Solo"
                   name='type'
                   checked={form.type === "Solo"}
-                  className=" hover:cursor-pointer"
+                  className="hover:cursor-pointer"
                   required
                 />
                 <span>Solo</span>
@@ -257,7 +264,7 @@ function CreateNote({ closeModal, setRefreshKey }) {
           <label htmlFor="date" className="flex flex-col text-gray-600">
             Date
             <input
-              type="datetime-local"
+              type="date"
               name="date"
               value={form.date}
               onChange={handleChange}
