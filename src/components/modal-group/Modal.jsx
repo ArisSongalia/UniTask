@@ -144,6 +144,7 @@ function CreateNote({ closeModal, setRefreshKey }) {
   const [message, setMessage] = useState({ message: "", color: "" });
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const dateRef = useRef('');
 
   const [form, setForm] = useState({
     title: "",
@@ -155,6 +156,11 @@ function CreateNote({ closeModal, setRefreshKey }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    const today = new Date().toISOString().split('T')[0];
+    if(dateRef.current) {
+      dateRef.current.setAttribute('min', today);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -262,14 +268,14 @@ function CreateNote({ closeModal, setRefreshKey }) {
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
-            Date
+            Target Date
             <input
+              ref={dateRef}
               type="date"
               name="date"
               value={form.date}
               onChange={handleChange}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
-              required
             />
           </label>
 

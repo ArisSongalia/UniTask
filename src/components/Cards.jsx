@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
-import { getDocs, collection } from 'firebase/firestore';
-import { db } from '../config/firebase';
+
 
 
 function AlertCard({text = 'Title', count = 0, className = '', user = 'User', taskName = 'Task'}) {
