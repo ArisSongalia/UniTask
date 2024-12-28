@@ -7,6 +7,7 @@ import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import deleteData from '../DeleteData';
+import { useReloadContext } from '../ReloadContext';
 
 function CreateProject({ closeModal, setRefreshKey }) {
   const user = auth.currentUser;
@@ -393,9 +394,10 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   const togglePopUp = () => {
     setShowPopUp(!showPopUp)
   }
+  const { reloadComponent } = useReloadContext();
 
   const handleDelete = async () => {
-    await deleteData( id, 'notes' )
+    await deleteData( id, 'notes', reloadComponent );
   }
 
   return (

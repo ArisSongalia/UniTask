@@ -63,7 +63,7 @@ function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
-  const { key } = useReloadContext();
+  const { key, reloadComponent } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp); 
@@ -85,7 +85,7 @@ function MainNotesSection() {
           title='Write a Note' 
           description='Write a note for you or yourself'
         />
-        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={key} />}
+        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={reloadComponent} />}
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
