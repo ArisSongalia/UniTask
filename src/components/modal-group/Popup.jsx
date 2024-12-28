@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import Icon from '../Icon';
 import { IconTitleSection } from '../TitleSection';
 import deleteData from '../DeleteData';
+import { useReloadContext } from '../ReloadContext';
 
-function Popup({ title, closeModal, id }) {
+
+function Popup({ title, closeModal, id, }) {
+
+  const { reloadComponent } = useReloadContext();
 
   const handleDelete = async () => {
-    await deleteData(id, 'projects');
+    await deleteData(id, 'projects', reloadComponent);
     closeModal();
   };
 

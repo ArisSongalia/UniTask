@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomeSideBar from './HomeSideBar'
 import RecentTasks from './RecentTasks'
 import TaskMain from '../pages/TaskMain';
+import { ReloadProvider } from './ReloadContext';
+
 
 function App({}) {
   return (
@@ -13,7 +15,10 @@ function App({}) {
             <Route path="/" 
               element={
                 <>
-                  <RecentTasks />
+                  <ReloadProvider>
+                    <RecentTasks />
+                  </ReloadProvider>
+
                   <HomeSideBar /> 
                 </>
               }

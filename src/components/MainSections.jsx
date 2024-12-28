@@ -5,27 +5,27 @@ import Notes from './Notes';
 import { IconTitleSection } from './TitleSection';
 import { fetchProjectData, fetchNoteData } from './FetchData';
 import { BarLoader } from 'react-spinners';
-import { RefreshComponentIcon } from './RefreshComponent';
-
+import { ReloadIcon } from './ReloadComponent';
+import { useReloadContext } from './ReloadContext';
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const { key, reloadComponent } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
 
-  fetchProjectData(setProjects, setLoading, refreshKey)
+  fetchProjectData(setProjects, setLoading, key)
 
   return (
     <div className="flex flex-col w-full h-full">
       <IconTitleSection 
         title='Projects' 
         dataFeather='filter' 
-        extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>} 
+        extraIcon={<ReloadIcon />} 
         className='sticky top-0 bg-white pb-2'
       />  
       
@@ -35,23 +35,25 @@ function MainProjectSection() {
           title='Create Project' 
           description='Get started! Manage tasks individually or collaboratively.' 
         />
-        {showPopUp && <CreateProject closeModal={togglePopUp} setRefreshKey={setRefreshKey}/>}
+        {showPopUp && <CreateProject closeModal={togglePopUp} setRefreshKey={reloadComponent}/>}
 
-        {loading ? (
-          <span><BarLoader color='#228B22' size={20} /></span>
-        ) : ( 
-          projects.length > 0 &&
-            projects.map((project, index) => (
-              <ProjectCard 
-                key={index}
-                title={project.title}
-                description={project.description}
-                date={project.date}
-                type={project.type}
-                id={project.id}
-              />
-            ))
-        )}
+        
+          {loading ? (
+            <span><BarLoader color='#228B22' size={20} /></span>
+          ) : (
+            projects.length > 0 &&
+              projects.map((project, index) => (
+                <ProjectCard
+                  key={key + index}
+                  title={project.title}
+                  description={project.description}
+                  date={project.date}
+                  type={project.type}
+                  id={project.id}
+                />
+              ))
+          )}
+
       </section>
     </div>
   );
@@ -61,20 +63,20 @@ function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
-  const [refreshKey, setRefreshKey] = useState(0);
+  const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp); 
   };
 
-  fetchNoteData(setNotes, setLoading, refreshKey);
+  fetchNoteData(setNotes, setLoading, key);
 
   return (
     <div className='w-full h-fit'>
       <IconTitleSection 
         title='Notes' 
         dataFeather='filter'
-        extraIcon={<RefreshComponentIcon setRefreshKey={setRefreshKey}/>}
+        extraIcon={<ReloadIcon />}
         className='sticky top-0 bg-white pb-2'
       />  
       <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full ">
@@ -83,7 +85,7 @@ function MainNotesSection() {
           title='Write a Note' 
           description='Write a note for you or yourself'
         />
-        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={setRefreshKey} />}
+        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={key} />}
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>

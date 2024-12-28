@@ -1,11 +1,10 @@
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const deleteData = async ( id, collectionName ) => {
-  
+const deleteData = async (id, collectionName, reloadComponent) => {
   try {
-    console.log(id)
-    
+    console.log(id);
+
     if (!id) {
       alert("Document not found!");
       console.error("Document not found!");
@@ -14,6 +13,7 @@ const deleteData = async ( id, collectionName ) => {
 
     const docRef = doc(db, collectionName, id);
     await deleteDoc(docRef);
+    reloadComponent(); 
     alert("Successfully Deleted");
 
   } catch (error) {

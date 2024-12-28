@@ -68,8 +68,7 @@ function ProjectCard({
 
   const [showPopUp, setShowPopUp] = useState(false);
 
-  const togglePopUp = (e) => {
-    e.stopPropagation(); 
+  const togglePopUp = () => { 
     setShowPopUp(!showPopUp);
   };
 
