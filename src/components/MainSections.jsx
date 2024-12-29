@@ -35,7 +35,7 @@ function MainProjectSection() {
           title='Create Project' 
           description='Get started! Manage tasks individually or collaboratively.' 
         />
-        {showPopUp && <CreateProject closeModal={togglePopUp} setRefreshKey={reloadComponent}/>}
+        {showPopUp && <CreateProject closeModal={togglePopUp} />}
 
         
           {loading ? (
@@ -85,7 +85,7 @@ function MainNotesSection() {
           title='Write a Note' 
           description='Write a note for you or yourself'
         />
-        {showPopUp && <CreateNote closeModal={togglePopUp} setRefreshKey={reloadComponent} />}
+        {showPopUp && <CreateNote closeModal={togglePopUp} />}
 
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>

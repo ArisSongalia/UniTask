@@ -9,7 +9,8 @@ import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import deleteData from '../DeleteData';
 import { useReloadContext } from '../ReloadContext';
 
-function CreateProject({ closeModal, setRefreshKey }) {
+function CreateProject({ closeModal }) {
+  const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ text: "", color: "" });
   const dateRef = useRef('');
@@ -43,8 +44,7 @@ function CreateProject({ closeModal, setRefreshKey }) {
       });
 
       await updateDoc(docRef, { id: docRef.id });
-
-      setRefreshKey(prevKey => prevKey + 1);
+      reloadComponent();
       closeModal();
     } catch (error) {
       setMessage({ text: `Error Creating Project: ${error.message}`, color: "red" });
@@ -140,7 +140,8 @@ function CreateProject({ closeModal, setRefreshKey }) {
   );
 }
 
-function CreateNote({ closeModal, setRefreshKey }) {
+function CreateNote({ closeModal }) {
+  const reloadComponent = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const [progress, setProgress] = useState(0);
@@ -215,8 +216,7 @@ function CreateNote({ closeModal, setRefreshKey }) {
       }); 
 
       await updateDoc(docRef, { id: docRef.id });
-
-      setRefreshKey((prevKey) => prevKey + 1);
+      reloadComponent();
       closeModal();
     } catch (error) {
       console.error("Error creating note:", error);
