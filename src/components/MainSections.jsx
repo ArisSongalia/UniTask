@@ -44,7 +44,7 @@ function MainProjectSection() {
             projects.length > 0 &&
               projects.map((project, index) => (
                 <ProjectCard
-                  key={key + index}
+                  key={`${project.id}-${index}`}
                   title={project.title}
                   description={project.description}
                   date={project.date}
@@ -93,7 +93,7 @@ function MainNotesSection() {
           notes.length > 0 &&
             notes.map((note, index) => (
               <Notes
-                key={index}
+                key={`${note.id}-${index}`}
                 title={note.title}
                 message={note.message}
                 date={note.date}
