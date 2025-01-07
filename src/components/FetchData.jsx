@@ -144,4 +144,24 @@ const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
   }, [setNoteData, setLoading, refreshKey])
 }
 
-export { FetchUserName, fetchProjectData, fetchNoteData };
+const fetchActiveProjectData = async (id) => {
+  try {
+    const projectRef = doc(db, 'projects', id);
+    const projectDoc = await getDoc(projectRef);
+
+
+    if (projectDoc.exists()) {
+      return projectDoc.data();
+    } else {
+      throw new Error("Project not found");
+    }
+  } catch (error) {
+    console.error('Error fetching project data:', error);
+    throw error;
+  }
+};
+
+
+
+export { FetchUserName, fetchProjectData, fetchNoteData, fetchActiveProjectData };
+

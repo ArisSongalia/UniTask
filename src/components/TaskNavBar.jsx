@@ -1,8 +1,17 @@
-import React from 'react'
-import { IconAction } from './Icon'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { IconAction } from './Icon';
+import { Link } from 'react-router-dom';
 
-function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
+function TaskNavBar() {
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!projectData) {
+    return <p>No project data available.</p>;
+  }
+
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
       <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
@@ -11,8 +20,8 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
             <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
           <span className='flex flex-col'>
-            <h1 className='text-xl font-bold mb-1 text-green-700'>{title}</h1>
-            <p className="text-xs text-gray-600 font-semibold">{date}</p>
+            <h1 className='text-xl font-bold mb-1 text-green-700'>{projectData?.title || 'Untitled Project'}</h1>
+            <p className="text-xs text-gray-600 font-semibold">{projectData?.date || 'No Target Date'}</p>
           </span>
         </span>
         <span className='flex items-center gap-4'>
@@ -25,7 +34,7 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
         </span>
       </div>
     </div>
-  )
+  );
 }
 
-export default TaskNavBar
+export default TaskNavBar;
