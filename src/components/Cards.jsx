@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
-import { fetchActiveProjectData } from './FetchData';
+import { useProjectContext } from './ProjectContext';
 
 
 function AlertCard({
@@ -90,19 +90,13 @@ function ProjectCard({
   id = '',
   }) {
 
+  const { setProjectID } = useProjectContext();
+
   const handleSetActiveProject = async () => {
     if (id) {
-      try {
-        setLoading(true);
-        const data = await fetchActiveProjectData(id);
-        setProjectData(data);
-      } catch (error) {
-        console.error('Error fetching project data:', error);
-      } finally {
-        setLoading(false);
-      }
+      setProjectID(id);
     } else {
-      console.error("Error: No Project ID");
+      console.error("Error: Project does not exist");
     }
   };
 
@@ -135,7 +129,7 @@ function ProjectCard({
         <p className="text-sm text-gray-700 mb-2 break-words text-ellipsis pr-2">{description}</p>
       </section>
 
-      <Link to="TaskMain" className="w-full">
+      <Link to={'./Project'} className="w-full">
         <Button text="Open Project" className="w-full" onClick={handleSetActiveProject} /> 
       </Link>
     </div>

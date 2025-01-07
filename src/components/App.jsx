@@ -1,28 +1,22 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import HomeSideBar from './HomeSideBar';
-import RecentTasks from './RecentTasks';
-import TaskMain from '../pages/TaskMain';
+import Home from './Home';
 import { ReloadProvider } from './ReloadContext';
+import Navbar from './Navbar';
+import Project from './Project';
+
 
 function App() {
   return (
       <ReloadProvider>
+        <Navbar />
         <div
           id="main-container"
-          className="flex max-w-screen-2xl w-full p-4 h-[92vh] gap-4 self-center justify-center"
+          className="flex w-full p-4 h-[92vh] gap-4 max-w- justify-center"
         >
           <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <RecentTasks />
-                  <HomeSideBar />
-                </>
-              }
-            />
-            <Route path="/TaskMain" element={<TaskMain />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/Project" element={<Project />} />
           </Routes>
         </div>
       </ReloadProvider>

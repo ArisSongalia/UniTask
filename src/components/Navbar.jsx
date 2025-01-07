@@ -23,7 +23,7 @@ function Navbar() {
     return () => unsubscribe();
   }, []);
 
-  if (location.pathname === '/TaskMain') {
+  if (location.pathname === '/Project') {
     return <TaskNavBar />;
   }
 

@@ -144,24 +144,43 @@ const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
   }, [setNoteData, setLoading, refreshKey])
 }
 
-const fetchActiveProjectData = async (id) => {
-  try {
-    const projectRef = doc(db, 'projects', id);
-    const projectDoc = await getDoc(projectRef);
+const FetchActiveProjectData = ({ id }) => {
+  const [projectData, setProjectData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const projectRef = doc(db, 'projects', id);
+        const projectDoc = await getDoc(projectRef);
 
-    if (projectDoc.exists()) {
-      return projectDoc.data();
-    } else {
-      throw new Error("Project not found");
-    }
-  } catch (error) {
-    console.error('Error fetching project data:', error);
-    throw error;
+        if (projectDoc.exists()) {
+          setProjectData(projectDoc.data());
+        } else {
+          throw new Error('Project not found');
+        }
+      } catch (error) {
+        console.error('Error fetching project data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return <div>Fetching Project Data...</div>;
   }
+
+  return (
+    <ProjectProvider value={projectData}>
+      <App />
+    </ProjectProvider>
+  );
 };
 
 
 
-export { FetchUserName, fetchProjectData, fetchNoteData, fetchActiveProjectData };
+export { FetchUserName, fetchProjectData, fetchNoteData, FetchActiveProjectData };
 

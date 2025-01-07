@@ -8,6 +8,7 @@ import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from './ReloadContext';
 
+
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [projects, setProjects] = useState([]);

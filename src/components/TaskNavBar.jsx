@@ -1,16 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
+import { useProjectContext } from './ProjectContext';
+
 
 function TaskNavBar() {
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!projectData) {
-    return <p>No project data available.</p>;
-  }
+  const { fetchID } = useProjectContext();
+  fetchID();
 
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
@@ -20,8 +17,8 @@ function TaskNavBar() {
             <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
           <span className='flex flex-col'>
-            <h1 className='text-xl font-bold mb-1 text-green-700'>{projectData?.title || 'Untitled Project'}</h1>
-            <p className="text-xs text-gray-600 font-semibold">{projectData?.date || 'No Target Date'}</p>
+            <h1 className='text-xl font-bold mb-1 text-green-700'>{}</h1>
+            <p className="text-xs text-gray-600 font-semibold">{}</p>
           </span>
         </span>
         <span className='flex items-center gap-4'>
