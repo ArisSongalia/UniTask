@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
 import { useProjectContext } from './ProjectContext';
@@ -7,7 +7,16 @@ import { useProjectContext } from './ProjectContext';
 function TaskNavBar() {
 
   const { fetchID } = useProjectContext();
-  fetchID();
+  const [ID, setID] = useState(null);
+
+  useEffect(() => {
+    try {
+      const projectID = fetchID();
+      setID(projectID)
+    } catch (error) {
+      console.error('Error fetching project id: ', error)
+    }
+  }, [fetchID]);
 
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
@@ -17,7 +26,7 @@ function TaskNavBar() {
             <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
           <span className='flex flex-col'>
-            <h1 className='text-xl font-bold mb-1 text-green-700'>{}</h1>
+            <h1 className='text-xl font-bold mb-1 text-green-700'>{ID}</h1>
             <p className="text-xs text-gray-600 font-semibold">{}</p>
           </span>
         </span>
