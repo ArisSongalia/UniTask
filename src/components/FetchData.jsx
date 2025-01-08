@@ -97,7 +97,7 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
   return null;
 }
 
-const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
+const fetchNoteData = ( setNoteData, setLoading, refreshKey ) => {
   useEffect(() => {
     const fetchNoteData = async (user) => {
       try {
@@ -144,13 +144,16 @@ const fetchNoteData = (setNoteData, setLoading, refreshKey) => {
   }, [setNoteData, setLoading, refreshKey])
 }
 
-const FetchActiveProjectData = ({ id }) => {
-  const [projectData, setProjectData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+const useFetchActiveProjectData = (id, setProjectData, setLoading) => {
   useEffect(() => {
+    if (!id) {
+      console.warn('Waiting for valid document ID...');
+      return;
+    }
+
     const fetchData = async () => {
       try {
+        setLoading(true);
         const projectRef = doc(db, 'projects', id);
         const projectDoc = await getDoc(projectRef);
 
@@ -166,21 +169,18 @@ const FetchActiveProjectData = ({ id }) => {
       }
     };
 
-    fetchData();
-  }, [id]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchData();
+      } else {
+        setLoading(false);
+      }
+    });
 
-  if (loading) {
-    return <div>Fetching Project Data...</div>;
-  }
-
-  return (
-    <ProjectProvider value={projectData}>
-      <App />
-    </ProjectProvider>
-  );
+    return () => unsubscribe();
+  }, [id, setProjectData, setLoading]);
 };
 
 
-
-export { FetchUserName, fetchProjectData, fetchNoteData, FetchActiveProjectData };
+export { FetchUserName, fetchProjectData, fetchNoteData, useFetchActiveProjectData };
 
