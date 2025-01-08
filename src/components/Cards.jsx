@@ -95,6 +95,7 @@ function ProjectCard({
   const handleSetActiveProject = async () => {
     if (id) {
       setProjectID(id);
+      localStorage.setItem('activeProjectId', id);
     } else {
       console.error("Error: Project does not exist");
     }

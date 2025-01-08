@@ -11,6 +11,7 @@ function TaskNavBar() {
   const [id, setId] = useState(null);
   const [loading, setLoading] = useState(true)
   const [projectData, setProjectData] = useState([]);
+  const activeLocalProjectID = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
     const fetchProjectID = async () => {
@@ -23,9 +24,15 @@ function TaskNavBar() {
       }
     };
 
-    fetchProjectID();
+    if (!activeLocalProjectID) {
+      fetchProjectID;
+    } else {
+      setId(activeLocalProjectID);
+      setLoading(false);
+      console.log('Local storage project is used');
+    };
 
-  }, [fetchID]);
+  }, [fetchID, activeLocalProjectID]);
 
   useFetchActiveProjectData(id, setProjectData, setLoading)
 
@@ -34,7 +41,11 @@ function TaskNavBar() {
       <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
         <span className='flex gap-2 items-center'>
           <Link to='/'>
-            <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none justify-center' style={{ width: '1.5rem', height: '1.5rem', strokeWidth: '3' }} />
+            <IconAction 
+              dataFeather='arrow-left' 
+              className='h-[2.5rem] w-[2.5rem] border-none justify-center' 
+              style={{ width: '1.5rem', height: '1.5rem', strokeWidth: '3' }}
+            />
           </Link>
           {loading ? (
             <BarLoader color='#228B22' size={10} />
