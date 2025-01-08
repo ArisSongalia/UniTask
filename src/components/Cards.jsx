@@ -6,10 +6,16 @@ import { Link } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
+import { useProjectContext } from './ProjectContext';
 
 
-
-function AlertCard({text = 'Title', count = 0, className = '', user = 'User', taskName = 'Task'}) {
+function AlertCard({
+  text = 'Title', 
+  count = 0, 
+  className = '', 
+  user = 'User', 
+  taskName = 'Task'
+}) {
   return (
   <section className={`flex flex-col bg-green-800 w-full cursor-pointer rounded-md
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
@@ -17,12 +23,30 @@ function AlertCard({text = 'Title', count = 0, className = '', user = 'User', ta
         <h2 className='font-semibold mb-2'>{text}</h2>
         <p className='text-sm'>Hi <u>{user}</u>, Tasks for today</p>
       </span>
-      <section className='flex items-start py-8'>
-        <span className="flex flex-col items-center">
-          <p className='font-bold text-4xl'>{count}</p>
-          <p className='font-semibold text-sm'>{taskName}</p>
-        </span>
-      </section>
+
+      <div className="flex gap-6 w-full">
+        <section id='tasks' className='flex items-start py-8'>
+          <span className="flex flex-col items-center">
+            <p className='font-bold text-4xl'>{count}</p>
+            <p className='font-semibold text-sm'>{taskName}</p>
+          </span>
+        </section>
+
+        <section id='projects' className='flex items-start py-8'>
+          <span className="flex flex-col items-center">
+            <p className='font-bold text-4xl'>{count}</p>
+            <p className='font-semibold text-sm'>{taskName}</p>
+          </span>
+        </section>
+
+        <section id='projects' className='flex items-start py-8'>
+          <span className="flex flex-col items-center">
+            <p className='font-bold text-4xl'>{count}</p>
+            <p className='font-semibold text-sm'>{taskName}</p>
+          </span>
+        </section>
+      </div>
+
       <Button text='Check Pending' className='text-white border-white hover:bg-green-900'/>
     </section>
   )
@@ -66,6 +90,16 @@ function ProjectCard({
   id = '',
   }) {
 
+  const { setProjectID } = useProjectContext();
+
+  const handleSetActiveProject = async () => {
+    if (id) {
+      setProjectID(id);
+    } else {
+      console.error("Error: Project does not exist");
+    }
+  };
+
   const [showPopUp, setShowPopUp] = useState(false);
 
   const togglePopUp = () => { 
@@ -95,13 +129,13 @@ function ProjectCard({
         <p className="text-sm text-gray-700 mb-2 break-words text-ellipsis pr-2">{description}</p>
       </section>
 
-      <Link to="TaskMain" className="w-full">
-        <Button text="Open Project" className="w-full" />
+      <Link to={'./Project'} className="w-full">
+        <Button text="Open Project" className="w-full" onClick={handleSetActiveProject} /> 
       </Link>
     </div>
   );
-
 }
+
 
 function UserCard({className='', username = 'User Name'}) {
   const [showUserProfile, setShowUserProfile] = useState();

@@ -1,8 +1,23 @@
-import React from 'react'
-import { IconAction } from './Icon'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { IconAction } from './Icon';
+import { Link } from 'react-router-dom';
+import { useProjectContext } from './ProjectContext';
 
-function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
+
+function TaskNavBar() {
+
+  const { fetchID } = useProjectContext();
+  const [ID, setID] = useState(null);
+
+  useEffect(() => {
+    try {
+      const projectID = fetchID();
+      setID(projectID)
+    } catch (error) {
+      console.error('Error fetching project id: ', error)
+    }
+  }, [fetchID]);
+
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
       <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
@@ -11,8 +26,8 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
             <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
           </Link>
           <span className='flex flex-col'>
-            <h1 className='text-xl font-bold mb-1 text-green-700'>{title}</h1>
-            <p className="text-xs text-gray-600 font-semibold">{date}</p>
+            <h1 className='text-xl font-bold mb-1 text-green-700'>{ID}</h1>
+            <p className="text-xs text-gray-600 font-semibold">{}</p>
           </span>
         </span>
         <span className='flex items-center gap-4'>
@@ -25,7 +40,7 @@ function TaskNavBar({date = '00/00/00', title = 'Project Title'}) {
         </span>
       </div>
     </div>
-  )
+  );
 }
 
-export default TaskNavBar
+export default TaskNavBar;

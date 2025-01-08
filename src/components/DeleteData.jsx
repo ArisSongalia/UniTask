@@ -13,7 +13,7 @@ const deleteData = async (id, collectionName, reloadComponent) => {
 
     const docRef = doc(db, collectionName, id);
     await deleteDoc(docRef);
-    reloadComponent(); 
+    reloadComponent();
     alert("Successfully Deleted");
 
   } catch (error) {

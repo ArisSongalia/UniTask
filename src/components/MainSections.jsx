@@ -8,6 +8,7 @@ import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from './ReloadContext';
 
+
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -38,11 +39,11 @@ function MainProjectSection() {
         {showPopUp && <CreateProject closeModal={togglePopUp} />}
 
         
-          {loading ? (
-            <span><BarLoader color='#228B22' size={20} /></span>
-          ) : (
-            projects.length > 0 &&
-              projects.map((project, index) => (
+        {loading ? (
+          <span><BarLoader color='#228B22' size={20} /></span>
+        ) : (
+          projects.length > 0 && (
+            projects.map((project, index) => (
                 <ProjectCard
                   key={`${project.id}-${index}`}
                   title={project.title}
@@ -51,9 +52,9 @@ function MainProjectSection() {
                   type={project.type}
                   id={project.id}
                 />
-              ))
-          )}
-
+            ))
+          )
+        )}
       </section>
     </div>
   );
