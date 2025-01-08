@@ -67,7 +67,7 @@ const handleSignInWithFacebook = async () => {
 
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <IconTitleSection title='Register' dataFeather='x' iconOnClick={closeModal} />
         <form
@@ -199,7 +199,7 @@ const handleSignInWithFacebook = async () => {
 };
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <IconTitleSection title='Login' dataFeather='x' iconOnClick={closeModal} />
         <form

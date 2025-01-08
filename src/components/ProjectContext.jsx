@@ -20,7 +20,7 @@ export const ProjectProvider = ({ children }) => {
         console.log("Project ID cannot be accessed: ", error);
       }
     } else {
-      alert('The project seems to not exist: Try reloading the application');
+      alert('The project seems to not exist: Return home and return to the project');
       throw new Error("Error fetching project id: The project does not exist.");
     }
   };
