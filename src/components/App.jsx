@@ -12,7 +12,7 @@ function App() {
         <Navbar />
         <div
           id="main-container"
-          className="flex w-full p-4 h-[92vh] gap-4 max-w- justify-center"
+          className='flex w-full justify-center'
         >
           <Routes>
             <Route path="/" element={<Home />} />

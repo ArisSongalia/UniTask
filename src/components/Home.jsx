@@ -4,7 +4,7 @@ import HomeSideBar from './HomeSideBar';
 
 function Home() {
   return (
-    <div className='flex w-full max-w-screen-2xl h-[90vh] gap-4'>
+    <div className='flex w-full p-4 h-[92vh] gap-4 max-w-screen-2xl justify-center'>
       <RecentTasks />
       <HomeSideBar />
     </div>

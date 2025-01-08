@@ -29,7 +29,7 @@ function Navbar() {
 
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-auto sticky top-0 shadow-sm">
-      <div className="flex items-center justify-between w-full py-2 max-w-screen-2xl">
+      <div className="flex items-center justify-between w-full py-2 px-4 max-w-screen-2xl">
         <span className="flex items-center gap-2">
           <img src={unitask} alt="UniTask Logo" className="w-8 h-8" />
           <Link to="/" className="text-green-900 text-lg font-bold">
@@ -42,7 +42,7 @@ function Navbar() {
             <>
               <Button
                 onClick={handleSignOut}
-                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
+                className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700"
                 text="Sign-Out"
               />
               <UserCard username={<FetchUserName />} />

@@ -3,6 +3,7 @@ import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
 import { useProjectContext } from './ProjectContext';
 import { useFetchActiveProjectData } from './FetchData';
+import { BarLoader } from 'react-spinners';
 
 
 function TaskNavBar() {
@@ -28,21 +29,21 @@ function TaskNavBar() {
 
   useFetchActiveProjectData(id, setProjectData, setLoading)
 
-  if (loading) {
-    return <span>Fetching Data...</span>
-  }
-
   return (
     <div className='bg-white flex items-center justify-center w-full h-auto shadow-sm'>
-      <div className='flex max-w-screen-2xl w-full py-4 justify-between items-center'>
+      <div className='flex max-w-screen-2xl w-full p-4 justify-between items-center'>
         <span className='flex gap-2 items-center'>
           <Link to='/'>
-            <IconAction dataFeather='arrow-left' className='h-[2.4rem] w-[2.4rem] border-none' style={{ width: '2rem', height: '2rem', strokeWidth: '3' }} />
+            <IconAction dataFeather='arrow-left' className='h-[2.5rem] w-[2.5rem] border-none justify-center' style={{ width: '1.5rem', height: '1.5rem', strokeWidth: '3' }} />
           </Link>
-          <span className='flex flex-col'>
-            <h1 className='text-xl font-bold mb-1 text-green-700'>{projectData.title}</h1>
-            <p className="text-xs text-gray-600 font-semibold">{projectData.date}</p>
-          </span>
+          {loading ? (
+            <BarLoader color='#228B22' size={10} />
+          ) : (
+            <span className='flex flex-col'>
+              <h1 className='text-lg font-bold mb-1 text-green-700'>{projectData.title}</h1>
+              <p className="text-xs text-gray-600 font-semibold">{projectData.date}</p>
+            </span>
+          )}
         </span>
         <span className='flex items-center gap-4'>
           <span id="task-user" className='flex gap-1'>
@@ -50,7 +51,7 @@ function TaskNavBar() {
             <IconAction dataFeather='user' />
             <IconAction dataFeather='user' />
           </span>
-          <IconAction className='' dataFeather='plus' />
+          <IconAction dataFeather='plus' />
         </span>
       </div>
     </div>
