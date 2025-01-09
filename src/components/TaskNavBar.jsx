@@ -58,9 +58,7 @@ function TaskNavBar() {
         </span>
         <span className='flex items-center gap-4'>
           <span id="task-user" className='flex gap-1'>
-            <IconAction dataFeather='user' />
-            <IconAction dataFeather='user' />
-            <IconAction dataFeather='user' />
+            
           </span>
           <IconAction dataFeather='plus' />
         </span>

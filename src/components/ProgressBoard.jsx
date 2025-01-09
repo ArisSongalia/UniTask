@@ -3,13 +3,13 @@ import { ProgressCard } from './Cards'
 import TitleSection, { DisplayTitleSection } from './TitleSection'
 import { CreateTask } from './modal-group/Modal'
 
+
 function ProgressBoard() {
   const [showPopUp, setShowPopUp] = useState(false);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
-
 
   return (
     <section className='flex flex-col bg-white rounded-md p-4 h-auto w-full overflow-hidden shadow-sm'>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { IconAction } from '../Icon';
+import Icon, { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { FetchUserName } from '../../services/FetchData';
@@ -8,6 +8,7 @@ import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
+import { UserCard } from '../Cards';
 
 function CreateProject({ closeModal }) {
   const { reloadComponent } = useReloadContext();
@@ -290,6 +291,47 @@ function CreateNote({ closeModal }) {
 
 
 function CreateTask({ closeModal }) {
+  const [message, setMessage] = useState({text: '', color: ''});
+
+  const [form, setForm] = useState({
+    'task-title': '',
+    'task-description': '',
+    'task-deadline': '',
+    'task-status': '',
+    'task-file': '',
+    'task-team': {
+
+    }
+  });
+
+  const handleChange = async (e) => {
+    const {name, value} = e.target;
+    setForm({...form, [name]: value});
+  }
+  
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    try{
+      const docRef = await addDoc(collection(db, 'tasks'), {
+        'task-title':  'task-title',
+        'task-description': 'task-description',
+        'task-deadline': 'task-deadline',
+        'task-status': 'task-status',
+        'task-file': 'task-file',
+      })
+      const contributerRef = await addDoc(collection('tasks', 'contributors'), {
+        'task-team': 'task-team',
+      })
+    } catch (error) {
+      console.error('Error creating task: ', error);
+      setMessage({text: `Error Creating Task: ${error.message}`, color: 'green'})
+    }
+  }
+
+  
+
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
@@ -318,7 +360,7 @@ function CreateTask({ closeModal }) {
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
-            Date
+            Date-time
             <input 
               type="datetime-local" 
               id="date" 
@@ -327,21 +369,37 @@ function CreateTask({ closeModal }) {
           </label>
 
           <label className="flex flex-col text-gray-600">
-            Task Type
-            <div className="flex items-center space-x-4 mt-2">
-              <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input type="radio" id="solo" name="task-type" value="solo" className=" hover:cursor-pointer" />
-                <span>Solo</span>
-              </label>
-              <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input type="radio" id="shared" name="task-type" value="shared" className=" hover:cursor-pointer" />
-                <span>Shared</span>
-              </label>
+            Select Team Members
+            <div className=" mt-2 bg-gray-50 p-4 rounded-lg h-[12rem] overflow-scroll">        
+              <span className="flex flex-col gap-1">
+                <UserCard username={<FetchUserName />} />
+              </span>
             </div>
           </label>
 
+          
+          <p style={{color: message.color}}>{message.text}</p>
           <Button type="submit" text="Create Task" className="py-3"/>
         </form>
+      </section>
+    </div>
+  );
+}
+
+function AddContibutors({ closeModal }) {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+        <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
+        <span id='contributors' className='flex flex-col gap-4'>
+          <span id='users' className='overflow-y-scroll'>
+            <UserCard />
+            <UserCard />
+            <UserCard />
+          </span>
+
+          <Button text='Confirm' className='w-full'/>
+        </span>
       </section>
     </div>
   );
@@ -448,4 +506,4 @@ function UserProfile({ closeModal }) {
   );
 }
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile}
+export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddContibutors}

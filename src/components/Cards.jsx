@@ -71,12 +71,14 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
       flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 h-[15rem] ${className}`}
       onClick={onClick}
     >
-      <span className="flex flex-col justify-between gap-4 w-full items-center">
-        <Icon dataFeather='plus' className='self-end'/>
-        <span className='self-start flex flex-col gap-2'> 
-          <h2 className='font-semibold text-md'>{title}</h2>
-          <p className='text-sm'>{description}</p>
-        </span>
+      <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
+          <span className='self-start flex flex-col gap-2 justify-between'>
+            <span className="flex items-center">
+              <h2 className='font-semibold text-md'>{title}</h2>
+              <Icon dataFeather='plus' />
+            </span>
+            <p className='text-sm'>{description}</p>
+          </span>
       </span>
     </div>
   );
@@ -114,7 +116,7 @@ function ProjectCard({
     >
       <section className="flex gap-4 w-full">
         <span className='w-full'>
-          <h2 className="font-bold mb-2 overflow-hidden text-ellipsis">{title}</h2>
+          <h4 className="font-bold  mb-2 overflow-hidden text-sm text-ellipsis">{title}</h4>
           <span className='flex items-center gap-2 w-[rem] whitespace-nowrap'>
             <p className="font-semibold text-gray-600 text-xs">{type}</p>
             <p>•</p>
@@ -138,24 +140,31 @@ function ProjectCard({
 }
 
 
-function UserCard({className='', username = 'User Name'}) {
+function UserCard({className='', username = 'User Name', id='id', onClick, role = 'Owner'}) {
+  const [isActive, setIsActive] = useState()
   const [showUserProfile, setShowUserProfile] = useState();
+
   const toggleUserProfile = () => {
     setShowUserProfile(!showUserProfile);
   };
 
+  const toggleIsActive = (e) => {
+    
+  }
+
   return (
     <section 
-      className={`flex items-center border hover:bg-green-50 p-2 w-[fit]  rounded-lg hover:cursor-pointer ${className}`}
-      onClick={toggleUserProfile}
+      className={`flex items-center border hover:bg-green-50 w-[fit] rounded-lg hover:cursor-pointer aria-selected:bg-green-50 ${className}`}
     >
-      <img className='w-6 h-6' src={userIcon} alt="user-icon" />
-
-      <span className='text-xs font-semibold text-gray-800 px-3 w-full'>
-        <p>{username}</p>
+      <span className="p-2" onClick={toggleUserProfile}>
+        <img className='w-8 rounded-full' src={userIcon} alt="user-icon" />
+        {showUserProfile && <UserProfile closeModal={toggleUserProfile}/>}
       </span>
 
-      {showUserProfile && <UserProfile />}
+      <span className='flex flex-col font-semibold px-3 w-full h-full p-2 pl-1' onClick={onClick}>
+        <p className='text-gray-800 text-sm'>{username}</p>
+        <p className='text-gray-500 text-xs'>{role}</p>
+      </span>
     </section>
   )
 }

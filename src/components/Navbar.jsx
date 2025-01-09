@@ -4,12 +4,13 @@ import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
 import TaskNavBar from './TaskNavBar';
 import Button from './Button';
-import { FetchUserName } from '../services/FetchData';
-import { UserCard } from './Cards';
+import { UserProfile } from './modal-group/Modal';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import userIcon from '../assets/default-icon.png';
 
 function Navbar() {
+  const [showPopUp, setShowPopUp] = useState(false);
   const [activeAuth, setActiveAuth] = useState(null);
   const [user, setUser] = useState(null);
   const closeModal = () => setActiveAuth(null);
@@ -25,6 +26,10 @@ function Navbar() {
 
   if (location.pathname === '/Project') {
     return <TaskNavBar />;
+  }
+
+  const togglePopUp = () => {
+    setShowPopUp(!showPopUp);
   }
 
   return (
@@ -45,7 +50,8 @@ function Navbar() {
                 className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700"
                 text="Sign-Out"
               />
-              <UserCard username={<FetchUserName />} />
+              <img className='h-7 w-7 hover:cursor-pointer' src={userIcon} onClick={togglePopUp}/>
+              {showPopUp && <UserProfile closeModal={togglePopUp} />}
             </>
           ) : (
             <>
