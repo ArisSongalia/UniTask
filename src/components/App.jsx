@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
-import { ReloadProvider } from './ReloadContext';
+import { ReloadProvider } from '../context/ReloadContext';
 import Navbar from './Navbar';
 import Project from './Project';
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IconAction } from './Icon';
 import { Link } from 'react-router-dom';
-import { useProjectContext } from './ProjectContext';
-import { useFetchActiveProjectData } from './FetchData';
+import { useProjectContext } from '../context/ProjectContext';
+import { useFetchActiveProjectData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 
 

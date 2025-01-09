@@ -4,7 +4,7 @@ import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
 import TaskNavBar from './TaskNavBar';
 import Button from './Button';
-import { FetchUserName } from './FetchData';
+import { FetchUserName } from '../services/FetchData';
 import { UserCard } from './Cards';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';

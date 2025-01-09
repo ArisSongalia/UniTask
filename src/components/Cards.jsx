@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
-import { useProjectContext } from './ProjectContext';
+import { useProjectContext } from '../context/ProjectContext';
 
 
 function AlertCard({

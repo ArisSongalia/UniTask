@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Icon from '../Icon';
 import { IconTitleSection } from '../TitleSection';
-import deleteData from '../DeleteData';
-import { useReloadContext } from '../ReloadContext';
+import deleteData from '../../services/DeleteData';
+import { useReloadContext } from '../../context/ReloadContext';
 
 
 function Popup({ title, closeModal, id, }) {

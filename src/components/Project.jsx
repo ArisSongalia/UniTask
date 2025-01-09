@@ -1,5 +1,5 @@
 import React from 'react'
-import ProgressBoard from '../components/ProgressBoard'
+import ProgressBoard from './ProgressBoard'
 import TaskSideBar from '../components/TaskSideBar'
 
 function Project() {

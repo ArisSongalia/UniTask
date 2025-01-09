@@ -2,12 +2,12 @@ import React, { useState, useRef } from 'react';
 import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
-import { FetchUserName } from '../FetchData';
+import { FetchUserName } from '../../services/FetchData';
 import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { auth, db, storage } from '../../config/firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import deleteData from '../DeleteData';
-import { useReloadContext } from '../ReloadContext';
+import deleteData from '../../services/DeleteData';
+import { useReloadContext } from '../../context/ReloadContext';
 
 function CreateProject({ closeModal }) {
   const { reloadComponent } = useReloadContext();

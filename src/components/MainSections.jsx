@@ -3,10 +3,10 @@ import { ProjectCard, CreateCard } from './Cards';
 import { CreateProject, CreateNote } from './modal-group/Modal';
 import Notes from './Notes';
 import { IconTitleSection } from './TitleSection';
-import { fetchProjectData, fetchNoteData } from './FetchData';
+import { fetchProjectData, fetchNoteData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
-import { useReloadContext } from './ReloadContext';
+import { useReloadContext } from '../context/ReloadContext';
 
 
 function MainProjectSection() {
