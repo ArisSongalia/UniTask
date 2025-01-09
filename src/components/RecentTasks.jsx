@@ -3,7 +3,6 @@ import { MultiTitleSection } from './TitleSection';
 import { MainNotesSection, MainProjectSection } from './MainSections';
 
 function RecentTasks() {
-  const [showPopUp, setShowPopUp] = useState(false);
   const [activeSection, setActiveSection] = useState('project');
 
 

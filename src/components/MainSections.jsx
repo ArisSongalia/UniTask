@@ -30,7 +30,7 @@ function MainProjectSection() {
         className='sticky top-0 bg-white pb-2'
       />  
       
-      <section id='project-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
+      <section id='project-container' className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 
           onClick={togglePopUp} 
           title='Create Project' 
@@ -80,7 +80,7 @@ function MainNotesSection() {
         extraIcon={<ReloadIcon />}
         className='sticky top-0 bg-white pb-2'
       />  
-      <section id='note-container' className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 w-full ">
+      <section id='note-container' className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard  
           onClick={togglePopUp} 
           title='Write a Note' 

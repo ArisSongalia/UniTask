@@ -113,12 +113,12 @@ function ProjectCard({
         flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[15rem]"
     >
       <section className="flex gap-4 w-full">
-        <span className='w-full max-w-[80%]'>
+        <span className='w-full'>
           <h2 className="font-bold mb-2 overflow-hidden text-ellipsis">{title}</h2>
-          <span className='flex items-center gap-2'>
+          <span className='flex items-center gap-2 w-[rem] whitespace-nowrap'>
             <p className="font-semibold text-gray-600 text-xs">{type}</p>
             <p>•</p>
-            <p className="text-xs font-semibold text-gray-600">{date}</p>
+            <p className="text-xs font-semibold text-gray-600 ">{date}</p>
           </span>
         </span>
 

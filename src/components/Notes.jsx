@@ -21,9 +21,9 @@ function Notes({
     <span>
       <section
         onClick={togglePopUp}
-        className={`flex flex-col bg-yellow-50 rounded-lg box-border
+        className={`flex flex-col bg-yellow-50 rounded-lg
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
-          w-full h-[15rem] p-4 justify-between overflow-hidden ${className}`}
+          h-[15rem] p-4 justify-between overflow-hidden ${className}`}
       >
         <section className="flex-grow overflow-hidden">
           <h2 id="note-card-title" className="font-bold mb-4">

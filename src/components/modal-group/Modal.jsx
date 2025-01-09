@@ -141,7 +141,7 @@ function CreateProject({ closeModal }) {
 }
 
 function CreateNote({ closeModal }) {
-  const reloadComponent = useReloadContext();
+  const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const [progress, setProgress] = useState(0);
