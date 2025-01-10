@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Icon, { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
@@ -61,14 +61,14 @@ function CreateProject({ closeModal }) {
         </span>
 
         <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
-          <label htmlFor="task-title" className="flex flex-col text-gray-600">
+          <label htmlFor="project-title" className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
               onChange={handleChange}
               value={form.title}
               name='title'
-              id="task-title"
+              id="project-title"
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
@@ -291,7 +291,7 @@ function CreateNote({ closeModal }) {
 
 
 function CreateTask({ closeModal }) {
-  const [message, setMessage] = useState({text: '', color: ''});
+  const [message, setMessage] = useState({ text: '', color: '' });
 
   const [form, setForm] = useState({
     'task-title': '',
@@ -299,37 +299,46 @@ function CreateTask({ closeModal }) {
     'task-deadline': '',
     'task-status': '',
     'task-file': '',
-    'task-team': {
-
-    }
+    'task-team': [],
   });
 
   const handleChange = async (e) => {
-    const {name, value} = e.target;
-    setForm({...form, [name]: value});
-  }
-  
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const docRef = await addDoc(collection(db, 'tasks'), {
-        'task-title':  'task-title',
-        'task-description': 'task-description',
-        'task-deadline': 'task-deadline',
-        'task-status': 'task-status',
-        'task-file': 'task-file',
-      })
-      const contributerRef = await addDoc(collection('tasks', 'contributors'), {
-        'task-team': 'task-team',
-      })
+        'task-title': form['task-title'],
+        'task-description': form['task-description'],
+        'task-deadline': form['task-deadline'],
+        'task-status': form['task-status'],
+        'task-file': form['task-file'],
+      });
+      const contributerRef = await addDoc(collection(docRef, 'contributors'), {
+        'task-team': form['task-team'],
+      });
     } catch (error) {
       console.error('Error creating task: ', error);
-      setMessage({text: `Error Creating Task: ${error.message}`, color: 'green'})
+      setMessage({ text: `Error Creating Task: ${error.message}`, color: 'red' });
+    } finally {
+      setMessage({ text: 'Succefully Created Task', color: 'green'})
     }
-  }
+  };
 
-  
+  const handleStateChange = (data) => {
+    console.log('State Changed:', data);
+    try {
+      setForm((prevData) => ({
+        ...prevData,
+        'task-team': [...new Set([...(prevData['task-team'] || []), data.uid])],
+      }));
+    } catch (error) {
+      console.error('Error updating team:', error);
+    }
+  };
 
 
   return (
@@ -340,51 +349,62 @@ function CreateTask({ closeModal }) {
           <IconAction dataFeather="x" iconOnClick={closeModal} />
         </span>
 
-        <form action="" className="flex flex-col space-y-4">
+        <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
           <label htmlFor="task-title" className="flex flex-col text-gray-600">
             Title
-            <input 
-              type="text" 
-              id="task-title" 
+            <input
+              type="text"
+              id="task-title"
+              name="task-title"
+              value={form['task-title']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              onChange={handleChange}
+              required
             />
           </label>
 
-          <label htmlFor="note-message" className="flex flex-col text-gray-600">
+          <label htmlFor="task-description" className="flex flex-col text-gray-600">
             Description
-            <input 
-              type="text" 
-              id="note-message" 
+            <input
+              type="text"
+              id="task-description"
+              name="task-description"
+              value={form['task-description']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              onChange={handleChange}
+              required
             />
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
             Date-time
-            <input 
-              type="datetime-local" 
-              id="date" 
+            <input
+              type="datetime-local"
+              id="date"
+              name="task-deadline"
+              value={form['task-deadline']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              onChange={handleChange}
             />
           </label>
 
           <label className="flex flex-col text-gray-600">
             Select Team Members
-            <div className=" mt-2 bg-gray-50 p-4 rounded-lg h-[12rem] overflow-scroll">        
+            <div className="mt-2 bg-gray-50 p-4 rounded-lg h-[12rem] overflow-scroll">
               <span className="flex flex-col gap-1">
-                <UserCard username={<FetchUserName />} />
+                <UserCard username={<FetchUserName />} onStateChange={handleStateChange} className="w-full" />
               </span>
             </div>
           </label>
 
-          
-          <p style={{color: message.color}}>{message.text}</p>
-          <Button type="submit" text="Create Task" className="py-3"/>
+          <p style={{ color: message.color }}>{message.text}</p>
+          <Button type="submit" text="Create Task" className="py-3" />
         </form>
       </section>
     </div>
   );
 }
+
 
 function AddContibutors({ closeModal }) {
   return (

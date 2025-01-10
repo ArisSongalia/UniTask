@@ -7,6 +7,7 @@ import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
+import { auth } from '../config/firebase';
 
 
 function AlertCard({
@@ -140,30 +141,51 @@ function ProjectCard({
 }
 
 
-function UserCard({className='', username = 'User Name', id='id', onClick, role = 'Owner'}) {
-  const [isActive, setIsActive] = useState()
-  const [showUserProfile, setShowUserProfile] = useState();
+function UserCard({className='', username='User Name', role='Owner', onStateChange}) {
+  const [isActive, setIsActive] = useState(false)
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [uid, setUid] = useState(null);
+  const activeUid = auth.currentUser?.uid;
 
   const toggleUserProfile = () => {
     setShowUserProfile(!showUserProfile);
   };
 
-  const toggleIsActive = (e) => {
-    
-  }
+  useEffect(() => {
+    const getcurUid = async () => {
+      setUid(activeUid);
+    }
+
+    getcurUid();
+  }, [activeUid])
+
+  const toggleIsActive = () => {
+    setIsActive(!isActive);
+    if (uid) {
+      console.log('UserCard id: ', uid)
+    } else {
+      console.log('No id')
+    };
+  };
+
+  useEffect(() => {
+    if (onStateChange && uid) {
+      onStateChange({uid: uid, isActive})
+    }
+  }, [uid, isActive])
 
   return (
     <section 
-      className={`flex items-center border hover:bg-green-50 w-[fit] rounded-lg hover:cursor-pointer aria-selected:bg-green-50 ${className}`}
+      className={`flex items-center border w-fit rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
     >
-      <span className="p-2" onClick={toggleUserProfile}>
+      <span className="p-2 hover:bg-green-50 border-r h-full " onClick={toggleUserProfile}>
         <img className='w-8 rounded-full' src={userIcon} alt="user-icon" />
         {showUserProfile && <UserProfile closeModal={toggleUserProfile}/>}
       </span>
 
-      <span className='flex flex-col font-semibold px-3 w-full h-full p-2 pl-1' onClick={onClick}>
-        <p className='text-gray-800 text-sm'>{username}</p>
-        <p className='text-gray-500 text-xs'>{role}</p>
+      <span className={`flex flex-col font-semibold px-3 w-full h-full p-2 rounded-md hover:bg-green-700 hover:text-white ${isActive ? 'bg-green-700 text-white' : 'bg-solid'}`} onClick={toggleIsActive} >
+        <p className='text-sm'>{username}</p>
+        <p className='text-xs'>{role}</p>
       </span>
     </section>
   )
