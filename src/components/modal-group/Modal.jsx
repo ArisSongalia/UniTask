@@ -292,14 +292,16 @@ function CreateNote({ closeModal }) {
 
 function CreateTask({ closeModal }) {
   const [message, setMessage] = useState({ text: '', color: '' });
+  const projectId = localStorage.getItem('activeProjectId')
 
   const [form, setForm] = useState({
     'task-title': '',
     'task-description': '',
     'task-deadline': '',
-    'task-status': '',
+    'task-status': 'to-do',
     'task-file': '',
     'task-team': [],
+    'task-project-id': projectId,
   });
 
   const handleChange = async (e) => {
@@ -316,8 +318,9 @@ function CreateTask({ closeModal }) {
         'task-deadline': form['task-deadline'],
         'task-status': form['task-status'],
         'task-file': form['task-file'],
+        'task-project-id': form['task-project-id']
       });
-      const contributerRef = await addDoc(collection(docRef, 'contributors'), {
+      const teamRef = await addDoc(collection(docRef, 'teamRef'), {
         'task-team': form['task-team'],
       });
     } catch (error) {

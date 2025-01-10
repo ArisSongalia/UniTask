@@ -120,7 +120,7 @@ const fetchNoteData = ( setNoteData, setLoading, refreshKey ) => {
             setNoteData(NoteData);
           }
         } else {
-          alert("")
+          console.log("Error accessing notes")
         }
       } catch (error) {
         console.error("Error Fetching User Note Data: ", error);
@@ -180,6 +180,40 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading) => {
     return () => unsubscribe();
   }, [id, setProjectData, setLoading]);
 };
+
+const useFetchTasksData = ( setTaskData, setLoading, refreshKey ) => {
+  const activeProjectId = localStorage.getItem('activeProjectId');
+
+  useEffect(() => {
+    fetchNoteData = async () => {
+      try {
+        const taskRef = collection(db, 'tasks');
+        const q = query(taskRef, where("task-project-id", "==", activeProjectId));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty()) {
+          const taskData = [];
+          querySnapshot.forEach((doc) => {
+            taskData.push({
+              'task-title': doc.data()['task-title'],
+              'task-description': doc.data()['task-description'],
+              'task-deadline': doc.data()['task-deadline'],
+              'task-status': doc.data()['task-status'],
+              'task-team': doc.data()['task-team'],
+            });
+          });
+          setTaskData(taskData);
+        } else {
+          console.log('Error accessing tasks')
+        }
+      } catch (error) {
+        console.log('Error fetching tasks', error)
+      } finally {
+        setLoading(false);
+      };
+    }
+  }, [setLoading, setTaskData, refreshKey])
+}
 
 
 export { FetchUserName, fetchProjectData, fetchNoteData, useFetchActiveProjectData };

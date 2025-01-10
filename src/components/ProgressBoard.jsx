@@ -24,7 +24,7 @@ function ProgressBoard() {
         <span className='flex flex-col bg-gray-50 h-full w-full rounded-lg p-2 pt-4'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount='0'/>
         <section id='To-do' className='flex flex-col gap-2 high'>
-
+          
           </section>
         </span>
 
