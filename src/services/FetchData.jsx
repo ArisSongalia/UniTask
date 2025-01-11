@@ -181,7 +181,7 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading) => {
   }, [id, setProjectData, setLoading]);
 };
 
-const useFetchTaskData = ( setTaskData, setLoading ) => {
+const useFetchTaskData = ( setTaskData, setLoading, refreshKey) => {
   const activeProjectId = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
@@ -213,13 +213,14 @@ const useFetchTaskData = ( setTaskData, setLoading ) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         fetchNoteData();
+        setLoading(true);
       } else {
         setLoading(false);
       };
     });
 
     return () => unsubscribe();
-  }, [activeProjectId, setLoading])
+  }, [activeProjectId, setLoading, refreshKey])
 }
 
 

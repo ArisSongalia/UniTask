@@ -75,7 +75,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
           <span className='self-start flex flex-col gap-2 justify-between'>
             <span className="flex items-center">
-              <h2 className='font-semibold text-md'>{title}</h2>
+              <h2 className='font-bold text-sm text-green-700'>{title}</h2>
               <Icon dataFeather='plus' />
             </span>
             <p className='text-sm'>{description}</p>
@@ -230,12 +230,12 @@ function ProgressCard({title = 'Task Title', description = 'Description', deadli
       <span className="flex w-full gap-1">
         <Button 
           text='Upload File' 
-          className='w-full' 
+          className='w-full bg-blue-50 text-blue-700' 
           onClick={triggerFileInput}
         />
         <input id='file-input' type="file" className='hidden' />
         <Button 
-          text='Mark Finish' 
+          text='Move Status' 
           className={`${isClicked ? 'bg-green-700 text-white w-full' : 'w-full'}`}
           onClick={toggleClick}
         />

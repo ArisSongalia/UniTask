@@ -13,7 +13,7 @@ function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { key, reloadComponent } = useReloadContext();
+  const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -64,7 +64,7 @@ function MainNotesSection() {
   const [notes, setNotes] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
-  const { key, reloadComponent } = useReloadContext();
+  const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp); 

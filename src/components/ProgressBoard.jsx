@@ -1,36 +1,41 @@
 import React, {useState} from 'react'
 import { ProgressCard } from './Cards'
-import TitleSection, { DisplayTitleSection } from './TitleSection'
+import { DisplayTitleSection, IconTitleSection } from './TitleSection'
 import { CreateTask } from './modal-group/Modal'
 import { useFetchTaskData } from '../services/FetchData'
+import { BarLoader } from 'react-spinners'
+import { useReloadContext } from '../context/ReloadContext'
+import { ReloadIcon } from './ReloadComponent'
 
 function ProgressBoard() {
   const [loading, setLoading] = useState(true);
   const [taskData, setTaskData] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
+  const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
 
-  useFetchTaskData(setTaskData, setLoading);
+  useFetchTaskData(setTaskData, setLoading, key);
 
   return (
     <section className='flex flex-col bg-white rounded-md p-4 h-auto w-full overflow-hidden shadow-sm'>
-      <TitleSection 
-        dataFeather='filter' 
+      <IconTitleSection 
+        dataFeather='plus' 
         title='Progress Board' 
         buttonText='Create Task' 
-        buttonOnClick={togglePopUp}
+        iconOnClick={togglePopUp}
+        extraIcon={<ReloadIcon />}
       />
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
       <section className='flex gap-2 pr-2 overflow-y-scroll'>
-        <span className='flex flex-col bg-gray-50 h-full w-full rounded-lg p-2 pt-4'>
+        <span className='flex flex-col bg-gray-50 h-full w-full rounded-lg p-2 pt-4 overflow-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount='0'/>
-          <section id='To-do' className='flex flex-col gap-2 high'>
+          <section id='To-do' className='flex flex-col gap-2 '>
 
             {loading ? (
-              <span>...</span>
+              <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
               taskData.length > 0 && (
                 taskData.map((taskData, index) => (
