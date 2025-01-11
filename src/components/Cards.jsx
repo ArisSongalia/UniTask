@@ -48,7 +48,7 @@ function AlertCard({
         </section>
       </div>
 
-      <Button text='Check Pending' className='text-white border-white hover:bg-green-900'/>
+      <Button text='Check Pending'/>
     </section>
   )
 }

@@ -35,7 +35,7 @@ function MultiTitleSection({ titles }) {
             key={index}
             text={titleObj.label}
             onClick={titleObj.onClick}
-            className={`cursor-pointer px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 ${
               titleObj.isActive ? 'text-white bg-green-700' : 'bg-solid'
             }`}
           />
