@@ -230,13 +230,13 @@ function ProgressCard({title = 'Task Title', description = 'Description', deadli
       <span className="flex w-full gap-1">
         <Button 
           text='Upload File' 
-          className='w-full bg-blue-50 text-blue-700' 
+          className='w-full bg-white' 
           onClick={triggerFileInput}
         />
         <input id='file-input' type="file" className='hidden' />
         <Button 
           text='Move Status' 
-          className={`${isClicked ? 'bg-green-700 text-white w-full' : 'w-full'}`}
+          className={`bg-white ${isClicked ? 'bg-green-700 text-white w-full' : 'w-full'}`}
           onClick={toggleClick}
         />
       </span>
