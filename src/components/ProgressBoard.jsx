@@ -16,7 +16,7 @@ function ProgressBoard() {
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
-
+  
   useFetchTaskData(setTaskData, setLoading, key);
 
   return (
@@ -29,11 +29,10 @@ function ProgressBoard() {
         extraIcon={<ReloadIcon />}
       />
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
-      <section className='flex gap-2 pr-2 overflow-y-scroll'>
-        <span className='flex flex-col bg-gray-50 h-full w-full rounded-lg p-2 pt-4 overflow-scroll'>
+      <section className='flex gap-2'>
+        <span className='flex flex-col h-full w-full pt-4 overflow-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount='0'/>
-          <section id='To-do' className='flex flex-col gap-2 '>
-
+          <section id='To-do' className='grid md:grid-cols-1 lg:grid-cols-2 flex-grow-0 gap-2'>
             {loading ? (
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
@@ -45,6 +44,7 @@ function ProgressBoard() {
                     description={taskData['task-description']}
                     deadline={taskData['task-deadline']}
                     team={taskData['task-team']}
+                    id={taskData['task-id']}
                   />
                 ))
               )
@@ -53,16 +53,9 @@ function ProgressBoard() {
           </section>
         </span>
 
-        <span className='flex flex-col h-full w-full bg-gray-50 rounded-lg p-2 pt-4'>
+        <span className='flex flex-col h-full w-full pt-4'>
           <DisplayTitleSection title='In-progress' className='text-sm' displayClassName='bg-blue-100 text-blue-900' displayCount='0'/>
           <section id='in-progress' className='flex flex-col gap-2'>
-
-          </section>
-        </span>
-
-        <span className='flex flex-col h-full w-full bg-gray-50 rounded-lg p-2 pt-4'>
-          <DisplayTitleSection title='Done'className='text-sm' displayClassName='bg-green-200 text-green-900' displayCount='0'/>
-          <section id='completed' className='flex flex-col gap-2'>
 
           </section>
         </span>

@@ -198,6 +198,7 @@ const useFetchTaskData = ( setTaskData, setLoading, refreshKey) => {
               'task-deadline': doc.data()['task-deadline'],
               'task-status': doc.data()['task-status'],
               'task-team': doc.data()['task-team'],
+              'task-id': doc.id,
           }));
           setTaskData(taskData);
         } else {

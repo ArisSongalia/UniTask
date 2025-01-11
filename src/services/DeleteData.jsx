@@ -3,7 +3,6 @@ import { db } from '../config/firebase';
 
 const deleteData = async (id, collectionName, reloadComponent) => {
   try {
-    console.log(id);
 
     if (!id) {
       alert("Document not found!");

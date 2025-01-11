@@ -126,7 +126,7 @@ function ProjectCard({
         </span>
 
         <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="w-fit" />
-        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} />}
+        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} db='projects'/>}
       </section>
 
       <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">
@@ -192,7 +192,7 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 }
 
 
-function ProgressCard({title = 'Task Title', description = 'Description', deadline = '', team}) {
+function ProgressCard({title = 'Task Title', description = 'Description', deadline = '', team, id}) {
   const [isClicked, setIsClicked] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
 
@@ -218,7 +218,7 @@ function ProgressCard({title = 'Task Title', description = 'Description', deadli
           <p className="text-xs font-semibold text-gray-500"><span>Deadline: </span>{deadline}</p>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
-        {showPopUp && <Popup title={title} closeModal={togglePopUp}/>}
+        {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
       </span>
 
       <p className='text-sm'>{description}</p>

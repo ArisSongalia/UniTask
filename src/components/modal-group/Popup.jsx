@@ -5,12 +5,12 @@ import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 
 
-function Popup({ title, closeModal, id, }) {
+function Popup({ title, closeModal, id, collectionName}) {
 
   const { reloadComponent } = useReloadContext();
 
   const handleDelete = async () => {
-    await deleteData(id, 'projects', reloadComponent);
+    await deleteData(id, collectionName, reloadComponent);
     closeModal();
   };
 
