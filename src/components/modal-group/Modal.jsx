@@ -291,6 +291,7 @@ function CreateNote({ closeModal }) {
 
 
 function CreateTask({ closeModal }) {
+  const { reloadComponent } = useReloadContext()
   const [message, setMessage] = useState({ text: '', color: '' });
   const projectId = localStorage.getItem('activeProjectId')
 
@@ -318,7 +319,7 @@ function CreateTask({ closeModal }) {
         'task-deadline': form['task-deadline'],
         'task-status': form['task-status'],
         'task-file': form['task-file'],
-        'task-project-id': form['task-project-id']
+        'task-project-id': form['task-project-id'],
       });
       const teamRef = await addDoc(collection(docRef, 'teamRef'), {
         'task-team': form['task-team'],
@@ -327,7 +328,8 @@ function CreateTask({ closeModal }) {
       console.error('Error creating task: ', error);
       setMessage({ text: `Error Creating Task: ${error.message}`, color: 'red' });
     } finally {
-      setMessage({ text: 'Succefully Created Task', color: 'green'})
+      setMessage({ text: 'Succefully Created Task', color: 'green'});
+      reloadComponent();
     }
   };
 

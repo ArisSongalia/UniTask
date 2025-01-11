@@ -181,40 +181,47 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading) => {
   }, [id, setProjectData, setLoading]);
 };
 
-const useFetchTasksData = ( setTaskData, setLoading, refreshKey ) => {
+const useFetchTaskData = ( setTaskData, setLoading ) => {
   const activeProjectId = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
-    fetchNoteData = async () => {
+    const fetchNoteData = async () => {
       try {
         const taskRef = collection(db, 'tasks');
         const q = query(taskRef, where("task-project-id", "==", activeProjectId));
         const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty()) {
-          const taskData = [];
-          querySnapshot.forEach((doc) => {
-            taskData.push({
+        if (!querySnapshot.empty) {
+          const taskData = querySnapshot.docs.map((doc) => ({
               'task-title': doc.data()['task-title'],
               'task-description': doc.data()['task-description'],
               'task-deadline': doc.data()['task-deadline'],
               'task-status': doc.data()['task-status'],
               'task-team': doc.data()['task-team'],
-            });
-          });
+          }));
           setTaskData(taskData);
         } else {
-          console.log('Error accessing tasks')
+          console.log('No task data found')
         }
       } catch (error) {
         console.log('Error fetching tasks', error)
       } finally {
         setLoading(false);
       };
-    }
-  }, [setLoading, setTaskData, refreshKey])
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchNoteData();
+      } else {
+        setLoading(false);
+      };
+    });
+
+    return () => unsubscribe();
+  }, [activeProjectId, setLoading])
 }
 
 
-export { FetchUserName, fetchProjectData, fetchNoteData, useFetchActiveProjectData };
+export { FetchUserName, fetchProjectData, fetchNoteData, useFetchActiveProjectData, useFetchTaskData};
 

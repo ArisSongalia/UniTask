@@ -1,14 +1,13 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
-import { ReloadProvider } from '../context/ReloadContext';
 import Navbar from './Navbar';
 import Project from './Project';
 
 
 function App() {
   return (
-      <ReloadProvider>
+      <>
         <Navbar />
         <div
           id="main-container"
@@ -19,7 +18,7 @@ function App() {
             <Route path="/Project" element={<Project />} />
           </Routes>
         </div>
-      </ReloadProvider>
+      </>
   );
 }
 

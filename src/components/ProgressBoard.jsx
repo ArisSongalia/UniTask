@@ -2,14 +2,18 @@ import React, {useState} from 'react'
 import { ProgressCard } from './Cards'
 import TitleSection, { DisplayTitleSection } from './TitleSection'
 import { CreateTask } from './modal-group/Modal'
-
+import { useFetchTaskData } from '../services/FetchData'
 
 function ProgressBoard() {
+  const [loading, setLoading] = useState(true);
+  const [taskData, setTaskData] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
+
+  useFetchTaskData(setTaskData, setLoading);
 
   return (
     <section className='flex flex-col bg-white rounded-md p-4 h-auto w-full overflow-hidden shadow-sm'>
@@ -23,8 +27,24 @@ function ProgressBoard() {
       <section className='flex gap-2 pr-2 overflow-y-scroll'>
         <span className='flex flex-col bg-gray-50 h-full w-full rounded-lg p-2 pt-4'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount='0'/>
-        <section id='To-do' className='flex flex-col gap-2 high'>
-          
+          <section id='To-do' className='flex flex-col gap-2 high'>
+
+            {loading ? (
+              <span>...</span>
+            ) : (
+              taskData.length > 0 && (
+                taskData.map((taskData, index) => (
+                  <ProgressCard 
+                    key={index}
+                    title={taskData['task-title']}
+                    description={taskData['task-description']}
+                    deadline={taskData['task-deadline']}
+                    team={taskData['task-team']}
+                  />
+                ))
+              )
+            )}
+
           </section>
         </span>
 

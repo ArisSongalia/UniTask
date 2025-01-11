@@ -192,7 +192,7 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 }
 
 
-function ProgressCard({title = 'Task Title'}) {
+function ProgressCard({title = 'Task Title', description = 'Description', deadline = '', team}) {
   const [isClicked, setIsClicked] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
 
@@ -214,19 +214,17 @@ function ProgressCard({title = 'Task Title'}) {
                       w-full justify-between border gap-2 border-green-700 p-4">
       <span className='flex justify-between'>
         <span>
-          <h2 className="font-bold mb-2">{title}</h2>
-          <p className="text-xs font-semibold text-gray-500">30/10/2024</p>
+          <h2 className="font-bold mb-2 text-sm">{title}</h2>
+          <p className="text-xs font-semibold text-gray-500"><span>Deadline: </span>{deadline}</p>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} closeModal={togglePopUp}/>}
       </span>
 
-      <p className="text-sm">Lorem ipsum dolor sit amet. Example text should go here</p>
+      <p className='text-sm'>{description}</p>
 
       <span id="task-user" className='flex gap-1'>
-        <IconAction dataFeather='user'/>
-        <IconAction dataFeather='user'/>
-        <IconAction dataFeather='user'/>
+        {team}
       </span>
 
       <span className="flex w-full gap-1">
