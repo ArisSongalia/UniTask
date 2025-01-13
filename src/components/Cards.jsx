@@ -8,47 +8,43 @@ import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { auth } from '../config/firebase';
+import { FetchUserName } from '../services/FetchData';
 
 
 function AlertCard({
-  text = 'Title', 
+  title = 'Alert Card', 
   count = 0, 
   className = '', 
-  user = 'User', 
   taskName = 'Task'
 }) {
   return (
-  <section className={`flex flex-col bg-green-800 w-full cursor-pointer rounded-md
+  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
-      <span >
-        <h2 className='font-semibold mb-2'>{text}</h2>
-        <p className='text-sm'>Hi <u>{user}</u>, Tasks for today</p>
+      <span className='flex flex-col w-full justify-between'>
+        <h2 className='font-bold mb-1'>{title}</h2>
+        <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Tasks for today📋</p>
       </span>
 
-      <div className="flex gap-6 w-full">
-        <section id='tasks' className='flex items-start py-8'>
-          <span className="flex flex-col items-center">
-            <p className='font-bold text-4xl'>{count}</p>
-            <p className='font-semibold text-sm'>{taskName}</p>
-          </span>
-        </section>
+      <div className="flex gap-2 w-full h-fit">
+        <CountCard count={count} title={taskName} className='' />
+        <CountCard count={count} title={taskName} className=''/>
+        <CountCard count={count} title={taskName} />
 
-        <section id='projects' className='flex items-start py-8'>
-          <span className="flex flex-col items-center">
-            <p className='font-bold text-4xl'>{count}</p>
-            <p className='font-semibold text-sm'>{taskName}</p>
-          </span>
-        </section>
-
-        <section id='projects' className='flex items-start py-8'>
-          <span className="flex flex-col items-center">
-            <p className='font-bold text-4xl'>{count}</p>
-            <p className='font-semibold text-sm'>{taskName}</p>
-          </span>
-        </section>
       </div>
 
       <Button text='Check Pending'/>
+    </section>
+  )
+}
+
+function CountCard({ count = '', title = '', onClick, className = ''}) {
+  return (  
+    <section 
+      id='tasks' 
+      className={`flex items-center gap-1 cursor-pointer h-fit w-fit p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
+    >
+        <p className='font-bold text-2xl'>{count}</p>
+        <p className='font-semibold text-sm'>{title}</p>
     </section>
   )
 }
@@ -279,4 +275,4 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
 }
 
 
-export { AlertBox, CreateCard, ProjectCard, UserCard, ProgressCard, ProgressAlertCard, AlertCard }
+export { AlertBox, CreateCard, ProjectCard, UserCard, ProgressCard, ProgressAlertCard, AlertCard, CountCard }
