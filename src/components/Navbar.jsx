@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
-import TaskNavBar from './TaskNavBar';
 import Button from './Button';
 import { UserProfile } from './modal-group/Modal';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -25,7 +24,7 @@ function Navbar() {
   }, []);
 
   if (location.pathname === '/Project') {
-    return <TaskNavBar />;
+    return null;
   }
 
   const togglePopUp = () => {

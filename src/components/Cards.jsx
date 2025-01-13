@@ -15,20 +15,20 @@ function AlertCard({
   title = 'Alert Card', 
   count = 0, 
   className = '', 
-  taskName = 'Task'
+
 }) {
   return (
   <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
       <span className='flex flex-col w-full justify-between'>
         <h2 className='font-bold mb-1'>{title}</h2>
-        <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Tasks for today📋</p>
+        <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Here's your tasks📋</p>
       </span>
 
-      <div className="flex gap-2 w-full h-fit">
-        <CountCard count={count} title={taskName} className='' />
-        <CountCard count={count} title={taskName} className=''/>
-        <CountCard count={count} title={taskName} />
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-1 w-full h-fit">
+        <CountCard count={count} title='Assigned Task' className='' />
+        <CountCard count={count} title='Action Notes' className=''/>
+        <CountCard count={count} title='Actions' />
 
       </div>
 
@@ -41,9 +41,9 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex items-center gap-1 cursor-pointer h-fit w-fit p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
+      className={`flex items-center gap-2 cursor-pointer h-full w-full p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
     >
-        <p className='font-bold text-2xl'>{count}</p>
+        <p className='font-bold text-xl'>{count}</p>
         <p className='font-semibold text-sm'>{title}</p>
     </section>
   )

@@ -141,12 +141,10 @@ function CreateProject({ closeModal }) {
   );
 }
 
-function CreateNote({ closeModal }) {
+function CreateNote({ closeModal, projectId }) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
-  const [progress, setProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
   const dateRef = useRef('');
 
   const [form, setForm] = useState({
@@ -166,45 +164,6 @@ function CreateNote({ closeModal }) {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setIsUploading(true);
-      setProgress(0); 
-      const storageRef = ref(storage, `files/${file.name}`);
-      const uploadFile = uploadBytesResumable(storageRef, file);
-
-  uploadFile.on(
-    "state_changed",
-    (snapshot) => {
-      const progressValue = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-      console.log("Progress: ", progressValue, snapshot.bytesTransferred, snapshot.totalBytes); 
-      setProgress(progressValue);
-    },
-    (error) => {
-      console.error("File Upload Failed: ", error);
-      setMessage({ text: "File upload failed: " + error.message, color: "red" });
-      setIsUploading(false);
-    },
-    async () => {
-      try {
-        const downloadURL = await getDownloadURL(uploadFile.snapshot.ref);
-        setForm((prevForm) => ({ ...prevForm, file: downloadURL }));
-        setMessage({ text: "File uploaded successfully!", color: "green" });
-      } catch (error) {
-        console.error("Error fetching file URL: ", error);
-        setMessage({ text: "Failed to retrieve file URL.", color: "red" });
-      } finally {
-        setIsUploading(false);
-        setProgress(0);
-      }
-    }
-  );
-
-    }
-  };
-
   const handleCreateUserNote = async (e) => {
     e.preventDefault();
     try {
@@ -213,7 +172,6 @@ function CreateNote({ closeModal }) {
         message: form.message,
         date: form.date,
         owner: user.uid,
-        file: form.file,
       }); 
 
       await updateDoc(docRef, { id: docRef.id });
@@ -257,18 +215,6 @@ function CreateNote({ closeModal }) {
             />
           </label>
 
-          <label htmlFor="file" className="flex flex-col text-gray-600">
-            Attach File
-            <input
-              type="file"
-              name="file"
-              onChange={handleFileChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
-            />
-            <progress value={progress} max={100} className="w-full h-1 mt-2" />
-            <span className="text-gray-600 text-sm">{progress > 0 && `Uploading: ${progress}%`}</span>
-          </label>
-
           <label htmlFor="date" className="flex flex-col text-gray-600">
             Target Date
             <input
@@ -282,7 +228,7 @@ function CreateNote({ closeModal }) {
           </label>
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text={isUploading ? "Uploading..." : "Create Note"} className="py-3" />
+          <Button type="submit" text="Create Note" className="py-3" />
         </form>
       </section>
     </div>

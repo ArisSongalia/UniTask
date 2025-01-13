@@ -20,7 +20,7 @@ function ProgressBoard() {
   useFetchTaskData(setTaskData, setLoading, key);
 
   return (
-    <section className='flex flex-col bg-white rounded-md p-4 h-auto w-full overflow-hidden shadow-sm'>
+    <section className='flex flex-col bg-white rounded-md p-4 h-full w-full overflow-hidden shadow-sm flex-grow-0'>
       <IconTitleSection 
         dataFeather='plus' 
         title='Progress Board' 
@@ -30,9 +30,9 @@ function ProgressBoard() {
       />
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
       <section className='flex gap-2 h-full bg-gray-50 p-4 rounded-lg'>
-        <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-gray-400 border-opacity-20 overflow-scroll'>
+        <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-gray-400 border-opacity-20 overflow-y-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount={taskData.length}/>
-          <section id='To-do' className='flex flex-col flex-grow-0 gap-2'>
+          <section id='To-do' className='flex flex-col gap-2 h-full'>
             {loading ? (
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
