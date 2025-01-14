@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Button from './Button'
 import Icon from './Icon'
 import { IconAction } from './Icon';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
@@ -198,9 +198,10 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 }
 
 
-function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className}) {
+function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className, }) {
   const [showPopUp, setShowPopUp] = useState(false);
   const { reloadComponent } = useReloadContext();
+  const location = useLocation();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -223,8 +224,10 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
   }
 
   return (
-    <div className={`flex flex-col bg-white rounded-xl h-auto border-opacity-50
-                      w-full justify-between border gap-2 border-green-700 p-4 ${className}`}>
+    <div 
+      className={`flex flex-col bg-white rounded-xl h-auto border-opacity-50
+        w-full justify-between border gap-2 border-green-600 p-4 ${className}`}
+    >
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
@@ -244,19 +247,27 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         {team}
       </span>
 
-      <span className="flex w-full gap-1">
-        <Button 
-          text='Upload File' 
-          className='w-full bg-white' 
-          onClick={triggerFileInput}
-        />
-        <input id='file-input' type="file" className='hidden' />
-        <Button 
-          text='Move Status' 
-          className='bg-white w-full'
-          onClick={moveStatus}
-        />
-      </span>
+      {(location.pathname === '/Project') ? (
+        <span className="flex w-full gap-1">
+          <Button 
+            text='Upload File' 
+            className='w-full bg-white' 
+            onClick={triggerFileInput}
+          />
+          <input id='file-input' type="file" className='hidden' />
+          <Button 
+            text='Move Status' 
+            className='w-full'
+            onClick={moveStatus}
+          />
+        </span>
+      ) : (
+        <Link to={'./Project'}>
+          <Button text='Open Task' className='w-full'/>
+        </Link>
+      )
+        
+      }
     </div>
   )
 }

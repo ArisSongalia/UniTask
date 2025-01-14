@@ -278,6 +278,7 @@ function CreateTask({ closeModal }) {
     } finally {
       setMessage({ text: 'Succefully Created Task', color: 'green'});
       reloadComponent();
+      closeModal();
     }
   };
 

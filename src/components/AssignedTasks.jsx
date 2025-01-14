@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { DisplayTitleSection } from './TitleSection';
 import { useFetchTaskData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from './Cards';
+import { Link } from 'react-router-dom';
 
-function AssignedTasks() {
+function AssignedTasks({link, className}) {
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { key } = useReloadContext();
@@ -32,7 +33,7 @@ function AssignedTasks() {
                 team={taskData['task-team']}
                 status={taskData['task-status']}
                 id={taskData['task-id']}
-                className='h-fit'
+                className='h-fit hover:cursor-pointer'
               />
             ))
           )

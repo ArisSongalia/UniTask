@@ -1,8 +1,14 @@
 body {
   background-color: #f3f4f6;
-  height: 100vh;
+  min-height: 100vh;
+  height: calc(var(--vh) * 100);
+  margin: 0;
 }
 
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --vh: 1vh;
 }
