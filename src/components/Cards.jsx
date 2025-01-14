@@ -12,14 +12,21 @@ import { FetchUserName } from '../services/FetchData';
 import { doc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
+import { useFetchTaskData } from '../services/FetchData';
 
 
 function AlertCard({
   title = 'Alert Card', 
   count = 0, 
   className = '', 
+  }) {
 
-}) {
+  const { key } = useReloadContext()
+  const [taskData, setTaskData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useFetchTaskData( setTaskData, setLoading, key)
+
   return (
   <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
@@ -29,7 +36,7 @@ function AlertCard({
       </span>
 
       <div className="flex gap-1 w-full h-fit">
-        <CountCard count={count} title='Assigned Task' className='' />
+        <CountCard count={taskData.length} title='Assigned Task' className='' />
         <CountCard count={count} title='Action Notes' className=''/>
         <CountCard count={count} title='Actions' />
 
@@ -191,7 +198,7 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 }
 
 
-function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, id}) {
+function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className}) {
   const [showPopUp, setShowPopUp] = useState(false);
   const { reloadComponent } = useReloadContext();
 
@@ -216,18 +223,22 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-xl h-auto border-opacity-50
-                      w-full justify-between border gap-2 border-green-700 p-4">
+    <div className={`flex flex-col bg-white rounded-xl h-auto border-opacity-50
+                      w-full justify-between border gap-2 border-green-700 p-4 ${className}`}>
       <span className='flex justify-between'>
         <span>
-          <h2 className="font-bold mb-2 text-sm">{title}</h2>
-          <p className="text-xs font-semibold text-gray-500"><span>Deadline: </span>{deadline}</p>
+          <h2 className="font-bold mb-1 text-sm">{title}</h2>
+          <span className='flex gap-1 text-xs font-semibold text-gray-600 items-center'>
+            <span>{status.toUpperCase()}</span>
+            <p>•</p>
+            <p><span>Deadline: </span>{deadline}</p>
+          </span>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
       </span>
 
-      <p className='text-sm'>{description}</p>
+      <p className='text-sm py-2'>{description}</p>
 
       <span id="task-user" className='flex gap-1'>
         {team}

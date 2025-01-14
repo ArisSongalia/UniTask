@@ -50,6 +50,7 @@ function ProgressBoard() {
                     description={taskData['task-description']}
                     deadline={taskData['task-deadline']}
                     team={taskData['task-team']}
+                    status={taskData['task-status']}
                     id={taskData['task-id']}
                   />
                 ))
@@ -72,6 +73,7 @@ function ProgressBoard() {
                     description={taskData['task-description']}
                     deadline={taskData['task-deadline']}
                     team={taskData['task-team']}
+                    status={taskData['task-status']}
                     id={taskData['task-id']}
                   />
                 ))

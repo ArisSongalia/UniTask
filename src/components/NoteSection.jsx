@@ -30,7 +30,7 @@ function NoteSection({className = ''}) {
 
       <section className={`grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-2 w-full bg-white pr-2 rounded-xl overflow-y-auto ${className}`}>
         {loading ? (
-          <BarLoader />
+          <BarLoader color='#228B22' size={20} />
         ) : (
           notes.map((note, index) => (
             <Notes
