@@ -25,7 +25,7 @@ function AlertCard({
         <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Here's your tasks📋</p>
       </span>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-1 w-full h-fit">
+      <div className="flex gap-1 w-full h-fit">
         <CountCard count={count} title='Assigned Task' className='' />
         <CountCard count={count} title='Action Notes' className=''/>
         <CountCard count={count} title='Actions' />
@@ -41,10 +41,10 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex items-center gap-2 cursor-pointer h-full w-full p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
+      className={`flex flex-col items-center cursor-pointer h-full w-full p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
     >
         <p className='font-bold text-xl'>{count}</p>
-        <p className='font-semibold text-sm'>{title}</p>
+        <p className='font-semibold text-sm text-center'>{title}</p>
     </section>
   )
 }

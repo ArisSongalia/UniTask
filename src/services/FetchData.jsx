@@ -97,13 +97,15 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
   return null;
 }
 
-const fetchNoteData = ( setNoteData, setLoading, refreshKey ) => {
+const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
   useEffect(() => {
     const fetchNoteData = async (user) => {
       try {
         if (user) {
           const noteRef = collection(db, 'notes');
-          const q = query(noteRef, where("owner", "==", user.uid));
+          const q = customWhere 
+            ? query(noteRef, customWhere) 
+            : query(noteRef, where("owner", "==", user.uid));
 
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {

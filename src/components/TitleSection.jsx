@@ -2,14 +2,20 @@ import React, { useState } from 'react'
 import Button from './Button'
 import { IconAction } from './Icon'
 
-function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = ''}) {
+function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon}) {
   return ( 
     <section className='flex w-full mb-4 justify-between'>
         <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
           <h2>{title}</h2>
           <h2>{nextTitle}</h2>
         </span>
-      <Button text={`${buttonText}`} onClick={buttonOnClick}/>
+      <span>
+        <span className='flex gap-2'>
+          <Button text={`${buttonText}`} onClick={buttonOnClick}/>
+          {extraIcon}
+        </span>
+      </span>
+
     </section>
   )
 }

@@ -152,6 +152,7 @@ function CreateNote({ closeModal, projectId }) {
     message: "",
     file: "",
     date: "",
+    projectId: projectId,
   });
 
   const handleChange = (e) => {
@@ -172,6 +173,7 @@ function CreateNote({ closeModal, projectId }) {
         message: form.message,
         date: form.date,
         owner: user.uid,
+        ['project-id']: projectId || null,
       }); 
 
       await updateDoc(docRef, { id: docRef.id });
