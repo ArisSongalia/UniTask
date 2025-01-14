@@ -9,6 +9,9 @@ import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { auth } from '../config/firebase';
 import { FetchUserName } from '../services/FetchData';
+import { doc, query, updateDoc, where } from 'firebase/firestore';
+import { useReloadContext } from '../context/ReloadContext';
+import { db } from '../config/firebase';
 
 
 function AlertCard({
@@ -188,13 +191,9 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 }
 
 
-function ProgressCard({title = 'Task Title', description = 'Description', deadline = '', team, id}) {
-  const [isClicked, setIsClicked] = useState(false);
+function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, id}) {
   const [showPopUp, setShowPopUp] = useState(false);
-
-  const toggleClick = () => {
-    setIsClicked(!isClicked);
-  };
+  const { reloadComponent } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -204,6 +203,17 @@ function ProgressCard({title = 'Task Title', description = 'Description', deadli
     const fileInput = document.getElementById('file-input');
     fileInput.click();
   };
+
+  const moveStatus = async () => {
+    const taskRef = doc(db, 'tasks', id);
+
+    try {
+      await updateDoc(taskRef, { ['task-status']: "in-progress"});
+      reloadComponent();
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className="flex flex-col bg-white rounded-xl h-auto border-opacity-50
@@ -232,8 +242,8 @@ function ProgressCard({title = 'Task Title', description = 'Description', deadli
         <input id='file-input' type="file" className='hidden' />
         <Button 
           text='Move Status' 
-          className={`bg-white ${isClicked ? 'bg-green-700 text-white w-full' : 'w-full'}`}
-          onClick={toggleClick}
+          className='bg-white w-full'
+          onClick={moveStatus}
         />
       </span>
     </div>
@@ -275,4 +285,4 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
 }
 
 
-export { AlertBox, CreateCard, ProjectCard, UserCard, ProgressCard, ProgressAlertCard, AlertCard, CountCard }
+export { AlertBox, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, AlertCard, CountCard }

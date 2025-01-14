@@ -183,14 +183,19 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading) => {
   }, [id, setProjectData, setLoading]);
 };
 
-const useFetchTaskData = ( setTaskData, setLoading, refreshKey) => {
+const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => {
   const activeProjectId = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
     const fetchNoteData = async () => {
       try {
         const taskRef = collection(db, 'tasks');
-        const q = query(taskRef, where("task-project-id", "==", activeProjectId));
+        let q;
+        if (customWhere) {
+          q = query(taskRef, customWhere)
+        } else {
+          q = query(taskRef, where("task-project-id", "==", activeProjectId));
+        };
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
