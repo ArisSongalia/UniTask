@@ -4,12 +4,13 @@ import { useFetchTaskData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from './Cards';
-import { Link } from 'react-router-dom';
+import { where } from 'firebase/firestore';
 
-function AssignedTasks({link, className}) {
+function AssignedTasks({}) {
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { key } = useReloadContext();
+
 
   useFetchTaskData(setTaskData, setLoading, key);
   

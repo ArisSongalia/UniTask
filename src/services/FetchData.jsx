@@ -192,9 +192,9 @@ const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => 
         const taskRef = collection(db, 'tasks');
         let q;
         if (customWhere) {
-          q = query(taskRef, customWhere)
+          q = query(taskRef, customWhere, where("task-project-id", "==", activeProjectId))
         } else {
-          q = query(taskRef, where("task-project-id", "==", activeProjectId));
+          q = query(taskRef);
         };
         const querySnapshot = await getDocs(q);
 
@@ -208,6 +208,7 @@ const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => 
               'task-id': doc.id,
           }));
           setTaskData(taskData);
+          console.log('Task fetched using the ID', activeProjectId)
         } else {
           console.log('No task data found')
         }

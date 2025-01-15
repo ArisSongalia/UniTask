@@ -58,7 +58,7 @@ function DisplayTitleSection({title = 'Title', displayCount = '0', className = '
         <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
           <h2>{title}</h2>
         </span>
-        <span className={`flex gap-9 items-center font-semibold px-4 rounded-full bg-green-50 text-green-800 text-sm rounded-full' ${displayClassName}`}>
+        <span className={`flex items-center font-semibold h-8 justify-center w-8 rounded-full bg-green-50 text-green-800 text-sm rounded-full' ${displayClassName}`}>
           <h2>{displayCount}</h2>
         </span>
     </section>
