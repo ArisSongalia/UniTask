@@ -4,8 +4,7 @@ import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { FetchUserName } from '../../services/FetchData';
 import { addDoc, collection, updateDoc } from 'firebase/firestore';
-import { auth, db, storage } from '../../config/firebase';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
@@ -242,6 +241,7 @@ function CreateTask({ closeModal }) {
   const { reloadComponent } = useReloadContext()
   const [message, setMessage] = useState({ text: '', color: '' });
   const projectId = localStorage.getItem('activeProjectId')
+  const dateRef = useRef();
 
   const [form, setForm] = useState({
     'task-title': '',
@@ -256,6 +256,15 @@ function CreateTask({ closeModal }) {
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    const today = new Date();
+    today.setHours(today.getHours() + 1)
+    const adjustedDateTime = today.toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
+
+    if (dateRef.current) {
+      dateRef.current.setAttribute('min', adjustedDateTime);
+      console.log(adjustedDateTime)
+    }
   };
 
   const handleCreateTask = async (e) => {
@@ -335,6 +344,7 @@ function CreateTask({ closeModal }) {
             <input
               type="datetime-local"
               id="date"
+              ref={dateRef}
               name="task-deadline"
               value={form['task-deadline']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
