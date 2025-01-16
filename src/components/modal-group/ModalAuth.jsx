@@ -5,7 +5,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { IconTitleSection } from '../TitleSection';
 import Button from '../Button';
 import { IconAction } from '../Icon';
-import { AlertBox } from '../Cards';
+import { AlertCard } from '../Cards';
 
 
 function SignUp({ closeModal, switchToSignIn }) {
@@ -312,7 +312,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
         </span>
 
         <div className="flex flex-col gap-2">
-          <AlertBox
+          <AlertCard
             text="We recommend using an identifiable username and avoiding inappropriate language"
             email={email}
             className="mb-4"

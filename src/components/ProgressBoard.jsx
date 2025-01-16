@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { TaskCard } from './Cards'
 import { DisplayTitleSection, IconTitleSection } from './TitleSection'
 import { CreateTask } from './modal-group/Modal'
@@ -13,7 +13,7 @@ function ProgressBoard() {
   const [taskData, setTaskData] = useState([]);
   const [activeTaskData, setActiveTaskData] = useState([])
   const [showPopUp, setShowPopUp] = useState(false);
-  const { key } = useReloadContext();
+  const { key, reloadComponent } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -42,7 +42,7 @@ function ProgressBoard() {
             {loading ? (
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
-              taskData.length > 0 && (
+              taskData.length > 0 ? (
                 taskData.map((taskData, index) => (
                   <TaskCard 
                     key={index}
@@ -54,6 +54,8 @@ function ProgressBoard() {
                     id={taskData['task-id']}
                   />
                 ))
+              ) : (
+                reloadComponent
               )
             )}
           </section>

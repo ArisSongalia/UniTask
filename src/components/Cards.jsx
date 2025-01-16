@@ -15,8 +15,8 @@ import { db } from '../config/firebase';
 import { useFetchTaskData } from '../services/FetchData';
 
 
-function AlertCard({
-  title = 'Alert Card', 
+function SummaryCard({
+  title = 'Summary Card', 
   count = 0, 
   className = '', 
   }) {
@@ -59,12 +59,12 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   )
 }
 
-function AlertBox({text = 'Title', className = '', email= 'User'}) {
+function AlertCard({text = 'text', title = 'Welcome to UniTask, ', className = ''}) {
   return (
   <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-2xl
                        p-4 justify-between h-auto shadow-sm ${className}`}>
       <span >
-        <h2 className='font-semibold mb-2'>Welcome to UniTask! {email}</h2>
+        <h2 className='font-semibold'>{title} </h2>
         <p>{text}</p>
       </span>
     </section>
@@ -307,4 +307,4 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
 }
 
 
-export { AlertBox, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, AlertCard, CountCard }
+export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard }

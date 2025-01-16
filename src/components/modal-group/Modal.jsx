@@ -8,6 +8,7 @@ import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
+import { AlertCard } from '../Cards';
 
 function CreateProject({ closeModal }) {
   const { reloadComponent } = useReloadContext();
@@ -313,6 +314,7 @@ function CreateTask({ closeModal }) {
         </span>
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
+          <AlertCard text='Note: Deadline should atleast be 1 hour' title=''/>
           <label htmlFor="task-title" className="flex flex-col text-gray-600">
             Title
             <input

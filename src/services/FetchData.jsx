@@ -70,7 +70,9 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
               });
             });
             setProjectData(projectData);
-          } 
+          }  else {
+            setProjectData([]);
+          }
         } else {
           alert("No Logged-In User: Please Log-in");
         }
@@ -120,6 +122,8 @@ const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
               });
             });
             setNoteData(NoteData);
+          } else {
+            setNoteData([]);
           }
         } else {
           console.log("Error accessing notes")
@@ -210,7 +214,8 @@ const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => 
           setTaskData(taskData);
           console.log('Task fetched using the ID', activeProjectId)
         } else {
-          console.log('No task data found')
+          console.log('No task data found');
+          setTaskData([]);
         }
       } catch (error) {
         console.log('Error fetching tasks', error)
