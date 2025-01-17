@@ -13,6 +13,7 @@ import { doc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
 import { useFetchTaskData } from '../services/FetchData';
+import { IconUser } from './Icon';
 
 
 function SummaryCard({
@@ -244,7 +245,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       <p className='text-sm py-2'>{description}</p>
 
       <span id="task-user" className='flex gap-1'>
-        {team}
+        <IconUser />
       </span>
 
       {(location.pathname === '/Project') ? (

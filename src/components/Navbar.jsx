@@ -7,6 +7,7 @@ import { UserProfile } from './modal-group/Modal';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import userIcon from '../assets/default-icon.png';
+import { IconUser } from './Icon';
 
 function Navbar() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -49,8 +50,7 @@ function Navbar() {
                 className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700"
                 text="Sign-Out"
               />
-              <img className='h-7 w-7 hover:cursor-pointer' src={userIcon} onClick={togglePopUp}/>
-              {showPopUp && <UserProfile closeModal={togglePopUp} />}
+              <IconUser />
             </>
           ) : (
             <>

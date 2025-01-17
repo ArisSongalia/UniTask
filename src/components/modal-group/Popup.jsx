@@ -16,13 +16,9 @@ function Popup({ title, closeModal, id, collectionName}) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="flex flex-col p-4 bg-white rounded-2xl w-[15rem] h-auto">
+      <div className="flex flex-col p-4 bg-white rounded-2xl gap-1 w-[15rem] h-auto">
         <IconTitleSection title={title} iconOnClick={closeModal} className='items-center' dataFeather='x' />
-        <section className="flex items-center p-2 gap-2 rounded-2xl w-full hover:bg-green-200 hover:bg-opacity-30 cursor-pointer">
-          <Icon dataFeather='archive' />
-          <p>Archive</p>
-        </section>
-        <section className="flex items-center p-2 gap-2 rounded-2xl w-full hover:bg-green-200 hover:bg-opacity-30 cursor-pointer" onClick={handleDelete}>
+        <section className="flex items-center border border-green-700 border-opacity-25 p-2 gap-2 rounded-xl w-full hover:bg-green-100 cursor-pointer" onClick={handleDelete}>
           <Icon dataFeather='trash' />
           <p>Delete</p>
         </section>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from './Icon';
 
 function Button({ text = 'Button', onClick, className = '', type = 'button'}) {
 
@@ -13,6 +14,7 @@ function Button({ text = 'Button', onClick, className = '', type = 'button'}) {
     </button>
   );
 }
+
 
 export default Button;
 
