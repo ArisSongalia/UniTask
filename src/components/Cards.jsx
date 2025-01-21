@@ -234,7 +234,11 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       <p className='text-sm py-2'>{description}</p>
 
       <span id="task-user" className='flex gap-1'>
-        <IconUser />
+        {team.length > 0 && (
+          team.map((member) => (
+            <UserCard username={member.username} uid={member.uid} />
+          ))
+        )}
       </span>
 
       {(location.pathname === '/Project') ? (
