@@ -7,7 +7,6 @@ import { UserProfile } from './modal-group/Modal'
 import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
-import { auth } from '../config/firebase';
 import { FetchUserName } from '../services/FetchData';
 import { doc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
@@ -176,7 +175,7 @@ function UserCard({className='', username='User Name', uid, onStateChange}) {
       className={`flex items-center border w-fit rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
     >
       <span className="p-2 hover:bg-green-50 border-r h-full " onClick={toggleUserProfile}>
-        <img className='w-8 rounded-full' src={userIcon} alt="user-icon" />
+        <img className='w-8 h-auto rounded-full' src={userIcon} alt="user-icon" />
         {showUserProfile && <UserProfile username={username} closeModal={toggleUserProfile}/>}
       </span>
 
@@ -233,11 +232,13 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
 
       <p className='text-sm py-2'>{description}</p>
 
-      <span id="task-user" className='flex gap-1'>
-        {team.length > 0 && (
+      <span id="task-user" className='flex w-full gap-1'>
+        {!team || team.length > 0 ?(
           team.map((member) => (
-            <UserCard username={member.username} uid={member.uid} />
+            <IconUser key={member.uid} username={member.username} uid={member.uid} />
           ))
+        ) : (
+          null
         )}
       </span>
 
@@ -265,6 +266,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
     </div>
   )
 }
+
 
 function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dolor sit amet. Example text should go here Lorem ipsum dolor sit amet.'}) {
   const [showPopUp, setShowPopUp] = useState(false);

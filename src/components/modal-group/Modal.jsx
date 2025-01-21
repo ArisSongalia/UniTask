@@ -518,12 +518,13 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   );
 }
 
-function UserProfile({ closeModal, username }) {
+function UserProfile({ closeModal, username, uid }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium'>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
-        <p className=''>{username}</p>
+        <p>{username}</p>
+        <p>{uid}</p>
       </div>
     </div>
   );

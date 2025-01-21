@@ -25,9 +25,9 @@ function AssignedTasks({}) {
           <span><BarLoader color='#228B22' size={20} /></span>
         ) : (
           taskData.length > 0 && (
-            taskData.map((taskData, index) => (
+            taskData.map((taskData) => (
               <TaskCard 
-                key={index}
+                key={taskData['task-id']}
                 title={taskData['task-title']}
                 description={taskData['task-description']}
                 deadline={taskData['task-deadline']}

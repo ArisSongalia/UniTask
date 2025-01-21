@@ -47,7 +47,7 @@ function Icon({ className = '', dataFeather = 'edit-2', actionText= '', style = 
   );
 }
 
-function IconUser({ className = ''}) {
+function IconUser({ className = '', uid, username}) {
   const [showUserProfile, setShowUserProfile] = useState(false);
 
   const handleShowUserProfile = () => {
@@ -55,10 +55,11 @@ function IconUser({ className = ''}) {
   };
 
   return (
-    <span className={`h-6 w-6 hover:cursor-pointer hover:border border-green-500 rounded-full ${className}`}>
-      <img src={userIcon} className='h-full w-full' onClick={handleShowUserProfile}/>
-      {showUserProfile && <UserProfile closeModal={handleShowUserProfile}/>}
-    </span>
+    <div className={`hover:cursor-pointer border rounded-full hover:border-green-500  ${className}`}>
+        <img src={userIcon} className='h-6 w-6' onClick={handleShowUserProfile}/>
+        {showUserProfile && <UserProfile username={username} uid={uid} closeModal={handleShowUserProfile}/>}
+    </div>
+
   )
 }
 

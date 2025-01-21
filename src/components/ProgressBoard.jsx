@@ -43,9 +43,9 @@ function ProgressBoard() {
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
               taskData.length > 0 && (
-                taskData.map((taskData, index) => (
+                taskData.map((taskData) => (
                   <TaskCard 
-                    key={index}
+                    key={taskData['task-id']}
                     title={taskData['task-title']}
                     description={taskData['task-description']}
                     deadline={taskData['task-deadline']}
@@ -66,9 +66,9 @@ function ProgressBoard() {
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
               activeTaskData.length > 0 && (
-                activeTaskData.map((taskData, index) => (
+                activeTaskData.map((taskData) => (
                   <TaskCard 
-                    key={index}
+                    key={taskData['task-id']}
                     title={taskData['task-title']}
                     description={taskData['task-description']}
                     deadline={taskData['task-deadline']}

@@ -9,7 +9,6 @@ import { IconUser } from './Icon';
 import { FetchUserName } from '../services/FetchData';
 
 function Navbar() {
-  const [showPopUp, setShowPopUp] = useState(false);
   const [activeAuth, setActiveAuth] = useState(null);
   const [user, setUser] = useState(null);
   const closeModal = () => setActiveAuth(null);
@@ -25,10 +24,6 @@ function Navbar() {
 
   if (location.pathname === '/Project') {
     return null;
-  }
-
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
   }
 
   return (
