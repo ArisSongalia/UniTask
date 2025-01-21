@@ -276,6 +276,12 @@ function CreateTask({ closeModal }) {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
+
+    if (!form['task-team'] || form['task-team'].length === 0) {
+      setMessage({ text: 'Please select task members', color: 'red' });
+      return;
+    }
+
     try {
       await addDoc(collection(db, 'tasks'), {
         'task-title': form['task-title'],
@@ -286,6 +292,7 @@ function CreateTask({ closeModal }) {
         'task-project-id': form['task-project-id'],
         'task-team': form['task-team'],
       });
+
     } catch (error) {
       console.error('Error creating task: ', error);
       setMessage({ text: `Error Creating Task: ${error.message}`, color: 'red' });
@@ -311,6 +318,8 @@ function CreateTask({ closeModal }) {
         };
       };
     });
+
+    
 
   };
 
@@ -366,18 +375,22 @@ function CreateTask({ closeModal }) {
 
           <label className="flex flex-col gap-2 text-gray-600">
             Select Team Members
-            <section className='flex gap-2 p-4 rounded-lg bg-green-50'>
-              {users.map((user) => (
-                <UserCard key={user.id} username={user.username} uid={user.id} onStateChange={handleStateChange}/>
-              ))}
+            <section className='flex flex-col gap-2 p-4 rounded-lg bg-green-50'>
+              <p className='text-green-700'>Available Members</p>
+
+              <section className="flex gap-2">
+                {users.map((user) => (
+                  <UserCard key={user.id} username={user.username} uid={user.id} onStateChange={handleStateChange}/>
+                ))}
+              </section>
             </section>
 
             <div className='flex flex-col'>
-              <p className='text-green-800 -1'>Selected team members will appear here</p>
+              <p className=''>Selected team members will appear here</p>
               <input
-                className='mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none'
-                readOnly
+                className="mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
                 placeholder='Please select atleast one team member'
+                readOnly
                 value={
                   form['task-team'].length > 0
                     ? form['task-team'].map((member) => member.username).join(', ')
