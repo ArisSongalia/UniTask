@@ -3,11 +3,10 @@ import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
 import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
 import Button from './Button';
-import { UserProfile } from './modal-group/Modal';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import userIcon from '../assets/default-icon.png';
 import { IconUser } from './Icon';
+import { FetchUserName } from '../services/FetchData';
 
 function Navbar() {
   const [showPopUp, setShowPopUp] = useState(false);

@@ -148,23 +148,13 @@ function ProjectCard({
 }
 
 
-function UserCard({className='', username='User Name', role='Owner', onStateChange}) {
+function UserCard({className='', username='User Name', uid, onStateChange}) {
   const [isActive, setIsActive] = useState(false)
   const [showUserProfile, setShowUserProfile] = useState(false);
-  const [uid, setUid] = useState(null);
-  const activeUid = auth.currentUser?.uid;
 
   const toggleUserProfile = () => {
     setShowUserProfile(!showUserProfile);
   };
-
-  useEffect(() => {
-    const getcurUid = async () => {
-      setUid(activeUid);
-    }
-
-    getcurUid();
-  }, [activeUid])
 
   const toggleIsActive = () => {
     setIsActive(!isActive);
@@ -177,9 +167,9 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
 
   useEffect(() => {
     if (onStateChange && uid) {
-      onStateChange({uid: uid, isActive})
+      onStateChange({uid, username, isActive})
     }
-  }, [uid, isActive])
+  }, [uid, username, isActive])
 
   return (
     <section 
@@ -187,12 +177,11 @@ function UserCard({className='', username='User Name', role='Owner', onStateChan
     >
       <span className="p-2 hover:bg-green-50 border-r h-full " onClick={toggleUserProfile}>
         <img className='w-8 rounded-full' src={userIcon} alt="user-icon" />
-        {showUserProfile && <UserProfile closeModal={toggleUserProfile}/>}
+        {showUserProfile && <UserProfile username={username} closeModal={toggleUserProfile}/>}
       </span>
 
       <span className={`flex flex-col font-semibold px-3 w-full h-full p-2 rounded-md hover:bg-green-700 hover:text-white ${isActive ? 'bg-green-700 text-white' : 'bg-solid'}`} onClick={toggleIsActive} >
         <p className='text-sm'>{username}</p>
-        <p className='text-xs'>{role}</p>
       </span>
     </section>
   )
@@ -217,7 +206,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
     const taskRef = doc(db, 'tasks', id);
 
     try {
-      await updateDoc(taskRef, { ['task-status']: "in-progress"});
+      await updateDoc(taskRef, { ['task-status']: "In-progress"});
       reloadComponent();
     } catch (error) {
       console.error(error)
@@ -233,9 +222,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
           <span className='flex gap-1 text-xs font-semibold text-gray-600 items-center'>
-            <span>{status.toUpperCase()}</span>
+            <span>{status}</span>
             <p>•</p>
-            <p><span>Deadline: </span>{deadline}</p>
+            <p>{deadline}</p>
           </span>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>

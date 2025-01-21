@@ -55,7 +55,7 @@ function IconUser({ className = ''}) {
   };
 
   return (
-    <span className={`h-6 w-6 hover:cursor-pointer ${className}`}>
+    <span className={`h-6 w-6 hover:cursor-pointer hover:border border-green-500 rounded-full ${className}`}>
       <img src={userIcon} className='h-full w-full' onClick={handleShowUserProfile}/>
       {showUserProfile && <UserProfile closeModal={handleShowUserProfile}/>}
     </span>

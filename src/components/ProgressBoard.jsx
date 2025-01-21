@@ -19,10 +19,10 @@ function ProgressBoard() {
     setShowPopUp(!showPopUp);
   };
 
-  const whereToDo = where("task-status", "==", "to-do");
+  const whereToDo = where("task-status", "==", "To-do");
   useFetchTaskData(setTaskData, setLoading, key, whereToDo);
 
-  const whereActive = where("task-status", "==", "in-progress")
+  const whereActive = where("task-status", "==", "In-progress")
   useFetchTaskData(setActiveTaskData, setLoading, key, whereActive);
 
   return (
@@ -35,14 +35,14 @@ function ProgressBoard() {
         extraIcon={<ReloadIcon />}
       />
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
-      <section className='flex gap-2 h-full bg-slate-50 p-4 rounded-lg'>
+      <section className='flex gap-2 h-full w-full bg-slate-50 p-4 rounded-lg'>
         <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-slate-200 overflow-y-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount={taskData.length}/>
           <section id='To-do' className='flex flex-col gap-2 h-full'>
             {loading ? (
               <span><BarLoader color='#228B22' size={20} /></span>
             ) : (
-              taskData.length > 0 ? (
+              taskData.length > 0 && (
                 taskData.map((taskData, index) => (
                   <TaskCard 
                     key={index}
@@ -54,8 +54,6 @@ function ProgressBoard() {
                     id={taskData['task-id']}
                   />
                 ))
-              ) : (
-                reloadComponent
               )
             )}
           </section>

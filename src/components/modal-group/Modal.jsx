@@ -248,11 +248,17 @@ function CreateTask({ closeModal }) {
     'task-title': '',
     'task-description': '',
     'task-deadline': '',
-    'task-status': 'to-do',
+    'task-status': 'To-do',
     'task-file': '',
-    'task-team': [],
+    'task-team': [...new Set([])],
     'task-project-id': projectId,
   });
+
+  const users = [
+    {id: 1, username: 'Aris'},
+    {id: 2, username: 'Choco'},
+    {id: 3, username: 'Milk'},
+  ]
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -271,15 +277,13 @@ function CreateTask({ closeModal }) {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const docRef = await addDoc(collection(db, 'tasks'), {
+      await addDoc(collection(db, 'tasks'), {
         'task-title': form['task-title'],
         'task-description': form['task-description'],
         'task-deadline': form['task-deadline'],
         'task-status': form['task-status'],
         'task-file': form['task-file'],
         'task-project-id': form['task-project-id'],
-      });
-      const teamRef = await addDoc(collection(docRef, 'teamRef'), {
         'task-team': form['task-team'],
       });
     } catch (error) {
@@ -294,14 +298,20 @@ function CreateTask({ closeModal }) {
 
   const handleStateChange = (data) => {
     console.log('State Changed:', data);
-    try {
-      setForm((prevData) => ({
-        ...prevData,
-        'task-team': [...new Set([...(prevData['task-team'] || []), data.uid])],
-      }));
-    } catch (error) {
-      console.error('Error updating team:', error);
-    }
+    setForm((prevForm) => {
+      if (data.isActive) {
+        return {
+          ...prevForm,
+          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username}],
+        };
+      } else {
+        return {
+          ...prevForm,
+          'task-team': [...prevForm['task-team'].filter((member) => member.uid !== data.uid)]
+        };
+      };
+    });
+
   };
 
 
@@ -314,7 +324,7 @@ function CreateTask({ closeModal }) {
         </span>
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
-          <AlertCard text='Note: Deadline should atleast be 1 hour' title=''/>
+          <AlertCard text='Note: Deadline should atleast be 1 hour.' title='' className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'/>
           <label htmlFor="task-title" className="flex flex-col text-gray-600">
             Title
             <input
@@ -354,12 +364,26 @@ function CreateTask({ closeModal }) {
             />
           </label>
 
-          <label className="flex flex-col text-gray-600">
+          <label className="flex flex-col gap-2 text-gray-600">
             Select Team Members
-            <div className="mt-2 bg-gray-50 p-4 rounded-lg h-[12rem] overflow-scroll">
-              <span className="flex flex-col gap-1">
-                <UserCard username={<FetchUserName />} onStateChange={handleStateChange} className="w-full" />
-              </span>
+            <section className='flex gap-2 p-4 rounded-lg bg-green-50'>
+              {users.map((user) => (
+                <UserCard key={user.id} username={user.username} uid={user.id} onStateChange={handleStateChange}/>
+              ))}
+            </section>
+
+            <div className='flex flex-col'>
+              <p className='text-green-800 -1'>Selected team members will appear here</p>
+              <input
+                className='mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none'
+                readOnly
+                placeholder='Please select atleast one team member'
+                value={
+                  form['task-team'].length > 0
+                    ? form['task-team'].map((member) => member.username).join(', ')
+                    : ""
+                }
+              />
             </div>
           </label>
 
@@ -481,12 +505,12 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   );
 }
 
-function UserProfile({ closeModal }) {
+function UserProfile({ closeModal, username }) {
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-[100vw] h-[100vh]'>
-      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className=''/>
-        <p><FetchUserName /></p>
+    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]'>
+      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium'>
+        <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
+        <p className=''>{username}</p>
       </div>
     </div>
   );
