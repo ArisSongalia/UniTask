@@ -11,7 +11,7 @@ import { FetchUserName } from '../services/FetchData';
 import { doc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
-import { useFetchTaskData } from '../services/FetchData';
+import { useFetchTaskData, fetchNoteData } from '../services/FetchData';
 import { IconUser } from './Icon';
 
 
@@ -23,9 +23,12 @@ function SummaryCard({
 
   const { key } = useReloadContext()
   const [taskData, setTaskData] = useState([]);
+  const [noteData, setNoteData] = useState([])
   const [loading, setLoading] = useState(true);
 
   useFetchTaskData( setTaskData, setLoading, key)
+  fetchNoteData( setNoteData, setLoading, key)
+  
 
   return (
   <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
@@ -37,7 +40,7 @@ function SummaryCard({
 
       <div className="flex gap-1 w-full h-fit">
         <CountCard count={taskData.length} title='Assigned Task' className='' />
-        <CountCard count={count} title='Action Notes' className=''/>
+        <CountCard count={noteData.length} title='Action Notes' className=''/>
         <CountCard count={count} title='Actions' />
 
       </div>
@@ -51,7 +54,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex flex-col items-center cursor-pointer h-full w-full p-4 hover:bg-green-700 hover:text-white bg-white rounded-xl  text-green-800 ${className}`}
+      className={`flex flex-col items-center h-full w-full p-4 bg-green-700 text-white rounded-lg  ${className}`}
     >
         <p className='font-bold text-xl'>{count}</p>
         <p className='font-semibold text-sm text-center'>{title}</p>

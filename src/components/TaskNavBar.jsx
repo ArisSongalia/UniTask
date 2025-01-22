@@ -5,7 +5,7 @@ import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
-import Button from './Button';
+import { ButtonIcon} from './Button';
 
 
 function TaskNavBar() {
@@ -64,7 +64,7 @@ function TaskNavBar() {
           )}
         </span>
         <span className='flex items-center gap-4'>
-          <span id="task-user" className='flex gap-1'>
+          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-gray-100'>
             {loading ? (
               <BarLoader />
             ) : projectData['team'] && (
@@ -73,7 +73,7 @@ function TaskNavBar() {
               ))
             )}
           </span>
-          <Button text='Add Members' iconOnClick={toggleShowAddMembers}/>
+          <ButtonIcon text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
         </span>
       </div>
