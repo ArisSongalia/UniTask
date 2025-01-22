@@ -245,7 +245,10 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
         const querySnapshot = await getDocs(userRef);
 
         if (!querySnapshot.empty) {
-          const users = querySnapshot.docs.map((doc) => doc.data());
+          const users = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }));
           setUsers(users);
         } else {
           console.log('No users found');

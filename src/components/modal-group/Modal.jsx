@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import Icon, { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
-import { addDoc, collection, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, getDoc, getDocs, query, updateDoc, doc, where } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
@@ -305,7 +305,6 @@ function CreateTask({ closeModal }) {
   };
 
   const handleStateChange = (data) => {
-    console.log('State Changed:', data);
     setForm((prevForm) => {
       if (data.isActive) {
         return {
@@ -390,7 +389,7 @@ function CreateTask({ closeModal }) {
               <p className=''>Selected team members will appear here</p>
               <input
                 className="mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
-                placeholder='Please select atleast one team member'
+                placeholder='Please select atleast one task contributor'
                 readOnly
                 value={
                   form['task-team'].length > 0
@@ -412,30 +411,77 @@ function CreateTask({ closeModal }) {
 
 function AddMembers({ closeModal }) {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState([]);
-  const { key } = useReloadContext;
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", color: ""})
+  const { key, reloadComponent } = useReloadContext();
+  const [members, setMembers] = useState([...new Set([])]);
+  const activeProjectId = localStorage.getItem('activeProjectId');
 
   useFetchUsers(setUsers, setLoading, key);
-  console.log(users)
+  
+  const handleAddMembers = (data) => {
+    setMembers((prevMembers) => {
+      if(data.isActive) {
+        return [...prevMembers, { username: data.username, uid: data.uid }]
+      } else {
+        return prevMembers.filter((member) => member.uid !== data.uid);
+      }
+    });
+  };
+
+  const addMembersToProject = async () => {
+    if (!Array.isArray(members) || members.length === 0) {
+      setMessage({ text: "No members to add. Please select at least one member.", color: "red" });
+      return;
+    }
+
+    try {
+      const projectDocRef = doc(db, 'projects', activeProjectId);
+      const projectDoc = await getDoc(projectDocRef);
+
+      if(projectDoc.exists()) {
+        await updateDoc(projectDocRef, { team: members });
+        closeModal();
+        reloadComponent();
+      } else {
+        setMessage({ text: "Project not found", color: "red"});
+      }
+    } catch (error) {
+      setMessage({ text: `Error adding member/s: ${error}`, color: "red"});
+      console.error(error)
+    }
+  };
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
+        <input 
+          className='w-full p-2 flex gap-2 bg-gray-50 mb-2 focus:outline-none focus:ring-0 rounded-md'
+          placeholder='Selected project contributors will appear here'
+          readOnly
+          value={
+            members.length > 0
+              ? members.map((member) => member.username).join(', ')
+              : ""
+          }
+        />
         <span id='contributors' className='flex flex-col gap-4'>
 
-          <span id='users' className='flex flex-col p-4 bg-green-50 gap-1 rounded-md'>
-            
+          <span id='users' className='flex flex-col p-4 bg-gray-50 gap-1 rounded-md h-[25rem] overflow-y-scroll'>
+
             { loading ? (
               <BarLoader />
             ) : users.length > 0 && (
               users.map((user) => (
-                <UserCard username={user.username} email={user.email} className='w-full'/>
+                <UserCard key={user.id} username={user.username} email={user.email} uid={user.id} className='w-full' onStateChange={handleAddMembers}/>
               ))
             )}
           </span>
-
-          <Button text='Add Members' className='w-full'/>
+          
+          <p style={{color: message.color}}>{message.text}</p>
+          <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
         </span>
       </section>
     </div>
