@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
+import { AddMembers } from './modal-group/Modal';
 
 
 function TaskNavBar() {
@@ -11,6 +12,7 @@ function TaskNavBar() {
   const [id, setId] = useState(null);
   const [loading, setLoading] = useState(true)
   const [projectData, setProjectData] = useState([]);
+  const [showAddMembers, setShowAddMembers] = useState(false);
   const activeLocalProjectID = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
@@ -33,6 +35,10 @@ function TaskNavBar() {
     };
 
   }, [fetchID, activeLocalProjectID]);
+
+  const toggleShowAddMembers = () => {
+    setShowAddMembers(!showAddMembers);
+  };
 
   useFetchActiveProjectData(id, setProjectData, setLoading)
 
@@ -60,7 +66,8 @@ function TaskNavBar() {
           <span id="task-user" className='flex gap-1'>
             
           </span>
-          <IconAction dataFeather='plus' />
+          <IconAction dataFeather='plus' iconOnClick={toggleShowAddMembers}/>
+          {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
         </span>
       </div>
     </div>

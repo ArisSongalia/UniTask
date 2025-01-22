@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import Icon, { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
-import { FetchUserName } from '../../services/FetchData';
 import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
+import { useFetchUsers } from '../../services/FetchData';
+import { BarLoader } from 'react-spinners';
 
 function CreateProject({ closeModal }) {
   const { reloadComponent } = useReloadContext();
@@ -409,19 +410,32 @@ function CreateTask({ closeModal }) {
 }
 
 
-function AddContibutors({ closeModal }) {
+function AddMembers({ closeModal }) {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState([]);
+  const { key } = useReloadContext;
+
+  useFetchUsers(setUsers, setLoading, key);
+  console.log(users)
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <span id='contributors' className='flex flex-col gap-4'>
-          <span id='users' className='overflow-y-scroll'>
-            <UserCard />
-            <UserCard />
-            <UserCard />
+
+          <span id='users' className='flex flex-col p-4 bg-green-50 gap-1 rounded-md'>
+            
+            { loading ? (
+              <BarLoader />
+            ) : users.length > 0 && (
+              users.map((user) => (
+                <UserCard username={user.username} email={user.email} className='w-full'/>
+              ))
+            )}
           </span>
 
-          <Button text='Confirm' className='w-full'/>
+          <Button text='Add Members' className='w-full'/>
         </span>
       </section>
     </div>
@@ -518,16 +532,17 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   );
 }
 
-function UserProfile({ closeModal, username, uid }) {
+function UserProfile({ closeModal, username, uid, email }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium'>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <p>{username}</p>
+        <p>{email}</p>
         <p>{uid}</p>
       </div>
     </div>
   );
 }
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddContibutors}
+export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers}

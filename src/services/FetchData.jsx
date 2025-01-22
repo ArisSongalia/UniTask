@@ -237,6 +237,44 @@ const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => 
   }, [activeProjectId, setLoading, refreshKey])
 }
 
+const useFetchUsers = (setUsers, setLoading, refreshKey) => {
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try{
+        const userRef = collection(db, 'users');
+        const querySnapshot = await getDocs(userRef);
 
-export { FetchUserName, fetchProjectData, fetchNoteData, useFetchActiveProjectData, useFetchTaskData};
+        if (!querySnapshot.empty) {
+          const users = querySnapshot.docs.map((doc) => doc.data());
+          setUsers(users);
+        } else {
+          console.log('No users found');
+          setUsers([]);
+        }
+
+      } catch(error) {
+        console.error('Error fetching users: ', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if(user) {
+        fetchUsers();
+        setLoading(true);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+
+  }, [setUsers, setLoading, refreshKey])
+};
+
+
+export { FetchUserName, useFetchUsers, fetchProjectData, fetchNoteData, useFetchActiveProjectData, useFetchTaskData};
 

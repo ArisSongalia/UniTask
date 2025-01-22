@@ -147,7 +147,7 @@ function ProjectCard({
 }
 
 
-function UserCard({className='', username='User Name', uid, onStateChange}) {
+function UserCard({className='', username='User Name', uid, email, onStateChange}) {
   const [isActive, setIsActive] = useState(false)
   const [showUserProfile, setShowUserProfile] = useState(false);
 
@@ -176,7 +176,7 @@ function UserCard({className='', username='User Name', uid, onStateChange}) {
     >
       <span className="p-2 hover:bg-green-50 border-r h-full " onClick={toggleUserProfile}>
         <img className='w-8 h-auto rounded-full' src={userIcon} alt="user-icon" />
-        {showUserProfile && <UserProfile username={username} closeModal={toggleUserProfile}/>}
+        {showUserProfile && <UserProfile username={username} email={email} closeModal={toggleUserProfile}/>}
       </span>
 
       <span className={`flex flex-col font-semibold px-3 w-full h-full p-2 rounded-md hover:bg-green-700 hover:text-white ${isActive ? 'bg-green-700 text-white' : 'bg-solid'}`} onClick={toggleIsActive} >

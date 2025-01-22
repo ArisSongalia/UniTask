@@ -9,12 +9,12 @@
 /* Scrollbar styles */
 ::-webkit-scrollbar {
   width: 4px; 
-  height: 2px;
+  height: 4px;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #e0f1e3;
+  background-color: #c2e0c8;
   border-radius: 999px;
 }
 
