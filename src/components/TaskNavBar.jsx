@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IconAction } from './Icon';
+import { IconAction, IconUser } from './Icon';
 import { Link } from 'react-router-dom';
 import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
@@ -64,7 +64,13 @@ function TaskNavBar() {
         </span>
         <span className='flex items-center gap-4'>
           <span id="task-user" className='flex gap-1'>
-            
+            {loading ? (
+              <BarLoader />
+            ) : projectData['team'] && (
+              projectData['team'].map((member) => (
+                <IconUser key={member.uid} username={member.username} uid={member.uid} />
+              ))
+            )}
           </span>
           <IconAction dataFeather='plus' iconOnClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
