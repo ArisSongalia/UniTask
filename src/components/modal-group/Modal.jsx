@@ -8,8 +8,9 @@ import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
-import { useFetchUsers } from '../../services/FetchData';
+import { useFetchUsers, useFetchActiveProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
+
 
 function CreateProject({ closeModal }) {
   const { reloadComponent } = useReloadContext();
@@ -244,6 +245,8 @@ function CreateTask({ closeModal }) {
   const [message, setMessage] = useState({ text: '', color: '' });
   const projectId = localStorage.getItem('activeProjectId')
   const dateRef = useRef();
+  const [projectData, setProjectData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     'task-title': '',
@@ -255,11 +258,8 @@ function CreateTask({ closeModal }) {
     'task-project-id': projectId,
   });
 
-  const users = [
-    {id: 1, username: 'Aris'},
-    {id: 2, username: 'Choco'},
-    {id: 3, username: 'Milk'},
-  ]
+  useFetchActiveProjectData(projectId, setProjectData, setLoading);
+  
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -379,9 +379,12 @@ function CreateTask({ closeModal }) {
               <p className='text-green-700'>Available Members</p>
 
               <section className="flex gap-2">
-                {users.map((user) => (
-                  <UserCard key={user.id} username={user.username} uid={user.id} onStateChange={handleStateChange}/>
-                ))}
+                {loading ? (
+                  <BarLoader color='green'/>
+                ) : projectData['team'] && (
+                  projectData['team'].map((member) => (
+                  <UserCard key={member.uid} username={member.username} uid={member.uid} onStateChange={handleStateChange}/>
+                )))}
               </section>
             </section>
 

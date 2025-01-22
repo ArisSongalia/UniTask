@@ -5,6 +5,7 @@ import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
+import Button from './Button';
 
 
 function TaskNavBar() {
@@ -72,7 +73,7 @@ function TaskNavBar() {
               ))
             )}
           </span>
-          <IconAction dataFeather='plus' iconOnClick={toggleShowAddMembers}/>
+          <Button text='Add Members' iconOnClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
         </span>
       </div>
