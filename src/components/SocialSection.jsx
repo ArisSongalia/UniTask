@@ -1,14 +1,13 @@
 import React from 'react';
-import { UserCard } from './Cards';
 import TitleSection from './TitleSection';
 
 function SocialSection({ className = '' }) {
   return (
     <div
-      className={`flex flex-col p-4 rounded-md h-full w-full overflow-hidden bg-white shadow-sm ${className}`}
+      className={`flex z-100 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-[25rem] h-[30rem] overflow-hidden bg-white ${className}`}
     >
       <TitleSection title="Socials" buttonText="New Chat" />
-      <section className="flex w-full h-full gap-2">
+      <section className="flex gap-2">
 
         <section
           id="user-chat-heads"

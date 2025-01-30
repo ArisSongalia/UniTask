@@ -3,9 +3,10 @@ import { IconAction, IconUser } from './Icon';
 import { Link } from 'react-router-dom';
 import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
-import { BarLoader } from 'react-spinners';
+import { BounceLoader, BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
 import { ButtonIcon} from './Button';
+import SocialSection from './SocialSection';
 
 
 function TaskNavBar() {
@@ -14,6 +15,7 @@ function TaskNavBar() {
   const [loading, setLoading] = useState(true)
   const [projectData, setProjectData] = useState([]);
   const [showAddMembers, setShowAddMembers] = useState(false);
+  const [showSocialSection, setShowSocialSection] = useState(false);
   const activeLocalProjectID = localStorage.getItem('activeProjectId');
 
   useEffect(() => {
@@ -41,6 +43,11 @@ function TaskNavBar() {
     setShowAddMembers(!showAddMembers);
   };
 
+  const toggleShowSocialSection = () => {
+    setShowSocialSection(!showSocialSection);
+  }
+
+
   useFetchActiveProjectData(id, setProjectData, setLoading)
 
   return (
@@ -66,7 +73,7 @@ function TaskNavBar() {
         <span className='flex items-center gap-4'>
           <span id="task-user" className='flex gap-1 p-2 rounded-full bg-gray-100'>
             {loading ? (
-              <BarLoader />
+              <BounceLoader color='#228B22' size={25} />
             ) : projectData['team'] && (
               projectData['team'].map((member) => (
                 <IconUser key={member.uid} username={member.username} uid={member.uid} />
@@ -75,6 +82,8 @@ function TaskNavBar() {
           </span>
           <ButtonIcon text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
+          <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
+          {showSocialSection && <SocialSection/>}
         </span>
       </div>
     </div>

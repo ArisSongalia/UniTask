@@ -6,7 +6,7 @@ import Button from './Button';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { IconUser } from './Icon';
-import { FetchUserName } from '../services/FetchData';
+
 
 function Navbar() {
   const [activeAuth, setActiveAuth] = useState(null);
