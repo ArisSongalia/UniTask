@@ -1,6 +1,6 @@
 import React from 'react'
 import NoteSection from './NoteSection'
-import CanvasSection from '../CanvasSection'
+import CanvasSection from './CanvasSection'
 
 function TaskSideBar() {
   return (

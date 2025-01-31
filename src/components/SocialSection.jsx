@@ -4,7 +4,7 @@ import TitleSection from './TitleSection';
 function SocialSection({ className = '' }) {
   return (
     <div
-      className={`flex z-100 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-[25rem] h-[30rem] overflow-hidden bg-white ${className}`}
+      className={`flex z-100 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-[30rem] h-[30rem] overflow-hidden bg-white ${className}`}
     >
       <TitleSection title="Socials" buttonText="New Chat" />
       <section className="flex gap-2">
