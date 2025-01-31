@@ -314,7 +314,9 @@ function CanvasCard({title = 'Canvas Title', description = 'Canvas description',
   }
 
   return(
-    <div className={`flex flex-col bg-white p-4 gap-4 h-[10rem] w-full rounded-lg shadow-sm border border-blue-600 ${className}`}>
+    <div 
+    className={`flex flex-col bg-white p-4 gap-2 h-[12rem] justify-between w-full rounded-xl border-opacity-50 
+    shadow-sm border border-green-600 ${className}`}>
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
@@ -323,7 +325,9 @@ function CanvasCard({title = 'Canvas Title', description = 'Canvas description',
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
       </span>
-      <p className='text-sm'>{description}</p>
+      <span className='w-full h-full bg-gray-50 rounded-lg'></span>
+
+      <Button text='Open Canvas' />
     </div>
   )
 }
