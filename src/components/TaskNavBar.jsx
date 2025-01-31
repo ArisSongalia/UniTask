@@ -71,7 +71,8 @@ function TaskNavBar() {
           )}
         </span>
         <span className='flex items-center gap-4'>
-          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-gray-100'>
+
+          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-gray-50'>
             {loading ? (
               <BounceLoader color='#228B22' size={25} />
             ) : projectData['team'] && (
@@ -80,8 +81,10 @@ function TaskNavBar() {
               ))
             )}
           </span>
+
           <ButtonIcon text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
+
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
           {showSocialSection && <SocialSection/>}
         </span>

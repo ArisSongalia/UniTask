@@ -13,7 +13,6 @@ import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
 import { useFetchTaskData, fetchNoteData } from '../services/FetchData';
 import { IconUser } from './Icon';
-import { IconTitleSection } from './TitleSection';
 
 
 function SummaryCard({
@@ -315,7 +314,7 @@ function CanvasCard({title = 'Canvas Title', description = 'Canvas description',
 
   return(
     <div 
-    className={`flex flex-col bg-white p-4 gap-2 h-[12rem] justify-between w-full rounded-xl border-opacity-50 
+    className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-xl border-opacity-50 
     shadow-sm border border-green-600 ${className}`}>
       <span className='flex justify-between'>
         <span>

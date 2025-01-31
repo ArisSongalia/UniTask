@@ -190,10 +190,7 @@ function CreateNote({ closeModal, projectId }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Create Note</h2>
-          <IconAction dataFeather="x" iconOnClick={closeModal} />
-        </span>
+        <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
         <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
           <label htmlFor="title" className="flex flex-col text-gray-600">
@@ -327,10 +324,7 @@ function CreateTask({ closeModal }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Create Task</h2>
-          <IconAction dataFeather="x" iconOnClick={closeModal} />
-        </span>
+        <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
           <AlertCard text='Note: Deadline should atleast be 1 hour.' title='' className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'/>
@@ -405,6 +399,67 @@ function CreateTask({ closeModal }) {
 
           <p style={{ color: message.color }}>{message.text}</p>
           <Button type="submit" text="Create Task" className="py-3" />
+        </form>
+      </section>
+    </div>
+  );
+}
+
+function CreateCanvas({ closeModal }) {
+  const { reloadComponent } = useReloadContext()
+  const [message, setMessage] = useState({ text: '', color: '' });
+  const [canvasData, setCanvasData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    'canvas-title': "",
+    'canvas-description': "",
+    'canvas-date:': "",
+  });
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+        <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
+
+        <form action="" className="flex flex-col space-y-4">
+          <label htmlFor="task-title" className="flex flex-col text-gray-600">
+            Title
+            <input
+              type="text"
+              id="task-title"
+              name="task-title"
+              value={form['task-title']}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </label>
+
+          <label htmlFor="task-description" className="flex flex-col text-gray-600">
+            Description
+            <input
+              type="text"
+              id="task-description"
+              name="task-description"
+              value={form['task-description']}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            />
+          </label>
+
+          <label htmlFor="date" className="flex flex-col text-gray-600">
+            Date-time
+            <input
+              type="datetime-local"
+              id="date"
+              name="task-deadline"
+              value={form['task-deadline']}
+              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+            />
+          </label>
+
+          <p style={{ color: message.color }}>{message.text}</p>
+          <Button type="submit" text="Create Canvas" className="py-3" />
         </form>
       </section>
     </div>
@@ -594,4 +649,4 @@ function UserProfile({ closeModal, username, uid, email }) {
   );
 }
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers}
+export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers, CreateCanvas}
