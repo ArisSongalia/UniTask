@@ -35,7 +35,7 @@ function ProgressBoard() {
         extraIcon={<ReloadIcon />}
       />
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
-      <section className='flex gap-2 h-full w-full bg-slate-50 p-4 rounded-lg'>
+      <section className='flex gap-2 h-full w-full bg-[#fafafa] p-4 rounded-lg'>
         <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-slate-200 overflow-y-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount={taskData.length}/>
           <section id='To-do' className='flex flex-col gap-2 h-full'>

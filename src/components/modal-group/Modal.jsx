@@ -55,12 +55,9 @@ function CreateProject({ closeModal }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Create Project</h2>
-          <IconAction dataFeather="x" iconOnClick={closeModal} />
-        </span>
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
         <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
           <label htmlFor="project-title" className="flex flex-col text-gray-600">
@@ -139,7 +136,7 @@ function CreateProject({ closeModal }) {
           <Button type="submit" text="Create Project" className="py-3" />
         </form>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -188,8 +185,8 @@ function CreateNote({ closeModal, projectId }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
         <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
@@ -232,7 +229,7 @@ function CreateNote({ closeModal, projectId }) {
           <Button type="submit" text="Create Note" className="py-3" />
         </form>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -322,8 +319,8 @@ function CreateTask({ closeModal }) {
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
@@ -401,7 +398,7 @@ function CreateTask({ closeModal }) {
           <Button type="submit" text="Create Task" className="py-3" />
         </form>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -418,8 +415,8 @@ function CreateCanvas({ closeModal }) {
   });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
         <form action="" className="flex flex-col space-y-4">
@@ -462,7 +459,7 @@ function CreateCanvas({ closeModal }) {
           <Button type="submit" text="Create Canvas" className="py-3" />
         </form>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -512,8 +509,8 @@ function AddMembers({ closeModal }) {
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <input 
           className='w-full p-2 flex gap-2 bg-gray-50 mb-2 focus:outline-none focus:ring-0 rounded-md'
@@ -542,7 +539,7 @@ function AddMembers({ closeModal }) {
           <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
         </span>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -554,8 +551,8 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex items-center justify-center">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <section
           className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
             h-[30rem] w-[40rem] p-4 justify-between overflow-hidden`}
@@ -583,7 +580,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
           <p className="text-xs text-gray-600 font-semibold">Note by: {user} - {date}</p>
         </section>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
@@ -600,8 +597,8 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex items-center justify-center">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation}>
         <section
           className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
             h-[30rem] w-[40rem] p-4 justify-between overflow-hidden`}
@@ -632,19 +629,19 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
           <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {owner} - {date}</p>
         </section>
       </section>
-    </div>
+    </backdrop>
   );
 }
 
 function UserProfile({ closeModal, username, uid, email }) {
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]'>
-      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium'>
+    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+      <backdrop id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <p>{username}</p>
         <p>{email}</p>
         <p>{uid}</p>
-      </div>
+      </backdrop>
     </div>
   );
 }

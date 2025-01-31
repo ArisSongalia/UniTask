@@ -15,15 +15,15 @@ function Popup({ title, closeModal, id, collectionName}) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="flex flex-col p-4 bg-white rounded-2xl gap-1 w-[15rem] h-auto">
+    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <div className="flex flex-col p-4 bg-white rounded-2xl gap-1 w-[15rem] h-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={title} iconOnClick={closeModal} className='items-center' dataFeather='x' />
         <section className="flex items-center group bg-red-50 text-red-700 p-2  rounded-xl w-full hover:bg-red-700 hover:text-white cursor-pointer" onClick={handleDelete}>
           <Icon dataFeather='trash' className='text-red-700 group-hover:text-white'/>
           <p>Delete</p>
         </section>
       </div>
-    </div>
+    </backdrop>
   );
 }
 

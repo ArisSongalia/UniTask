@@ -10,11 +10,12 @@ function CanvasSection() {
     setShowCreateCanvas(!showCreateCanvas);
   }
 
+
   return (
     <div className='w-full h-full flex flex-col bg-white rounded-md p-4'>
       <IconTitleSection title='Canvas' dataFeather='plus' iconOnClick={toggleShowCreateCanvas}/>
       { showCreateCanvas && <CreateCanvas closeModal={toggleShowCreateCanvas} /> }
-      
+
       <section className='grid grid-cols-2 gap-2'>
         <CanvasCard />
       </section>

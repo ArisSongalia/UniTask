@@ -13,6 +13,7 @@ import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
 import { useFetchTaskData, fetchNoteData } from '../services/FetchData';
 import { IconUser } from './Icon';
+import MainCanvas from './modal-group/MainCanvas';
 
 
 function SummaryCard({
@@ -305,17 +306,23 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
   )
 }
 
-function CanvasCard({title = 'Canvas Title', description = 'Canvas description', date = '00/00/00', id, className}) {
+function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) {
   const [showPopUp, setShowPopUp] = useState(false);
+  const [showCanvas, setShowCanvas] = useState(false);
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   }
 
+  const toggleShowCanvas = () => {
+    setShowCanvas(!showCanvas);
+  }
+
   return(
     <div 
-    className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-xl border-opacity-50 
-    shadow-sm border border-green-600 ${className}`}>
+      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-xl border-opacity-50 
+      shadow-sm border border-green-600 ${className}`}
+    >
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
@@ -326,7 +333,8 @@ function CanvasCard({title = 'Canvas Title', description = 'Canvas description',
       </span>
       <span className='w-full h-full bg-gray-50 rounded-lg'></span>
 
-      <Button text='Open Canvas' />
+      <Button text='Open Canvas' onClick={toggleShowCanvas}/>
+      {showCanvas && <MainCanvas closeModal={toggleShowCanvas}/>}
     </div>
   )
 }
