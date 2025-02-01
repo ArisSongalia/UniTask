@@ -63,14 +63,11 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   )
 }
 
-function AlertCard({text = 'text', title = 'Welcome to UniTask, ', className = ''}) {
+function AlertCard({text = 'text', className = ''}) {
   return (
   <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-2xl
                        p-4 justify-between h-auto shadow-sm ${className}`}>
-      <span >
-        <h2 className='font-semibold'>{title} </h2>
         <p>{text}</p>
-      </span>
     </section>
   )
 }
@@ -326,7 +323,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
-          <p className='text-xs text-gray-600 font-semibold'>{date}</p>
+          <p className='text-xs text-gray-500 font-semibold'>{date}</p>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
