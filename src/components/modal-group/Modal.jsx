@@ -55,7 +55,7 @@ function CreateProject({ closeModal }) {
   };
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
@@ -136,7 +136,7 @@ function CreateProject({ closeModal }) {
           <Button type="submit" text="Create Project" className="py-3" />
         </form>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -185,7 +185,7 @@ function CreateNote({ closeModal, projectId }) {
   };
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
@@ -229,7 +229,7 @@ function CreateNote({ closeModal, projectId }) {
           <Button type="submit" text="Create Note" className="py-3" />
         </form>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -319,7 +319,7 @@ function CreateTask({ closeModal }) {
 
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
@@ -398,7 +398,7 @@ function CreateTask({ closeModal }) {
           <Button type="submit" text="Create Task" className="py-3" />
         </form>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -415,7 +415,7 @@ function CreateCanvas({ closeModal }) {
   });
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
@@ -447,7 +447,7 @@ function CreateCanvas({ closeModal }) {
           <Button type="submit" text="Create Canvas" className="py-3" />
         </form>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -497,7 +497,7 @@ function AddMembers({ closeModal }) {
 
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <input 
@@ -527,7 +527,7 @@ function AddMembers({ closeModal }) {
           <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
         </span>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -539,7 +539,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
   };
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <section
           className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
@@ -568,7 +568,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
           <p className="text-xs text-gray-600 font-semibold">Note by: {user} - {date}</p>
         </section>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
@@ -585,7 +585,7 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   }
 
   return (
-    <backdrop className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation}>
         <section
           className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
@@ -617,19 +617,19 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
           <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {owner} - {date}</p>
         </section>
       </section>
-    </backdrop>
+    </div>
   );
 }
 
 function UserProfile({ closeModal, username, uid, email }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
-      <backdrop id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
+      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <p>{username}</p>
         <p>{email}</p>
         <p>{uid}</p>
-      </backdrop>
+      </div>
     </div>
   );
 }
