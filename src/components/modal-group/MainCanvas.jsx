@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IconTitleSection } from '../TitleSection';
+import { IconAction } from '../Icon';
 
 function MainCanvas({ closeModal }) {
   const canvasRef = useRef(null);
@@ -44,6 +45,13 @@ function MainCanvas({ closeModal }) {
     };
   }, []); 
 
+  const resetCanvas = () => {
+    const canvas = canvasRef.current;
+    if(canvas){
+      canvas.width = canvas.width;
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50">
       <div
@@ -51,6 +59,9 @@ function MainCanvas({ closeModal }) {
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title="Canvas" iconOnClick={closeModal} dataFeather="x" />
+        <span className='flex gap-2 mb-2'>
+          <IconAction dataFeather='refresh-cw' iconOnClick={resetCanvas}/>
+        </span>
         <canvas
           ref={canvasRef}
           className="bg-gray-50 h-[80vh] w-full rounded-md border"
