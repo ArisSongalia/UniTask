@@ -1,23 +1,56 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { IconTitleSection } from '../TitleSection';
 import { IconAction } from '../Icon';
 
 function MainCanvas({ closeModal }) {
-  const canvasRef = useRef(null);
+  const virtualCanvasRef = useRef(null);
+  const viewCanvasRef = useRef(null);
   const isDrawingRef = useRef(false);
+  const scaleRef = useRef(1);
+  const offsetRef = useRef({ x: 0, y: 0 });
+
+  const renderView = useCallback(() => {
+    const virtualCanvas = virtualCanvasRef.current;
+    const viewCanvas = viewCanvasRef.current;
+    if (!virtualCanvas || !viewCanvas) return;
+
+    const viewCtx = viewCanvas.getContext('2d');
+    if (!viewCtx) return;
+
+    viewCtx.clearRect(0, 0, viewCanvas.width, viewCanvas.height);
+    viewCtx.save();
+    viewCtx.scale(scaleRef.current, scaleRef.current);
+    viewCtx.translate(offsetRef.current.x, offsetRef.current.y);
+    viewCtx.drawImage(virtualCanvas, 0, 0);
+    viewCtx.restore();
+  }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    const virtualCanvas = virtualCanvasRef.current;
+    const viewCanvas = viewCanvasRef.current;
+    if (!virtualCanvas || !viewCanvas) return;
 
-    if (!canvas) return;
+    const virtualCtx = virtualCanvas.getContext('2d');
+    if (!virtualCtx) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    virtualCanvas.width = 2000;
+    virtualCanvas.height = 2000;
 
-    const startDrawing = () => {
+    const setViewCanvasDimensions = () => {
+      const rect = viewCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      viewCanvas.width = rect.width * dpr;
+      viewCanvas.height = rect.height * dpr;
+      renderView();
+    };
+
+    const startDrawing = (event) => {
       isDrawingRef.current = true;
+      const rect = viewCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
+      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+      virtualCtx.fillRect(x, y, 2.5, 2.5);
+      renderView();
     };
 
     const stopDrawing = () => {
@@ -26,31 +59,43 @@ function MainCanvas({ closeModal }) {
 
     const draw = (event) => {
       if (!isDrawingRef.current) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      ctx.fillRect(x, y, 2.5, 2.5);
+      const rect = viewCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
+      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+      virtualCtx.fillRect(x, y, 2.5, 2.5);
+      renderView();
     };
 
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseleave', stopDrawing);
+    setViewCanvasDimensions();
+
+    viewCanvas.addEventListener('mousedown', startDrawing);
+    viewCanvas.addEventListener('mouseup', stopDrawing);
+    viewCanvas.addEventListener('mousemove', draw);
+    viewCanvas.addEventListener('mouseleave', stopDrawing)
+    window.addEventListener('resize', setViewCanvasDimensions);
 
     return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseleave', stopDrawing);
+      viewCanvas.removeEventListener('mousedown', startDrawing);
+      viewCanvas.removeEventListener('mouseup', stopDrawing);
+      viewCanvas.removeEventListener('mousemove', draw);
+      viewCanvas.removeEventListener('mouseleave', stopDrawing);
+      window.removeEventListener('resize', setViewCanvasDimensions);
     };
-  }, []); 
+  }, [renderView]);
 
   const resetCanvas = () => {
-    const canvas = canvasRef.current;
-    if(canvas){
-      canvas.width = canvas.width;
+    const virtualCanvas = virtualCanvasRef.current;
+    const viewCanvas = viewCanvasRef.current;
+    if (!virtualCanvas || !viewCanvas) return;
+
+    const virtualCtx = virtualCanvas.getContext('2d');
+    const viewCtx = viewCanvas.getContext('2d');
+
+    if (virtualCtx && viewCtx) {
+      virtualCtx.clearRect(0, 0, virtualCanvas.width, virtualCanvas.height);
+      viewCtx.clearRect(0, 0, viewCanvas.width, viewCanvas.height);
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50">
@@ -58,14 +103,13 @@ function MainCanvas({ closeModal }) {
         className="flex flex-col p-4 bg-white rounded-md w-full max-w-screen-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title="Canvas" iconOnClick={closeModal} dataFeather="x" />
-        <span className='flex gap-2 mb-2'>
+        <IconTitleSection title="Canvas" dataFeather="x" iconOnClick={closeModal} />
+        <section className='action-icons w-full flex mb-2'>
           <IconAction dataFeather='refresh-cw' iconOnClick={resetCanvas}/>
-        </span>
-        <canvas
-          ref={canvasRef}
-          className="bg-gray-50 h-[80vh] w-full rounded-md border"
-        ></canvas>
+        </section>
+
+        <canvas ref={viewCanvasRef} className="bg-gray-50 h-[80vh] w-full rounded-md border"></canvas>
+        <canvas ref={virtualCanvasRef} style={{ display: 'none' }}></canvas>
       </div>
     </div>
   );
