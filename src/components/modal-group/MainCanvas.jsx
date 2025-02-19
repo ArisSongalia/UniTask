@@ -8,6 +8,7 @@ function MainCanvas({ closeModal }) {
   const isDrawingRef = useRef(false);
   const scaleRef = useRef(1);
   const offsetRef = useRef({ x: 0, y: 0 });
+  const startPointRef = useRef({ x: 0, y: 0});
 
   const renderView = useCallback(() => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -53,6 +54,36 @@ function MainCanvas({ closeModal }) {
       renderView();
     };
 
+    const startLineDrawing = (event) => {
+      isDrawingRef.current = true;
+      const rect = viewCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
+      const y = (event.clientY - rect.top - offsetRef.current.x) / scaleRef.current;
+
+      startPointRef.current = {x, y};
+      virtualCtx.beginPath();
+      virtualCanvas.moveTo(x, y);
+      renderView();
+    }
+
+    const lineDraw = (event) => {
+      if (!isDrawingRef.current) return;
+      const rect = viewCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
+      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+
+      virtualCtx.lineTo(x, y);
+      virtualCtx.stroke();
+      renderView();
+    }
+
+    const stopLineDrawing = () => {
+      if (isDrawingRef.current) {
+        isDrawingRef.current = false;
+        virtualCtx.closePath();
+      }
+    }
+
     const stopDrawing = () => {
       isDrawingRef.current = false;
     };
@@ -68,16 +99,16 @@ function MainCanvas({ closeModal }) {
 
     setViewCanvasDimensions();
 
-    viewCanvas.addEventListener('mousedown', startDrawing);
-    viewCanvas.addEventListener('mouseup', stopDrawing);
-    viewCanvas.addEventListener('mousemove', draw);
+    viewCanvas.addEventListener('mousedown', startLineDrawing);
+    viewCanvas.addEventListener('mouseup', stopLineDrawing);
+    viewCanvas.addEventListener('mousemove', lineDraw);
     viewCanvas.addEventListener('mouseleave', stopDrawing)
     window.addEventListener('resize', setViewCanvasDimensions);
 
     return () => {
-      viewCanvas.removeEventListener('mousedown', startDrawing);
-      viewCanvas.removeEventListener('mouseup', stopDrawing);
-      viewCanvas.removeEventListener('mousemove', draw);
+      viewCanvas.removeEventListener('mousedown', startLineDrawing);
+      viewCanvas.removeEventListener('mouseup', stopLineDrawing);
+      viewCanvas.removeEventListener('mousemove', lineDraw);
       viewCanvas.removeEventListener('mouseleave', stopDrawing);
       window.removeEventListener('resize', setViewCanvasDimensions);
     };
