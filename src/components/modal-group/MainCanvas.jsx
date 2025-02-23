@@ -11,10 +11,18 @@ function MainCanvas({ closeModal }) {
   const startPointRef = useRef({ x: 0, y: 0 });
   const [isActiveTool, setIsActiveTool] = useState({
     erase: false,
-    pencil: false,
+    pencil: true,
   });
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+
+  const getVirtualCanvasAndContext = () => {
+    const virtualCanvas = virtualCanvasRef.current;
+    if (!virtualCanvas) return { virtualCanvas: null, virtualCtx: null };
+
+    const virtualCtx = virtualCanvas.getContext('2d');
+    return { virtualCanvas, virtualCtx };
+  };
 
   const renderView = useCallback(() => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -68,16 +76,29 @@ function MainCanvas({ closeModal }) {
 
     const toolHandlers = {
       erase: (virtualCtx, x, y) => {
-        virtualCtx.clearRect(x - 10, y - 10, 20, 20); // Eraser logic
+        virtualCtx.clearRect(x - 10, y - 10, 20, 20); 
       },
       pencil: (virtualCtx, x, y) => {
-        virtualCtx.lineTo(x, y); // Pencil logic
+        virtualCtx.lineTo(x, y); 
         virtualCtx.stroke();
       },
     };
 
+    const saveCanvasState = () => {
+      const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
+      if (!virtualCanvas || !virtualCtx) return;
+
+      const imageData = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
+
+      setUndoStack((prev) => [...prev, imageData]);
+
+      setRedoStack([]);
+    };
+
     const startAction = (event) => {
       isDrawingRef.current = true;
+      saveCanvasState();
+
       const rect = viewCanvas.getBoundingClientRect();
       const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
       const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
@@ -85,21 +106,8 @@ function MainCanvas({ closeModal }) {
       startPointRef.current = { x, y };
       virtualCtx.beginPath();
       virtualCtx.moveTo(x, y);
+
       renderView();
-    };
-
-    const saveCanvasState = () => {
-      const virtualCanvas = virtualCanvasRef.current;
-      if (!virtualCanvas) return;
-
-      const virtualCtx = virtualCanvas.getContext('2d');
-      if (!virtualCtx) return;
-
-      const imageData = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
-
-      setUndoStack((prev) => [...prev, imageData]);
-
-      setRedoStack([]);
     };
 
     const action = (event) => {
@@ -115,14 +123,13 @@ function MainCanvas({ closeModal }) {
         toolHandlers[activeTool](virtualCtx, x, y);
         renderView();
       }
-
-      saveCanvasState();
     };
 
     const stopCurrentAction = () => {
       if (isDrawingRef.current) {
         isDrawingRef.current = false;
         virtualCtx.closePath();
+        saveCanvasState();
       }
     };
 
@@ -167,38 +174,35 @@ function MainCanvas({ closeModal }) {
   };
 
   const handleUndo = () => {
-    const virtualCanvas = virtualCanvasRef.current;
-    if (!virtualCanvas || undoStack.length === 0) return;
+    const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
+    if (!virtualCanvas || !virtualCtx || undoStack.length === 0) return;
 
-    const virtualCtx = virtualCanvas.getContext('2d');
-    if (!virtualCtx) return;
+    const lastState = undoStack[undoStack.length - 1];
 
-    const lastState = undoStack[undoStack.length - 6];
-    setUndoStack((prev) => prev.slice(0, -6));
+    setUndoStack((prev) => prev.slice(0, -1)); 
+    setRedoStack((prev) => [...prev, virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height)]);
 
-    const currentState = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
-    setRedoStack((prev) => [...prev, currentState]);
-
-    virtualCtx.putImageData(lastState, 0, 0);
-    renderView();
+    if (lastState) {
+      virtualCtx.putImageData(lastState, 0, 0);
+      renderView();
+    }
   };
 
   const handleRedo = () => {
-    const virtualCanvas = virtualCanvasRef.current;
-    if (!virtualCanvas || redoStack.length === 0) return;
+    const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
+    if (!virtualCanvas || !virtualCtx || redoStack.length === 0) return;
 
-    const virtualCtx = virtualCanvas.getContext('2d');
-    if (!virtualCtx) return;
+    const lastState = redoStack[redoStack.length - 1];
 
-    const lastState = redoStack[redoStack.length - 6];
-    setRedoStack((prev) => prev.slice(0, -6));
+    setRedoStack((prev) => prev.slice(0, -1)); 
+    setUndoStack((prev) => [...prev, virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height)]);
 
-    const currentState = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
-    setUndoStack((prev) => [...prev, currentState]);
-
-    virtualCtx.putImageData(lastState, 0, 0);
-    renderView();
+    if (lastState) {
+      virtualCtx.putImageData(lastState, 0, 0);
+      renderView();
+    }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50" onClick={closeModal}>
