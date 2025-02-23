@@ -13,6 +13,8 @@ function MainCanvas({ closeModal }) {
     erase: false,
     pencil: false,
   });
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
 
   const renderView = useCallback(() => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -86,6 +88,20 @@ function MainCanvas({ closeModal }) {
       renderView();
     };
 
+    const saveCanvasState = () => {
+      const virtualCanvas = virtualCanvasRef.current;
+      if (!virtualCanvas) return;
+
+      const virtualCtx = virtualCanvas.getContext('2d');
+      if (!virtualCtx) return;
+
+      const imageData = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
+
+      setUndoStack((prev) => [...prev, imageData]);
+
+      setRedoStack([]);
+    };
+
     const action = (event) => {
       if (!isDrawingRef.current) return;
 
@@ -99,6 +115,8 @@ function MainCanvas({ closeModal }) {
         toolHandlers[activeTool](virtualCtx, x, y);
         renderView();
       }
+
+      saveCanvasState();
     };
 
     const stopCurrentAction = () => {
@@ -141,13 +159,45 @@ function MainCanvas({ closeModal }) {
     }
   };
 
-  
-
   const selectTool = (tool) => {
     setIsActiveTool((prev) => ({
       erase: tool === 'erase' ? !prev.erase : false,
       pencil: tool === 'pencil' ? !prev.pencil : false,
     }));
+  };
+
+  const handleUndo = () => {
+    const virtualCanvas = virtualCanvasRef.current;
+    if (!virtualCanvas || undoStack.length === 0) return;
+
+    const virtualCtx = virtualCanvas.getContext('2d');
+    if (!virtualCtx) return;
+
+    const lastState = undoStack[undoStack.length - 6];
+    setUndoStack((prev) => prev.slice(0, -6));
+
+    const currentState = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
+    setRedoStack((prev) => [...prev, currentState]);
+
+    virtualCtx.putImageData(lastState, 0, 0);
+    renderView();
+  };
+
+  const handleRedo = () => {
+    const virtualCanvas = virtualCanvasRef.current;
+    if (!virtualCanvas || redoStack.length === 0) return;
+
+    const virtualCtx = virtualCanvas.getContext('2d');
+    if (!virtualCtx) return;
+
+    const lastState = redoStack[redoStack.length - 6];
+    setRedoStack((prev) => prev.slice(0, -6));
+
+    const currentState = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
+    setUndoStack((prev) => [...prev, currentState]);
+
+    virtualCtx.putImageData(lastState, 0, 0);
+    renderView();
   };
 
   return (
@@ -159,28 +209,30 @@ function MainCanvas({ closeModal }) {
         <IconTitleSection title="Canvas" dataFeather="x" iconOnClick={closeModal} />
         <section className='action-icons w-full gap-1 flex mb-2'>
           <section className='w-full flex gap-1'>
-            <IconAction 
-              dataFeather='arrow-left' 
-
-            />
-            <IconAction 
-              dataFeather='arrow-right' 
-            />
-            <IconAction 
-              dataFeather='refresh-cw' 
-              iconOnClick={resetCanvas} 
-            />
-            <IconAction
-              dataFeather='delete'
-              className={`${isActiveTool.erase ? "bg-green-700 text-white" : ""}`}
-              iconOnClick={() => selectTool('erase')}
-            />
             <IconAction
               dataFeather='edit-2'
               className={`${isActiveTool.pencil ? "bg-green-700 text-white" : ""}`}
               iconOnClick={() => selectTool('pencil')}
             />
+            <IconAction
+              dataFeather='x-circle'
+              className={`${isActiveTool.erase ? "bg-green-700 text-white" : ""}`}
+              iconOnClick={() => selectTool('erase')}
+            />
           </section>
+
+          <IconAction 
+            dataFeather='arrow-left' 
+            iconOnClick={handleUndo}
+          />
+          <IconAction 
+            dataFeather='arrow-right' 
+            iconOnClick={handleRedo}
+          />
+          <IconAction 
+            dataFeather='refresh-cw' 
+            iconOnClick={resetCanvas} 
+          />
           <IconAction dataFeather="more-vertical" />
         </section>
 
