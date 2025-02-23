@@ -9,6 +9,7 @@ function MainCanvas({ closeModal }) {
   const scaleRef = useRef(1);
   const offsetRef = useRef({ x: 0, y: 0 });
   const startPointRef = useRef({ x: 0, y: 0});
+  const [isActiveTool, setIsActiveTool] = useState(false);
 
   const renderView = useCallback(() => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -45,15 +46,6 @@ function MainCanvas({ closeModal }) {
       renderView();
     };
 
-    const startDrawing = (event) => {
-      isDrawingRef.current = true;
-      const rect = viewCanvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
-      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
-      virtualCtx.fillRect(x, y, 2.5, 2.5);
-      renderView();
-    };
-
     const startLineDrawing = (event) => {
       isDrawingRef.current = true;
       const rect = viewCanvas.getBoundingClientRect();
@@ -62,7 +54,7 @@ function MainCanvas({ closeModal }) {
 
       startPointRef.current = {x, y};
       virtualCtx.beginPath();
-      virtualCanvas.moveTo(x, y);
+      virtualCtx.moveTo(x, y);
       renderView();
     }
 
@@ -86,15 +78,6 @@ function MainCanvas({ closeModal }) {
 
     const stopDrawing = () => {
       isDrawingRef.current = false;
-    };
-
-    const draw = (event) => {
-      if (!isDrawingRef.current) return;
-      const rect = viewCanvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
-      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
-      virtualCtx.fillRect(x, y, 2.5, 2.5);
-      renderView();
     };
 
     setViewCanvasDimensions();
@@ -128,15 +111,28 @@ function MainCanvas({ closeModal }) {
     }
   }
 
+  const selectTool= () => {
+    setIsActiveTool((prev) => !prev);
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50" onClick={closeModal}>
       <div
         className="flex flex-col p-4 bg-white rounded-md w-full max-w-screen-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title="Canvas" dataFeather="x" iconOnClick={closeModal} />
-        <section className='action-icons w-full flex mb-2'>
-          <IconAction dataFeather='refresh-cw' iconOnClick={resetCanvas}/>
+        <section className='action-icons w-full gap-1 flex mb-2'>
+          <section className='w-full flex gap-1'>
+            <IconAction dataFeather='refresh-cw' iconOnClick={resetCanvas} />
+            <IconAction dataFeather='x-square' className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} iconOnClick={selectTool} />
+            <IconAction dataFeather='edit-2' className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} iconOnClick={selectTool}/>
+          </section>
+          <IconAction 
+            dataFeather={isActiveTool ? "minimize-2" : "maximize-2"} 
+            className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} 
+            iconOnClick={selectTool} 
+          />
         </section>
 
         <canvas ref={viewCanvasRef} className="bg-gray-50 h-[80vh] w-full rounded-md border"></canvas>
