@@ -8,8 +8,11 @@ function MainCanvas({ closeModal }) {
   const isDrawingRef = useRef(false);
   const scaleRef = useRef(1);
   const offsetRef = useRef({ x: 0, y: 0 });
-  const startPointRef = useRef({ x: 0, y: 0});
-  const [isActiveTool, setIsActiveTool] = useState(false);
+  const startPointRef = useRef({ x: 0, y: 0 });
+  const [isActiveTool, setIsActiveTool] = useState({
+    erase: false,
+    pencil: false,
+  });
 
   const renderView = useCallback(() => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -46,56 +49,83 @@ function MainCanvas({ closeModal }) {
       renderView();
     };
 
-    const startLineDrawing = (event) => {
+    setViewCanvasDimensions();
+    window.addEventListener('resize', setViewCanvasDimensions);
+
+    return () => {
+      window.removeEventListener('resize', setViewCanvasDimensions);
+    };
+  }, [renderView]);
+
+  useEffect(() => {
+    const viewCanvas = viewCanvasRef.current;
+    if (!viewCanvas) return;
+
+    const virtualCtx = virtualCanvasRef.current.getContext('2d');
+    if (!virtualCtx) return;
+
+    const toolHandlers = {
+      erase: (virtualCtx, x, y) => {
+        virtualCtx.clearRect(x - 10, y - 10, 20, 20); // Eraser logic
+      },
+      pencil: (virtualCtx, x, y) => {
+        virtualCtx.lineTo(x, y); // Pencil logic
+        virtualCtx.stroke();
+      },
+    };
+
+    const startAction = (event) => {
       isDrawingRef.current = true;
-      const rect = viewCanvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
-      const y = (event.clientY - rect.top - offsetRef.current.x) / scaleRef.current;
-
-      startPointRef.current = {x, y};
-      virtualCtx.beginPath();
-      virtualCtx.moveTo(x, y);
-      renderView();
-    }
-
-    const lineDraw = (event) => {
-      if (!isDrawingRef.current) return;
       const rect = viewCanvas.getBoundingClientRect();
       const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
       const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
 
-      virtualCtx.lineTo(x, y);
-      virtualCtx.stroke();
+      startPointRef.current = { x, y };
+      virtualCtx.beginPath();
+      virtualCtx.moveTo(x, y);
       renderView();
-    }
+    };
 
-    const stopLineDrawing = () => {
+    const action = (event) => {
+      if (!isDrawingRef.current) return;
+
+      const rect = viewCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
+      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+
+      const activeTool = Object.keys(isActiveTool).find((tool) => isActiveTool[tool]);
+
+      if (activeTool && toolHandlers[activeTool]) {
+        toolHandlers[activeTool](virtualCtx, x, y);
+        renderView();
+      }
+    };
+
+    const stopCurrentAction = () => {
       if (isDrawingRef.current) {
         isDrawingRef.current = false;
         virtualCtx.closePath();
       }
-    }
+    };
 
-    const stopDrawing = () => {
+    const stopAction = () => {
       isDrawingRef.current = false;
     };
 
-    setViewCanvasDimensions();
-
-    viewCanvas.addEventListener('mousedown', startLineDrawing);
-    viewCanvas.addEventListener('mouseup', stopLineDrawing);
-    viewCanvas.addEventListener('mousemove', lineDraw);
-    viewCanvas.addEventListener('mouseleave', stopDrawing)
-    window.addEventListener('resize', setViewCanvasDimensions);
+    if (isActiveTool.pencil || isActiveTool.erase) {
+      viewCanvas.addEventListener('mousedown', startAction);
+      viewCanvas.addEventListener('mouseup', stopCurrentAction);
+      viewCanvas.addEventListener('mousemove', action);
+      viewCanvas.addEventListener('mouseleave', stopAction);
+    }
 
     return () => {
-      viewCanvas.removeEventListener('mousedown', startLineDrawing);
-      viewCanvas.removeEventListener('mouseup', stopLineDrawing);
-      viewCanvas.removeEventListener('mousemove', lineDraw);
-      viewCanvas.removeEventListener('mouseleave', stopDrawing);
-      window.removeEventListener('resize', setViewCanvasDimensions);
+      viewCanvas.removeEventListener('mousedown', startAction);
+      viewCanvas.removeEventListener('mouseup', stopCurrentAction);
+      viewCanvas.removeEventListener('mousemove', action);
+      viewCanvas.removeEventListener('mouseleave', stopAction);
     };
-  }, [renderView]);
+  }, [isActiveTool.pencil, isActiveTool.erase, renderView]);
 
   const resetCanvas = () => {
     const virtualCanvas = virtualCanvasRef.current;
@@ -109,11 +139,16 @@ function MainCanvas({ closeModal }) {
       virtualCtx.clearRect(0, 0, virtualCanvas.width, virtualCanvas.height);
       viewCtx.clearRect(0, 0, viewCanvas.width, viewCanvas.height);
     }
-  }
+  };
 
-  const selectTool= () => {
-    setIsActiveTool((prev) => !prev);
-  }
+  
+
+  const selectTool = (tool) => {
+    setIsActiveTool((prev) => ({
+      erase: tool === 'erase' ? !prev.erase : false,
+      pencil: tool === 'pencil' ? !prev.pencil : false,
+    }));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50" onClick={closeModal}>
@@ -124,15 +159,29 @@ function MainCanvas({ closeModal }) {
         <IconTitleSection title="Canvas" dataFeather="x" iconOnClick={closeModal} />
         <section className='action-icons w-full gap-1 flex mb-2'>
           <section className='w-full flex gap-1'>
-            <IconAction dataFeather='refresh-cw' iconOnClick={resetCanvas} />
-            <IconAction dataFeather='x-square' className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} iconOnClick={selectTool} />
-            <IconAction dataFeather='edit-2' className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} iconOnClick={selectTool}/>
+            <IconAction 
+              dataFeather='arrow-left' 
+
+            />
+            <IconAction 
+              dataFeather='arrow-right' 
+            />
+            <IconAction 
+              dataFeather='refresh-cw' 
+              iconOnClick={resetCanvas} 
+            />
+            <IconAction
+              dataFeather='delete'
+              className={`${isActiveTool.erase ? "bg-green-700 text-white" : ""}`}
+              iconOnClick={() => selectTool('erase')}
+            />
+            <IconAction
+              dataFeather='edit-2'
+              className={`${isActiveTool.pencil ? "bg-green-700 text-white" : ""}`}
+              iconOnClick={() => selectTool('pencil')}
+            />
           </section>
-          <IconAction 
-            dataFeather={isActiveTool ? "minimize-2" : "maximize-2"} 
-            className={`${isActiveTool ? "bg-green-700 text-white" : ""}`} 
-            iconOnClick={selectTool} 
-          />
+          <IconAction dataFeather="more-vertical" />
         </section>
 
         <canvas ref={viewCanvasRef} className="bg-gray-50 h-[80vh] w-full rounded-md border"></canvas>
