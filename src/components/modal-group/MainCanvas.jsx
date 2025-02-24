@@ -95,9 +95,10 @@ function MainCanvas({ closeModal }) {
       setRedoStack([]);
     };
 
+    saveCanvasState();
+
     const startAction = (event) => {
       isDrawingRef.current = true;
-      saveCanvasState();
 
       const rect = viewCanvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -131,6 +132,7 @@ function MainCanvas({ closeModal }) {
       if (isDrawingRef.current) {
         isDrawingRef.current = false;
         virtualCtx.closePath();
+        saveCanvasState();
       }
     };
 
@@ -187,6 +189,7 @@ function MainCanvas({ closeModal }) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
+
   }, [undoStack, redoStack, renderView]);
 
   const handleRedo = useCallback(() => {
@@ -202,14 +205,15 @@ function MainCanvas({ closeModal }) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
+
   }, [undoStack, redoStack, renderView]);
 
   useEffect(() => {
     const handleUndoRedoShortcut = (event) => {
-      if (event.ctrlKey && event.key === 'z') {
+      if (event.ctrlKey && event.key === 'ArrowLeft') {
         event.preventDefault();
         handleUndo();
-      } else if (event.ctrlKey && event.key === 'y') {
+      } else if (event.ctrlKey && event.key === 'ArrowRight') {
         event.preventDefault();
         handleRedo();
       }
