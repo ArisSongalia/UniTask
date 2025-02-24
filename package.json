@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "esbuild": "^0.25.0",
     "feather-icons": "^4.29.2",
     "firebase": "^11.0.2",
     "react": "^18.3.1",
@@ -17,7 +18,8 @@
     "react-phone-input-2": "^2.15.1",
     "react-phone-number-input": "^3.4.10",
     "react-router-dom": "^6.27.0",
-    "react-spinners": "^0.15.0"
+    "react-spinners": "^0.15.0",
+    "react-toastify": "^11.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
@@ -32,6 +34,6 @@
     "globals": "^15.11.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "vite": "^5.4.9"
+    "vite": "^6.1.1"
   }
 }
