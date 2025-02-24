@@ -100,8 +100,9 @@ function MainCanvas({ closeModal }) {
       saveCanvasState();
 
       const rect = viewCanvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
-      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+      const dpr = window.devicePixelRatio || 1;
+      const x = (event.clientX - rect.left - offsetRef.current.x) / (scaleRef.current * dpr);
+      const y = (event.clientY - rect.top - offsetRef.current.y) / (scaleRef.current * dpr);
 
       startPointRef.current = { x, y };
       virtualCtx.beginPath();
@@ -114,8 +115,9 @@ function MainCanvas({ closeModal }) {
       if (!isDrawingRef.current) return;
 
       const rect = viewCanvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left - offsetRef.current.x) / scaleRef.current;
-      const y = (event.clientY - rect.top - offsetRef.current.y) / scaleRef.current;
+      const dpr = window.devicePixelRatio || 1;
+      const x = (event.clientX - rect.left - offsetRef.current.x) / (scaleRef.current * dpr);
+      const y = (event.clientY - rect.top - offsetRef.current.y) / (scaleRef.current * dpr);
 
       const activeTool = Object.keys(isActiveTool).find((tool) => isActiveTool[tool]);
 
@@ -129,7 +131,6 @@ function MainCanvas({ closeModal }) {
       if (isDrawingRef.current) {
         isDrawingRef.current = false;
         virtualCtx.closePath();
-        saveCanvasState();
       }
     };
 
@@ -173,35 +174,54 @@ function MainCanvas({ closeModal }) {
     }));
   };
 
-  const handleUndo = () => {
+  const handleUndo = useCallback(() => {
     const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
     if (!virtualCanvas || !virtualCtx || undoStack.length === 0) return;
 
     const lastState = undoStack[undoStack.length - 1];
 
-    setUndoStack((prev) => prev.slice(0, -1)); 
+    setUndoStack((prev) => prev.slice(0, -1));
     setRedoStack((prev) => [...prev, virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height)]);
 
     if (lastState) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
-  };
+  }, [undoStack, redoStack, renderView]);
 
-  const handleRedo = () => {
+  const handleRedo = useCallback(() => {
     const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
     if (!virtualCanvas || !virtualCtx || redoStack.length === 0) return;
 
     const lastState = redoStack[redoStack.length - 1];
 
-    setRedoStack((prev) => prev.slice(0, -1)); 
+    setRedoStack((prev) => prev.slice(0, -1));
     setUndoStack((prev) => [...prev, virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height)]);
 
     if (lastState) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
-  };
+  }, [undoStack, redoStack, renderView]);
+
+  useEffect(() => {
+    const handleUndoRedoShortcut = (event) => {
+      if (event.ctrlKey && event.key === 'z') {
+        event.preventDefault();
+        handleUndo();
+      } else if (event.ctrlKey && event.key === 'y') {
+        event.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener('keydown', handleUndoRedoShortcut);
+
+    return () => {
+      window.removeEventListener('keydown', handleUndoRedoShortcut);
+    };
+
+  }, [handleUndo, handleRedo]);
 
 
   return (
