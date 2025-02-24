@@ -4,18 +4,18 @@ import { MainNotesSection, MainProjectSection } from './MainSections';
 
 function RecentTasks() {
   const [activeSection, setActiveSection] = useState('project');
-
-
   const titles = [
     {
       label: 'Recent Tasks',
       onClick: () => setActiveSection('project'),
       isActive: activeSection === 'project',
+      dataFeather: 'briefcase'
     },
     {
       label: 'Notes',
       onClick: () => setActiveSection('notes'),
       isActive: activeSection === 'notes',
+      dataFeather: 'file-text'
     },
   ];
 

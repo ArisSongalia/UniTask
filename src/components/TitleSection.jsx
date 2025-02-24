@@ -32,7 +32,7 @@ function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', extra
   )
 }
 
-function MultiTitleSection({ titles }) {
+function MultiTitleSection({ titles, dataFeather = ''}) {
   return (
     <section className="flex w-full mb-4 justify-between items-center border-b-2  pb-2">
       <div className="flex gap-2 items-center">
@@ -41,8 +41,12 @@ function MultiTitleSection({ titles }) {
             key={index}
             text={titleObj.label}
             onClick={titleObj.onClick}
-            className={`px-4 py-2 ${
+            dataFeather={titleObj.dataFeather}
+            className={`${
               titleObj.isActive ? 'text-white bg-green-700' : 'bg-solid'
+            }`}
+            iconClassName={`${
+              titleObj.isActive ? 'text-white' : 'bg-solid'
             }`}
           />
         ))}

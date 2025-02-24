@@ -1,16 +1,16 @@
 import React from 'react';
 import Icon from './Icon';
-import { data } from 'autoprefixer';
 
-function Button({ text = 'Button', onClick, className = '', type = 'button'}) {
+function Button({ text = 'Button', onClick, className = '', type = 'button', dataFeather = 'arrow-right', iconClassName = ''}) {
   return (
     <button
       type={`${type}`}
-      className={`p-2 rounded-full bg-green-50 text-xs px-4 font-bold h-fit 
-      hover:bg-green-700 hover:text-white border-opacity-60 text-green-700 ${className}`}
+      className={`group flex justify-between items-center p-1 rounded-md bg-green-50 text-xs px-4 font-bold h-fit 
+      hover:bg-green-700 hover:text-white border-opacity-60 text-green-800 ${className}`}
       onClick={onClick}
     >
       {text}
+      <Icon dataFeather={dataFeather} className={`group-hover:text-white ${iconClassName}`} />
     </button>
   );
 }

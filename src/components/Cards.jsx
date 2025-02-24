@@ -233,7 +233,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
 
       <p className='text-sm py-2'>{description}</p>
 
-      <span id="task-user" className='flex w-full gap-1'>
+      <span id="task-user" className='flex p-2 gap-1 bg-blue-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
             <IconUser key={member.uid} username={member.username} uid={member.uid} />
@@ -249,6 +249,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
             text='Upload File' 
             className='w-full bg-white' 
             onClick={triggerFileInput}
+            dataFeather='file'
           />
           <input id='file-input' type="file" className='hidden' />
           <Button 
@@ -330,7 +331,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
       </span>
       <span className='w-full h-full bg-gray-50 rounded-lg'></span>
 
-      <Button text='Open Canvas' onClick={toggleShowCanvas}/>
+      <Button text='Open Canvas' onClick={toggleShowCanvas} dataFeather='maximize'/>
       {showCanvas && <MainCanvas closeModal={toggleShowCanvas}/>}
     </div>
   )

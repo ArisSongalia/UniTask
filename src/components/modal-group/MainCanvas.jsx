@@ -91,13 +91,9 @@ function MainCanvas({ closeModal }) {
       if (!virtualCanvas || !virtualCtx) return;
 
       const imageData = virtualCtx.getImageData(0, 0, virtualCanvas.width, virtualCanvas.height);
-
       setUndoStack((prev) => [...prev, imageData]);
-
       setRedoStack([]);
     };
-
-    saveCanvasState();
 
     const startAction = (event) => {
       isDrawingRef.current = true;
@@ -147,6 +143,10 @@ function MainCanvas({ closeModal }) {
       viewCanvas.addEventListener('mouseup', stopCurrentAction);
       viewCanvas.addEventListener('mousemove', action);
       viewCanvas.addEventListener('mouseleave', stopAction);
+
+      viewCanvas.addEventListener('touchstart', startAction);
+      viewCanvas.addEventListener('touchend', stopCurrentAction);
+      viewCanvas.addEventListener('touchmove', action);
     }
 
     return () => {
@@ -154,6 +154,10 @@ function MainCanvas({ closeModal }) {
       viewCanvas.removeEventListener('mouseup', stopCurrentAction);
       viewCanvas.removeEventListener('mousemove', action);
       viewCanvas.removeEventListener('mouseleave', stopAction);
+
+      viewCanvas.removeEventListener('touchstart', startAction);
+      viewCanvas.removeEventListener('touchend', stopCurrentAction);
+      viewCanvas.removeEventListener('touchmove', action);
     };
   }, [isActiveTool.pencil, isActiveTool.erase, renderView]);
 
@@ -168,14 +172,16 @@ function MainCanvas({ closeModal }) {
     if (virtualCtx && viewCtx) {
       virtualCtx.clearRect(0, 0, virtualCanvas.width, virtualCanvas.height);
       viewCtx.clearRect(0, 0, viewCanvas.width, viewCanvas.height);
+      setUndoStack([]);
+      setRedoStack([]);
     }
   };
 
   const selectTool = (tool) => {
-    setIsActiveTool((prev) => ({
-      erase: tool === 'erase' ? !prev.erase : false,
-      pencil: tool === 'pencil' ? !prev.pencil : false,
-    }));
+    setIsActiveTool({
+      erase: tool === 'erase',
+      pencil: tool === 'pencil',
+    });
   };
 
   const handleUndo = useCallback(() => {
@@ -191,8 +197,7 @@ function MainCanvas({ closeModal }) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
-
-  }, [undoStack, redoStack, renderView]);
+  }, [undoStack, renderView]);
 
   const handleRedo = useCallback(() => {
     const { virtualCanvas, virtualCtx } = getVirtualCanvasAndContext();
@@ -207,15 +212,14 @@ function MainCanvas({ closeModal }) {
       virtualCtx.putImageData(lastState, 0, 0);
       renderView();
     }
-
-  }, [undoStack, redoStack, renderView]);
+  }, [redoStack, renderView]);
 
   useEffect(() => {
     const handleUndoRedoShortcut = (event) => {
-      if (event.ctrlKey && event.key === 'ArrowLeft') {
+      if (event.ctrlKey && event.key === 'z') {
         event.preventDefault();
         handleUndo();
-      } else if (event.ctrlKey && event.key === 'ArrowRight') {
+      } else if (event.ctrlKey && event.key === 'y') {
         event.preventDefault();
         handleRedo();
       }
@@ -226,9 +230,7 @@ function MainCanvas({ closeModal }) {
     return () => {
       window.removeEventListener('keydown', handleUndoRedoShortcut);
     };
-
   }, [handleUndo, handleRedo]);
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50" onClick={closeModal}>

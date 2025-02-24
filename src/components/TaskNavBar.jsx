@@ -5,7 +5,7 @@ import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BounceLoader, BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
-import { ButtonIcon} from './Button';
+import Button from './Button';
 import SocialSection from './SocialSection';
 
 
@@ -72,7 +72,7 @@ function TaskNavBar() {
         </span>
         <span className='flex items-center gap-4'>
 
-          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-gray-50'>
+          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-blue-50'>
             {loading ? (
               <BounceLoader color='#228B22' size={25} />
             ) : projectData['team'] && (
@@ -82,7 +82,7 @@ function TaskNavBar() {
             )}
           </span>
 
-          <ButtonIcon text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
+          <Button text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
 
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
