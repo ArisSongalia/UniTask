@@ -47,7 +47,7 @@ function Icon({ className = '', dataFeather = 'edit-2', actionText= '', style = 
   );
 }
 
-function IconUser({ className = '', uid, username}) {
+function IconUser({ user={}, className=''}) {
   const [showUserProfile, setShowUserProfile] = useState(false);
 
   const handleShowUserProfile = () => {
@@ -56,8 +56,8 @@ function IconUser({ className = '', uid, username}) {
 
   return (
     <div className={`hover:cursor-pointer border rounded-full hover:border-green-500  ${className}`}>
-        <img src={userIcon} className='h-6 w-6' onClick={handleShowUserProfile}/>
-        {showUserProfile && <UserProfile username={username} uid={uid} closeModal={handleShowUserProfile}/>}
+        <img src={user.photoURL} className='h-7 w-7 rounded-full' onClick={handleShowUserProfile}/>
+        {showUserProfile && <UserProfile user={user} closeModal={handleShowUserProfile}/>}
     </div>
 
   )

@@ -621,14 +621,19 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   );
 }
 
-function UserProfile({ closeModal, username, uid, email }) {
+function UserProfile({ closeModal, user={} }) {
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
-        <p>{username}</p>
-        <p>{email}</p>
-        <p>{uid}</p>
+        <span className='flex p-2 gap-4 items-center'>
+          <img src={user.photoURL} alt="" className='h-12 w-12 rounded-full'/>
+          <span className='flex flex-col'>
+            <p className='font-bold'>{user.displayName}</p>
+            <p className=''>{user.email}</p>
+          </span>
+        </span>
+        <p className='text-gray-500 text-sm mt-2'>UID: {user.uid}</p>
       </div>
     </div>
   );

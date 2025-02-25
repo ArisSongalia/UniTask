@@ -26,11 +26,12 @@ function Navbar() {
     return null;
   }
 
+
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-fit sticky top-0 shadow-sm">
       <div className="flex items-center justify-between w-full py-2 px-4 max-w-screen-2xl">
         <span className="flex items-center gap-2">
-          <img src={unitask} alt="UniTask Logo" className="w-8 h-8" />
+          <img src={unitask} alt="UniTask" className="w-8 h-8" />
           <Link to="/" className="text-green-900 text-lg font-bold">
             UniTask
           </Link>
@@ -45,7 +46,7 @@ function Navbar() {
                 text="Sign-Out"
                 dataFeather='plus'
               />
-              <IconUser />
+              <IconUser user={user}/>       
             </>
           ) : (
             <>
@@ -72,6 +73,7 @@ function Navbar() {
           <SignIn closeModal={closeModal} switchToSignUp={() => setActiveAuth('SignUp')} />
         )}
       </div>
+      
     </section>
   );
 }
