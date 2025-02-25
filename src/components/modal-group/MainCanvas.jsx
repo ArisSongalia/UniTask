@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { IconTitleSection } from '../TitleSection';
 import { IconAction } from '../Icon';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 function MainCanvas({ closeModal }) {
   const virtualCanvasRef = useRef(null);
@@ -234,7 +233,6 @@ function MainCanvas({ closeModal }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center h-full w-full p-4 bg-black bg-opacity-50" onClick={closeModal}>
-      <ToastContainer />
       <div
         className="flex flex-col p-4 bg-white rounded-md w-full max-w-screen-2xl"
         onClick={(e) => e.stopPropagation()}

@@ -247,9 +247,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         <span className="flex w-full gap-1">
           <Button 
             text='Upload File' 
-            className='w-full bg-white' 
+            className='w-full bg-blue-50 hover:bg-blue-700' 
             onClick={triggerFileInput}
-            dataFeather='file'
+            dataFeather='file-plus'
           />
           <input id='file-input' type="file" className='hidden' />
           <Button 
