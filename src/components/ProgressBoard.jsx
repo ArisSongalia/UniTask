@@ -7,6 +7,8 @@ import { BarLoader } from 'react-spinners'
 import { useReloadContext } from '../context/ReloadContext'
 import { ReloadIcon } from './ReloadComponent'
 import { where } from 'firebase/firestore'
+import Icon from './Icon'
+import Button from './Button'
 
 function ProgressBoard() {
   const [loading, setLoading] = useState(true);
@@ -26,15 +28,23 @@ function ProgressBoard() {
   useFetchTaskData(setActiveTaskData, setLoading, key, whereActive);
 
   return (
-    <section className='flex flex-col bg-white rounded-md p-4 h-full w-full overflow-hidden shadow-sm flex-grow-0'>
-      <IconTitleSection 
-        dataFeather='plus' 
-        title='Progress Board' 
-        buttonText='Create Task' 
-        iconOnClick={togglePopUp}
-        extraIcon={<ReloadIcon />}
-      />
+    <div className='flex flex-col bg-white rounded-md p-4 h-full w-full overflow-hidden shadow-sm flex-grow-0'>
+
+      <section className='title-section flex mb-4 justify-between'>
+        <h2 className='font-semibold max-w-[80%] overflow-hidden overflow-ellipsis'>Progress Board</h2>
+        <span className='flex gap-2 items-center'>
+          <ReloadIcon />
+          <Icon dataFeather='check-square'/>
+          <Button 
+            text='Create Task' 
+            dataFeather='plus'
+            onClick={togglePopUp}
+            className='w-fit'
+          />
+        </span>
+      </section>
       {showPopUp && <CreateTask closeModal={togglePopUp}/>}
+
       <section className='flex gap-2 h-full w-full bg-[#fafafa] px-4 rounded-lg'>
         <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-slate-200 overflow-y-scroll'>
         <DisplayTitleSection title='To-do' className='text-sm' displayClassName='bg-yellow-100 text-yellow-900' displayCount={taskData.length}/>
@@ -83,7 +93,7 @@ function ProgressBoard() {
         </span>
       </section>
 
-    </section>
+    </div>
   )
 }
 

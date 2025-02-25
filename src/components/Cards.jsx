@@ -8,12 +8,14 @@ import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { FetchUserName } from '../services/FetchData';
-import { doc, query, updateDoc, where } from 'firebase/firestore';
+import { doc, getDoc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
 import { useFetchTaskData, fetchNoteData } from '../services/FetchData';
 import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 function SummaryCard({
@@ -206,8 +208,21 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
     const taskRef = doc(db, 'tasks', id);
 
     try {
-      await updateDoc(taskRef, { ['task-status']: "In-progress"});
-      reloadComponent();
+      const statusSnap = await getDoc(taskRef);
+
+      if (statusSnap.exists()) {
+        const currentStatus = statusSnap.data()["task-status"];
+        if(currentStatus === "To-do") {
+          await updateDoc(taskRef, { ['task-status']: "In-progress"});
+        } else if (taskRef, { ['task-status']: "In-progress"}) {
+          await updateDoc(taskRef, { ['task-status']: "Finished"});
+        }
+
+        reloadComponent();
+      } else {
+        console.error('Task not found');
+        toast.error('Task not found')
+      }
     } catch (error) {
       console.error(error)
     }
@@ -218,6 +233,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       className={`flex flex-col bg-white rounded-xl h-auto border-opacity-50
         w-full justify-between border gap-2 border-green-600 p-4 ${className}`}
     >
+      <ToastContainer />
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
