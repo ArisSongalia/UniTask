@@ -34,7 +34,7 @@ function SummaryCard({
   
 
   return (
-  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
+  <section className={`flex flex-col bg-green-800 w-full rounded-lg gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
       <span className='flex flex-col w-full justify-between'>
         <h2 className='font-bold mb-1'>{title}</h2>
@@ -67,7 +67,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
 
 function AlertCard({text = 'text', className = ''}) {
   return (
-  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-2xl
+  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-lg
                        p-4 justify-between h-auto shadow-sm ${className}`}>
         <p>{text}</p>
     </section>
@@ -77,13 +77,13 @@ function AlertCard({text = 'text', className = ''}) {
 function CreateCard({ title = "Title", description = "Description", onClick, className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-green-50 rounded-xl overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
+      className={`flex flex-col bg-green-50 rounded-lg overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
       flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 h-[15rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
           <span className='self-start flex flex-col gap-2 justify-between'>
-            <span className="flex items-center">
+            <span className="flex justify-between items-center mb-2">
               <h2 className='font-bold text-sm text-green-700'>{title}</h2>
               <Icon dataFeather='plus' />
             </span>
@@ -121,7 +121,7 @@ function ProjectCard({
 
   return (
     <div
-      className="flex flex-col bg-white rounded-xl overflow-hidden
+      className="flex flex-col bg-white rounded-lg overflow-hidden
         flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[15rem]"
     >
       <section className="flex gap-4 w-full">
@@ -230,10 +230,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
 
   return (
     <div 
-      className={`flex flex-col bg-white rounded-xl h-auto border-opacity-50
+      className={`flex flex-col bg-white rounded-lg h-auto border-opacity-50
         w-full justify-between border gap-2 border-green-600 p-4 ${className}`}
     >
-      <ToastContainer />
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
@@ -248,7 +247,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       </span>
 
       <p className='text-sm py-2'>{description}</p>
-
+      
       <span id="task-user" className='flex p-2 gap-1 bg-blue-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
@@ -273,7 +272,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
             className='w-full'
             onClick={moveStatus}
           />
+          <ToastContainer />
         </span>
+        
       ) : (
         <Link to={'./Project'}>
           <Button text='Open Task' className='w-full'/>
@@ -293,7 +294,7 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-xl h-auto border-opacity-50
+    <div className="flex flex-col bg-white rounded-lg h-auto border-opacity-50
                       w-full justify-between border gap-2 border-green-700 p-4">
       <span className='flex justify-between'>
         <span>
@@ -334,7 +335,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 
   return(
     <div 
-      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-xl border-opacity-50 
+      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-lg border-opacity-50 
       shadow-sm border border-green-600 ${className}`}
     >
       <span className='flex justify-between'>

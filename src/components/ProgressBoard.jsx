@@ -7,7 +7,7 @@ import { BarLoader } from 'react-spinners'
 import { useReloadContext } from '../context/ReloadContext'
 import { ReloadIcon } from './ReloadComponent'
 import { where } from 'firebase/firestore'
-import Icon from './Icon'
+import { IconAction } from './Icon'
 import Button from './Button'
 
 function ProgressBoard() {
@@ -34,7 +34,7 @@ function ProgressBoard() {
         <h2 className='font-semibold max-w-[80%] overflow-hidden overflow-ellipsis'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
-          <Icon dataFeather='check-square'/>
+          <IconAction dataFeather='check-square'/>
           <Button 
             text='Create Task' 
             dataFeather='plus'

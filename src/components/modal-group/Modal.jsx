@@ -133,7 +133,7 @@ function CreateProject({ closeModal }) {
             </div>
           </label>
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Project" className="py-3" />
+          <Button type="submit" text="Create Project" className="py-3" dataFeather='plus' />
         </form>
       </section>
     </div>
@@ -226,7 +226,7 @@ function CreateNote({ closeModal, projectId }) {
           </label>
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Note" className="py-3" />
+          <Button type="submit" text="Create Note" className="py-3" dataFeather='plus'/>
         </form>
       </section>
     </div>
