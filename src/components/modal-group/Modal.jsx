@@ -10,6 +10,7 @@ import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
 import { useFetchUsers, useFetchActiveProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
+import { TaskCard } from '../Cards';
 
 
 function CreateProject({ closeModal }) {
@@ -639,4 +640,35 @@ function UserProfile({ closeModal, user={} }) {
   );
 }
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers, CreateCanvas}
+function CompletedTab({ closeModal, taskData={}, loading}) {
+
+  return (
+    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+      <div className='flex flex-col p-4 bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
+        <section className='flex flex-col gap-1 overflow-y-scroll pr-2'>
+          {loading ? (
+            <span><BarLoader color='#228B22' size={20} /></span>
+          ) : (
+            taskData.length > 0 && (
+              taskData.map((taskData) => (
+                <TaskCard 
+                  key={taskData['task-id']}
+                  title={taskData['task-title']}
+                  description={taskData['task-description']}
+                  deadline={taskData['task-deadline']}
+                  team={taskData['task-team']}
+                  status={taskData['task-status']}
+                  id={taskData['task-id']}
+                  className='h-fit hover:cursor-pointer'
+                />
+              ))
+            )
+          )}
+        </section>
+      </div>
+    </div>
+  )
+}
+
+export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab}

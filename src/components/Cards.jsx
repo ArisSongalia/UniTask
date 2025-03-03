@@ -36,7 +36,7 @@ function SummaryCard({
   return (
   <section className={`flex flex-col bg-green-800 w-full rounded-lg gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
-      <span className='flex flex-col w-full justify-between'>
+      <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
         <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Here's your tasks📋</p>
       </span>
@@ -57,10 +57,10 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex flex-col items-center h-full w-full p-4 bg-green-700 text-white rounded-lg  ${className}`}
+      className={`flex flex-col items-center h-auto w-full p-2 text-white rounded-lg  ${className}`}
     >
-        <p className='font-bold text-xl'>{count}</p>
-        <p className='font-semibold text-sm text-center'>{title}</p>
+        <p className='font-bold text-3xl'>{count}</p>
+        <p className='text-sm text-center'>{title}</p>
     </section>
   )
 }
@@ -214,7 +214,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         const currentStatus = statusSnap.data()["task-status"];
         if(currentStatus === "To-do") {
           await updateDoc(taskRef, { ['task-status']: "In-progress"});
-        } else if (taskRef, { ['task-status']: "In-progress"}) {
+        } else if (currentStatus === "In-progress") {
           await updateDoc(taskRef, { ['task-status']: "Finished"});
         }
 
@@ -258,7 +258,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         )}
       </span>
 
-      {(location.pathname === '/Project') ? (
+      { status === "Finished" ? (
+        null
+      ) : location.pathname === '/Project' ? (
         <span className="flex w-full gap-1">
           <Button 
             text='Upload File' 
@@ -274,14 +276,11 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
           />
           <ToastContainer />
         </span>
-        
       ) : (
         <Link to={'./Project'}>
           <Button text='Open Task' className='w-full'/>
         </Link>
-      )
-        
-      }
+      )}
     </div>
   )
 }

@@ -278,6 +278,19 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   }, [setUsers, setLoading, refreshKey])
 };
 
+const usefetchUserData = (setUsers, setLoading, refreshKey) => {
+
+  useEffect(() => {
+    const fetchUserdata = async () => {
+      try {
+        
+      } catch {
+
+      }
+    }
+  }, [])
+}
+
 
 export { FetchUserName, useFetchUsers, fetchProjectData, fetchNoteData, useFetchActiveProjectData, useFetchTaskData};
 

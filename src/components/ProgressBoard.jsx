@@ -9,13 +9,21 @@ import { ReloadIcon } from './ReloadComponent'
 import { where } from 'firebase/firestore'
 import { IconAction } from './Icon'
 import Button from './Button'
+import { CompletedTab } from './modal-group/Modal'
 
 function ProgressBoard() {
   const [loading, setLoading] = useState(true);
   const [taskData, setTaskData] = useState([]);
-  const [activeTaskData, setActiveTaskData] = useState([])
+  const [activeTaskData, setActiveTaskData] = useState([]);
+  const [finishedTaskData, setFinishedTaskData] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
   const { key, reloadComponent } = useReloadContext();
+  const [showCompletedTab, setShowCompletedTab] = useState(false);
+ 
+
+  const toggleShowCompletedTab = () => {
+    setShowCompletedTab(!showCompletedTab);
+  }
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -24,8 +32,11 @@ function ProgressBoard() {
   const whereToDo = where("task-status", "==", "To-do");
   useFetchTaskData(setTaskData, setLoading, key, whereToDo);
 
-  const whereActive = where("task-status", "==", "In-progress")
+  const whereActive = where("task-status", "==", "In-progress");
   useFetchTaskData(setActiveTaskData, setLoading, key, whereActive);
+
+  const whereFinished = where("task-status", "==", "Finished");
+  useFetchTaskData(setFinishedTaskData, setLoading, key, whereFinished);
 
   return (
     <div className='flex flex-col bg-white rounded-md p-4 h-full w-full overflow-hidden shadow-sm flex-grow-0'>
@@ -34,7 +45,8 @@ function ProgressBoard() {
         <h2 className='font-semibold max-w-[80%] overflow-hidden overflow-ellipsis'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
-          <IconAction dataFeather='check-square'/>
+          <IconAction dataFeather='check-square' iconOnClick={toggleShowCompletedTab} />
+          {showCompletedTab && <CompletedTab taskData={finishedTaskData} closeModal={toggleShowCompletedTab} />}
           <Button 
             text='Create Task' 
             dataFeather='plus'
