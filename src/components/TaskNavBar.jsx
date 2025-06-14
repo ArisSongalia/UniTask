@@ -7,6 +7,7 @@ import { BounceLoader, BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
 import Button from './Button';
 import SocialSection from './SocialSection';
+import { useReloadContext } from '../context/ReloadContext';
 
 
 function TaskNavBar() {
@@ -17,6 +18,7 @@ function TaskNavBar() {
   const [showAddMembers, setShowAddMembers] = useState(false);
   const [showSocialSection, setShowSocialSection] = useState(false);
   const activeLocalProjectID = localStorage.getItem('activeProjectId');
+  const { key } = useReloadContext();
 
   useEffect(() => {
     const fetchProjectID = async () => {
@@ -37,7 +39,7 @@ function TaskNavBar() {
       console.log('Local storage project is used');
     };
 
-  }, [fetchID, activeLocalProjectID]);
+  }, [fetchID, activeLocalProjectID, key]);
 
   const toggleShowAddMembers = () => {
     setShowAddMembers(!showAddMembers);
@@ -48,7 +50,7 @@ function TaskNavBar() {
   }
 
 
-  useFetchActiveProjectData(id, setProjectData, setLoading)
+  useFetchActiveProjectData(id, setProjectData, setLoading, key)
 
   return (
     <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>

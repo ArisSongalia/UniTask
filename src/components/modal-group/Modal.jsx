@@ -511,9 +511,9 @@ function AddMembers({ closeModal }) {5
               : ''
           }
         />
-        <span id='contributors' className='flex flex-col gap-4'>
+        <span id='contributors' className='flex flex-col bg-gray-50 h-[25rem] gap-4'>
 
-          <span id='users' className='grid grid-cols-2 p-4 bg-gray-50 gap-1 rounded-md h-[25rem] overflow-y-scroll'>
+          <span id='users' className='grid grid-cols-2 p-4   rounded-md h-fit overflow-y-scroll'>
 
             { loading ? (
               <BarLoader />
@@ -523,10 +523,9 @@ function AddMembers({ closeModal }) {5
               ))
             )}
           </span>
-          
-          <p style={{color: message.color}}>{message.text}</p>
-          <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
         </span>
+        <p style={{color: message.color}}>{message.text}</p>
+        <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
       </section>
     </div>
   );

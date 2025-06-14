@@ -2,6 +2,7 @@ import React from 'react'
 import ProgressBoard from './ProgressBoard'
 import TaskSideBar from '../components/TaskSideBar'
 import TaskNavBar from './TaskNavBar'
+import { ReloadProvider } from '../context/ReloadContext'
 
 function Project() {
   return (

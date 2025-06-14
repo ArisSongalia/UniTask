@@ -23,7 +23,7 @@ function Home() {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (user === undefined) return null; // or a loading spinner
+  if (user === undefined) return null;
 
   return (
     <div className="flex flex-col w-full h-[100vh] items-center overflow-auto">
