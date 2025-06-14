@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import Icon, { IconAction } from '../Icon';
+import React, { useState, useRef } from 'react';
+import { IconAction } from '../Icon';
 import Button from '../Button';
 import { IconTitleSection } from '../TitleSection';
-import { addDoc, collection, getDoc, getDocs, query, updateDoc, doc, where } from 'firebase/firestore';
+import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
@@ -304,7 +304,7 @@ function CreateTask({ closeModal }) {
       if (data.isActive) {
         return {
           ...prevForm,
-          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username}],
+          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username, email: data.email}],
         };
       } else {
         return {
@@ -321,7 +321,7 @@ function CreateTask({ closeModal }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] h-[40rem] p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
@@ -370,12 +370,12 @@ function CreateTask({ closeModal }) {
             <section className='flex flex-col gap-2 p-4 rounded-lg bg-green-50'>
               <p className='text-green-700'>Available Members</p>
 
-              <section className="flex gap-2">
+              <section className="grid grid-cols-2 gap-2">
                 {loading ? (
                   <BarLoader color='green'/>
                 ) : projectData['team'] && (
                   projectData['team'].map((member) => (
-                  <UserCard key={member.uid} username={member.username} uid={member.uid} onStateChange={handleStateChange}/>
+                  <UserCard key={member.uid} user={member} onStateChange={handleStateChange}/>
                 )))}
               </section>
             </section>
@@ -453,7 +453,7 @@ function CreateCanvas({ closeModal }) {
 }
 
 
-function AddMembers({ closeModal }) {
+function AddMembers({ closeModal }) {5
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", color: ""})
@@ -466,7 +466,7 @@ function AddMembers({ closeModal }) {
   const handleAddMembers = (data) => {
     setMembers((prevMembers) => {
       if(data.isActive) {
-        return [...prevMembers, { username: data.username, uid: data.uid }]
+        return [...prevMembers, { username: data.username, uid: data.uid, email: data.email}]
       } else {
         return prevMembers.filter((member) => member.uid !== data.uid);
       }
@@ -508,18 +508,18 @@ function AddMembers({ closeModal }) {
           value={
             members.length > 0
               ? members.map((member) => member.username).join(', ')
-              : ""
+              : ''
           }
         />
         <span id='contributors' className='flex flex-col gap-4'>
 
-          <span id='users' className='flex flex-col p-4 bg-gray-50 gap-1 rounded-md h-[25rem] overflow-y-scroll'>
+          <span id='users' className='grid grid-cols-2 p-4 bg-gray-50 gap-1 rounded-md h-[25rem] overflow-y-scroll'>
 
             { loading ? (
               <BarLoader />
             ) : users.length > 0 && (
               users.map((user) => (
-                <UserCard key={user.id} username={user.username} email={user.email} uid={user.id} className='w-full' onStateChange={handleAddMembers}/>
+                <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers}/>
               ))
             )}
           </span>
@@ -630,7 +630,7 @@ function UserProfile({ closeModal, user={} }) {
         <span className='flex p-2 gap-4 items-center'>
           <img src={user.photoURL} alt="" className='h-12 w-12 rounded-full'/>
           <span className='flex flex-col'>
-            <p className='font-bold'>{user.displayName}</p>
+            <p className='font-bold'>{user.username}</p>
             <p className=''>{user.email}</p>
           </span>
         </span>

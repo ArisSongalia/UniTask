@@ -135,7 +135,7 @@ function ProjectCard({
         </span>
 
         <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="w-fit" />
-        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} db='projects'/>}
+        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects'/>}
       </section>
 
       <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">
@@ -150,40 +150,33 @@ function ProjectCard({
 }
 
 
-function UserCard({className='', username='User Name', uid, email, onStateChange}) {
+function UserCard({className='', user, onStateChange}) {
   const [isActive, setIsActive] = useState(false)
-  const [showUserProfile, setShowUserProfile] = useState(false);
-
-  const toggleUserProfile = () => {
-    setShowUserProfile(!showUserProfile);
-  };
 
   const toggleIsActive = () => {
     setIsActive(!isActive);
-    if (uid) {
-      console.log('UserCard id: ', uid)
+    if (user) {
+      console.log('UserCard Active:', user.uid)
     } else {
       console.log('No id')
     };
   };
 
   useEffect(() => {
-    if (onStateChange && uid) {
-      onStateChange({uid, username, isActive})
+    if (onStateChange && user) {
+      const { username, email, uid } = user;
+      onStateChange({ username, email, uid, isActive });
     }
-  }, [uid, username, isActive])
+  }, [user, isActive]);
 
   return (
     <section 
-      className={`flex items-center border w-fit rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
+      className={`flex items-center border w-full rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
     >
-      <span className="p-2 hover:bg-green-50 border-r h-full " onClick={toggleUserProfile}>
-        <img className='w-8 h-auto rounded-full' src={userIcon} alt="user-icon" />
-        {showUserProfile && <UserProfile username={username} email={email} closeModal={toggleUserProfile}/>}
-      </span>
-
-      <span className={`flex flex-col font-semibold px-3 w-full h-full p-2 rounded-md hover:bg-green-700 hover:text-white ${isActive ? 'bg-green-700 text-white' : 'bg-solid'}`} onClick={toggleIsActive} >
-        <p className='text-sm'>{username}</p>
+      <span className={`flex flex-col font-semibold px-3 gap-1 w-full h-full p-4 rounded-md hover:bg-green-50 items-center ${isActive ? 'bg-green-100' : 'bg-solid'}`} onClick={toggleIsActive} >
+        <img className='w-7 h-7 rounded-full' src={userIcon} alt="user-icon" />
+        <p className='text-sm'>{user.username}</p>
+        <p className='text-sm text-gray-500'>{user.email}</p>
       </span>
     </section>
   )
@@ -191,7 +184,7 @@ function UserCard({className='', username='User Name', uid, email, onStateChange
 
 
 function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className, }) {
-  const [showPopUp, setShowPopUp] = useState(false);
+  const [showPopUp, setShowPopUp] = useState(false);  
   const { reloadComponent } = useReloadContext();
   const location = useLocation();
 
@@ -251,7 +244,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       <span id="task-user" className='flex p-2 gap-1 bg-blue-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
-            <IconUser key={member.uid} username={member.username} uid={member.uid} />
+            <IconUser key={member.uid} user={member}/>
           ))
         ) : (
           null

@@ -77,7 +77,7 @@ function TaskNavBar() {
               <BounceLoader color='#228B22' size={25} />
             ) : projectData['team'] && (
               projectData['team'].map((member) => (
-                <IconUser key={member.uid} username={member.username} uid={member.uid} />
+                <IconUser key={member.uid} user={member} />
               ))
             )}
           </span>
