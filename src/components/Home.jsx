@@ -4,6 +4,7 @@ import HomeSideBar from './HomeSideBar';
 import Navbar from './Navbar';
 
 function Home() {
+  
   return (
     <div className="flex flex-col w-full h-[100vh] items-center overflow-auto">
       <Navbar />

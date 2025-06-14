@@ -4,7 +4,6 @@ import { useFetchTaskData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from './Cards';
-import { where } from 'firebase/firestore';
 
 function AssignedTasks({}) {
   const [taskData, setTaskData] = useState([]);

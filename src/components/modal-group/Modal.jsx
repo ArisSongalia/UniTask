@@ -304,7 +304,7 @@ function CreateTask({ closeModal }) {
       if (data.isActive) {
         return {
           ...prevForm,
-          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username, email: data.email}],
+          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL}],
         };
       } else {
         return {
@@ -463,12 +463,12 @@ function AddMembers({ closeModal }) {5
 
   useFetchUsers(setUsers, setLoading, key);
   
-  const handleAddMembers = (data) => {
+  const handleAddMembers = (user) => {
     setMembers((prevMembers) => {
-      if(data.isActive) {
-        return [...prevMembers, { username: data.username, uid: data.uid, email: data.email}]
+      if(user.isActive) {
+        return [...prevMembers, { username: user.username, uid: user.uid, email: user.email, photoURL: user.photoURL}]
       } else {
-        return prevMembers.filter((member) => member.uid !== data.uid);
+        return prevMembers.filter((member) => member.uid !== user.uid);
       }
     });
   };
@@ -623,6 +623,7 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
 }
 
 function UserProfile({ closeModal, user={} }) {
+  console.log(user)
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>

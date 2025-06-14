@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth, googleProvider, facebookProvider, db} from '../../config/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { IconTitleSection } from '../TitleSection';
 import Button from '../Button';
@@ -288,6 +288,8 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
       await setDoc(doc(db, 'users', user.uid), {
         email: auth.currentUser?.email || email, 
         username: username,
+        photoURL: user.photoURL,
+        uid: user.uid,
         ...additionalData,
       });
 
@@ -313,7 +315,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
 
         <div className="flex flex-col gap-2">
           <AlertCard
-            text="We recommend using an identifiable username and avoiding inappropriate language"
+            text="Please use identifiable username and avoiding inappropriate language."
             email={email}
             className="mb-4"
           />

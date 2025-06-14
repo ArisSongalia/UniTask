@@ -3,8 +3,6 @@ import Button from './Button'
 import Icon from './Icon'
 import { IconAction } from './Icon';
 import { Link, useLocation } from 'react-router-dom';
-import { UserProfile } from './modal-group/Modal'
-import userIcon from '../assets/default-icon.png';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { FetchUserName } from '../services/FetchData';
@@ -164,17 +162,17 @@ function UserCard({className='', user, onStateChange}) {
 
   useEffect(() => {
     if (onStateChange && user) {
-      const { username, email, uid } = user;
-      onStateChange({ username, email, uid, isActive });
+      const { username, email, uid, photoURL } = user;
+      onStateChange({ username, email, uid, photoURL, isActive });
     }
   }, [user, isActive]);
 
   return (
     <section 
-      className={`flex items-center border w-full rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
+      className={`flex items-center border w-full h-[8rem] rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
     >
       <span className={`flex flex-col font-semibold px-3 gap-1 w-full h-full p-4 rounded-md hover:bg-green-50 items-center ${isActive ? 'bg-green-100' : 'bg-solid'}`} onClick={toggleIsActive} >
-        <img className='w-7 h-7 rounded-full' src={userIcon} alt="user-icon" />
+        <img className='w-8 h-8 rounded-full' src={user.photoURL} alt="user-icon" />
         <p className='text-sm'>{user.username}</p>
         <p className='text-sm text-gray-500'>{user.email}</p>
       </span>
