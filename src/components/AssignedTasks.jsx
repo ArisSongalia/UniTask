@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DisplayTitleSection } from './TitleSection';
 import { useFetchTaskData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from './Cards';
+import { auth } from '../config/firebase';
+import { where } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function AssignedTasks({}) {
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const { key } = useReloadContext();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
 
-  useFetchTaskData(setTaskData, setLoading, key);
+    return () => unsubscribe();
+  }, []);
+
+  const customWhere = user ? where("task-team", "array-contains", user.uid) : null;
+  useFetchTaskData(setTaskData, setLoading, key, customWhere);
   
   return (
     <div className="flex flex-col bg-white p-4 rounded-md w-full max-h-full h-full shadow-sm overflow-hidden">

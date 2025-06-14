@@ -6,17 +6,23 @@ import { IconTitleSection } from '../TitleSection';
 import Button from '../Button';
 import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
+import { useNavigate } from 'react-router-dom';
 
 
-function SignUp({ closeModal, switchToSignIn }) {
+function SignUp({ closeModal }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
   const [showCreateUsername, setShowCreateUsername] = useState(false)
+  const navigate = useNavigate();
 
   const handleShowCreateUsername = () => {
     setShowCreateUsername(!showCreateUsername);
   };
+
+  const switchToSignIn = () => {
+    navigate('/Sign-in');
+  }
 
   const handleSignUp = async () => {
     try {
@@ -41,6 +47,7 @@ const handleSignInWithGoogle = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
+      navigate('/');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -59,6 +66,7 @@ const handleSignInWithFacebook = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
+      navigate('/');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -69,7 +77,7 @@ const handleSignInWithFacebook = async () => {
   return (
     <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='Register' dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection title='UniTask Register' dataFeather='x' iconOnClick={closeModal} />
         <form
           method="POST"
           className='flex flex-col gap-4'
@@ -133,15 +141,20 @@ const handleSignInWithFacebook = async () => {
   );
 }
 
-function SignIn({ closeModal, switchToSignUp }) {
+function SignIn({ closeModal }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
   const [showCreateUsername, setShowCreateUsername] = useState(false)
+  const navigate = useNavigate();
 
   const handleShowCreateUsername = () => {
     setShowCreateUsername(!showCreateUsername);
   };
+
+  const switchToSignUp = () => {
+    navigate('/Sign-up')
+  }
 
 
   const handleSignIn = async () => {
@@ -155,7 +168,8 @@ function SignIn({ closeModal, switchToSignUp }) {
       if (!userData?.username) {
         setShowCreateUsername(true);
       } else {
-        setMessage({text: "User succesfully signed in", color: "green"})
+        setMessage({text: "User succesfully signed in", color: "green"});
+        navigate('/');
       }
     } catch (error) {
       setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -173,7 +187,8 @@ const handleSignInWithGoogle = async () => {
     if (!userData?.username) {
       setShowCreateUsername(true);
     } else {
-      setMessage({text: "User succesfully signed in", color: "green"})
+      setMessage({text: "User succesfully signed in", color: "green"});
+      navigate('/');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -192,6 +207,7 @@ const handleSignInWithFacebook = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
+      navigate('/');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -201,7 +217,7 @@ const handleSignInWithFacebook = async () => {
   return (
     <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='Login' dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection title='UniTask Login' dataFeather='x' iconOnClick={closeModal} />
         <form
           method="POST"
           className='flex flex-col gap-4'
@@ -234,7 +250,7 @@ const handleSignInWithFacebook = async () => {
           <Button text='Login' type='submit' />
           
           <p>
-            Already have an account?&nbsp;       
+            Dont have an account?&nbsp;       
             <span
               className='text-green-700 font-semibold hover:text-green-600 hover:cursor-pointer'
               onClick={switchToSignUp}>
@@ -294,7 +310,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
       });
 
       alert('Username saved successfully!');
-      closeModal();
+      
       window.location.reload();
     } catch (error) {
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
@@ -352,7 +368,14 @@ const handleSignOut = async () => {
   }
 };
 
+function NoAccountPage({}) {
+  return (
+    <section className='flex-col max-w-screen-2xl h-[90vh] rounded-xl p-4 gap-4 bg-green-800 text-white'>
+      <h1 className='text-4xl font-bold'>The Best Way to Complete Tasks With Everyone, UNITASK</h1>
+      <p>Login/Signup to start collaborating</p>
+    </section>
+  )
+}
 
 
-
-export {SignIn, SignUp, CreateUsername, handleSignOut};
+export {SignIn, SignUp, CreateUsername, handleSignOut, NoAccountPage};
