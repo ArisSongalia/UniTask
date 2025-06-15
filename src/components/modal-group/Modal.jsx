@@ -60,7 +60,7 @@ function CreateProject({ closeModal }) {
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
-        <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
+        <form className="flex flex-col space-y-4">
           <label htmlFor="project-title" className="flex flex-col text-gray-600">
             Title
             <input
@@ -134,7 +134,7 @@ function CreateProject({ closeModal }) {
             </div>
           </label>
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Project" className="py-3" dataFeather='plus' />
+          <Button type="submit" text="Create Project" className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
         </form>
       </section>
     </div>
