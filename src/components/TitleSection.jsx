@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Button from './Button'
 import { IconAction } from './Icon'
+import icon from '../assets/unitask.svg'
 
 function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon}) {
   return ( 
@@ -16,6 +17,20 @@ function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, cl
         </span>
       </span>
 
+    </section>
+  )
+}
+
+function HeadTitleSection({title = 'Title', className = '', nextTitle}) {
+  return ( 
+    <section className='flex w-full mb-4 justify-between pb-4'>
+        <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
+          <img src={icon} className='h-7 w-7' alt="" />
+          <span className='border-l-2 pl-2'>
+            <h2 className='text-lg text-green-700 font-bold'>{title}</h2>
+            <h2>{nextTitle}</h2>
+          </span>
+        </span>
     </section>
   )
 }
@@ -71,4 +86,4 @@ function DisplayTitleSection({title = 'Title', displayCount = '0', className = '
 
 
 export default TitleSection
-export { MultiTitleSection, IconTitleSection, DisplayTitleSection }
+export { MultiTitleSection, IconTitleSection, DisplayTitleSection, HeadTitleSection }

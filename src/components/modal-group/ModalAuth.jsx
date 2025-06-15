@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth, googleProvider, facebookProvider, db} from '../../config/firebase';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { IconTitleSection } from '../TitleSection';
+import { IconTitleSection, HeadTitleSection } from '../TitleSection';
 import Button from '../Button';
 import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
@@ -75,9 +75,9 @@ const handleSignInWithFacebook = async () => {
 
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-800'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='UniTask Register' dataFeather='x' iconOnClick={closeModal} />
+        <HeadTitleSection title='UniTask Register' className=''/>
         <form
           method="POST"
           className='flex flex-col gap-4'
@@ -215,9 +215,9 @@ const handleSignInWithFacebook = async () => {
 };
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-800'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
-        <IconTitleSection title='UniTask Login' dataFeather='x' iconOnClick={closeModal} />
+        <HeadTitleSection title='UniTask Login' />
         <form
           method="POST"
           className='flex flex-col gap-4'
