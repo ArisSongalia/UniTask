@@ -75,7 +75,7 @@ const handleSignInWithFacebook = async () => {
 
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-800'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-900'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <HeadTitleSection title='UniTask Register' className=''/>
         <form
@@ -215,7 +215,7 @@ const handleSignInWithFacebook = async () => {
 };
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-800'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-900'>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <HeadTitleSection title='UniTask Login' />
         <form
