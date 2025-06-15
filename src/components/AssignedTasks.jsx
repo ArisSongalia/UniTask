@@ -4,27 +4,28 @@ import { useFetchTaskData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from './Cards';
-import { auth } from '../config/firebase';
 import { where } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from './hooks/useAuth';
 
 function AssignedTasks({}) {
-  const [taskData, setTaskData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
   const { key } = useReloadContext();
+  const user = useAuth();
+  const [customWhere, setCustomWhere] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+    if (user?.uid) {
+      setCustomWhere(prev => {
+        const newWhere = where("task-team-uids", "array-contains", user.uid);
+        if (JSON.stringify(prev) !== JSON.stringify(newWhere)) {
+          return newWhere;
+        }
+        return prev;
+      });
+    }
+  }, [user?.uid]);
 
-    return () => unsubscribe();
-  }, []);
+  const { taskData, loading } = useFetchTaskData(customWhere, key);
 
-  const customWhere = user ? where("task-team", "array-contains", user.uid) : null;
-  useFetchTaskData(setTaskData, setLoading, key, customWhere);
-  
   return (
     <div className="flex flex-col bg-white p-4 rounded-md w-full max-h-full h-full shadow-sm overflow-hidden">
       <DisplayTitleSection

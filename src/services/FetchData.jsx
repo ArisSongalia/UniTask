@@ -64,7 +64,7 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
               projectData.push({
                 title: doc.data().title,
                 description: doc.data().description,
-                date: doc.data().date,
+                date: doc.data().date, 
                 type: doc.data().type,
                 id: doc.data().id,
               });
@@ -191,55 +191,53 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading, refreshKey) =
   }, [id, setProjectData, setLoading, refreshKey]);
 };
 
-const useFetchTaskData = ( setTaskData, setLoading, refreshKey, customWhere) => {
-  const activeProjectId = localStorage.getItem('activeProjectId');
+const useFetchTaskData = (customWhere, refreshKey) => {
+  const [taskData, setTaskData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNoteData = async () => {
+    const fetchTaskData = async () => {
+      if (!customWhere) {
+        setTaskData([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
       try {
-        const taskRef = collection(db, 'tasks');
-        let q;
-        if (customWhere) {
-          q = query(taskRef, customWhere, where("task-project-id", "==", activeProjectId))
-        } else {
-          q = query(taskRef);
-        };
+        const taskRef = collection(db, "tasks");
+        const q = query(taskRef, customWhere);
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          const taskData = querySnapshot.docs.map((doc) => ({
-              'task-title': doc.data()['task-title'],
-              'task-description': doc.data()['task-description'],
-              'task-deadline': doc.data()['task-deadline'],
-              'task-status': doc.data()['task-status'],
-              'task-team': doc.data()['task-team'],
-              'task-id': doc.id,
-          }));
-          setTaskData(taskData);
-          console.log('Task fetched using the ID', activeProjectId)
+          setTaskData(
+            querySnapshot.docs.map((doc) => ({
+              "task-title": doc.data()["task-title"],
+              "task-description": doc.data()["task-description"],
+              "task-deadline": doc.data()["task-deadline"],
+              "task-status": doc.data()["task-status"],
+              "task-team": doc.data()["task-team"],
+              "task-id": doc.id,
+            }))
+          );
         } else {
-          console.log('No task data found');
+          console.log("No task data found");
           setTaskData([]);
         }
       } catch (error) {
-        console.log('Error fetching tasks', error)
+        console.error("Error fetching task data:", error);
       } finally {
         setLoading(false);
-      };
+      }
     };
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchNoteData();
-        setLoading(true);
-      } else {
-        setLoading(false);
-      };
-    });
+    fetchTaskData();
+  }, [customWhere, refreshKey]);
 
-    return () => unsubscribe();
-  }, [activeProjectId, setLoading, refreshKey])
-}
+  return { taskData, loading};
+};
+
+
 
 const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   useEffect(() => {

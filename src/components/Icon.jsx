@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import feather from 'feather-icons';
 import { UserProfile } from './modal-group/Modal';
-import { useFetchUsers } from '../services/FetchData';
  
 function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', style = {}, iconOnClick, text = ""}) {
   useEffect(() => {
@@ -49,8 +48,6 @@ function Icon({ className = '', dataFeather = 'edit-2', actionText= '', style = 
 
 function IconUser({ user={}, className=''}) {
   const [showUserProfile, setShowUserProfile] = useState(false);
-  
-  console.log(user.photoURL, 32434234)
 
   const handleShowUserProfile = () => {
     setShowUserProfile(!showUserProfile);

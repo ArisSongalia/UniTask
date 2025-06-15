@@ -19,7 +19,7 @@ function MainProjectSection() {
     setShowPopUp(!showPopUp);
   };
 
-  fetchProjectData(setProjects, setLoading, key)
+  fetchProjectData( setProjects, setLoading, key)
 
   return (
     <div className="flex flex-col w-full h-full">

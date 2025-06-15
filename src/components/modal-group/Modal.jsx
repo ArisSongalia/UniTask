@@ -251,6 +251,7 @@ function CreateTask({ closeModal }) {
     'task-file': '',
     'task-team': [...new Set([])],
     'task-project-id': projectId,
+    'task-team-uid': [],
   });
 
   useFetchActiveProjectData(projectId, setProjectData, setLoading);
@@ -287,6 +288,7 @@ function CreateTask({ closeModal }) {
         'task-file': form['task-file'],
         'task-project-id': form['task-project-id'],
         'task-team': form['task-team'],
+        'task-team-uids': form['task-team-uid'],
       });
 
     } catch (error) {
@@ -301,21 +303,22 @@ function CreateTask({ closeModal }) {
 
   const handleStateChange = (data) => {
     setForm((prevForm) => {
+      let updatedTeam;
+
       if (data.isActive) {
-        return {
-          ...prevForm,
-          'task-team': [...prevForm['task-team'], {uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL}],
-        };
+        updatedTeam = [...prevForm['task-team'], {
+          uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL
+        }];
       } else {
-        return {
-          ...prevForm,
-          'task-team': [...prevForm['task-team'].filter((member) => member.uid !== data.uid)]
-        };
+        updatedTeam = prevForm['task-team'].filter((member) => member.uid !== data.uid)
+      };
+
+      return {
+        ...prevForm,
+        'task-team': updatedTeam,
+        'task-team-uid': updatedTeam.map(member => member.uid)
       };
     });
-
-    
-
   };
 
 
@@ -375,7 +378,7 @@ function CreateTask({ closeModal }) {
                   <BarLoader color='green'/>
                 ) : projectData['team'] && (
                   projectData['team'].map((member) => (
-                  <UserCard key={member.uid} user={member} onStateChange={handleStateChange}/>
+                  <UserCard key={member.uid} user={member} onStateChange={handleStateChange} />
                 )))}
               </section>
             </section>
