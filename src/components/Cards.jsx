@@ -14,6 +14,7 @@ import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from './hooks/useAuth';
 
 
 function SummaryCard({
@@ -22,13 +23,26 @@ function SummaryCard({
   className = '', 
   }) {
 
+  const user = useAuth();
   const { key } = useReloadContext()
-  const [taskData, setTaskData] = useState([]);
   const [noteData, setNoteData] = useState([])
-  const [loading, setLoading] = useState(true);
+  const [customWhere, setCustomWhere] = useState(null);
+  const [noteLoading, setNoteLoading] = useState(false)
 
-  useFetchTaskData( setTaskData, setLoading, key)
-  fetchNoteData( setNoteData, setLoading, key)
+  useEffect(() => {
+    if (user?.uid) {
+      setCustomWhere(prev => {
+        const newWhere = where("task-team-uids", "array-contains", user.uid);
+        if (JSON.stringify(prev) !== JSON.stringify(newWhere)) {
+          return newWhere;
+        }
+        return prev;
+      });
+    }
+  }, [user?.uid]);
+
+  const { taskData, loading } = useFetchTaskData(customWhere, key);
+  fetchNoteData( setNoteData, setNoteLoading, key)
   
 
   return (
