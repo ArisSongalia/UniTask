@@ -9,9 +9,7 @@ import { IconUser } from './Icon';
 
 
 function Navbar() {
-  const [activeAuth, setActiveAuth] = useState(null);
   const [user, setUser] = useState(null);
-  const closeModal = () => setActiveAuth(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -47,30 +45,10 @@ function Navbar() {
               />
               <IconUser user={user}/>       
             </>
-          ) : (
-            <>
-              <Button
-                onClick={() => setActiveAuth('SignIn')}
-                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-                text="Login"
-                dataFeather='log-in'
-              />
-
-              <Button
-                onClick={() => setActiveAuth('SignUp')}
-                className="text-green-900 text-sm font-bold hover:cursor-pointer hover:text-green-700"
-                text="Register"
-                dataFeather=''
-              />
-            </>
-          )}
+          ) :
+            null
+          }
         </span>
-        {activeAuth === 'SignUp' && (
-          <SignUp closeModal={closeModal} switchToSignIn={() => setActiveAuth('SignIn')} />
-        )}
-        {activeAuth === 'SignIn' && (
-          <SignIn closeModal={closeModal} switchToSignUp={() => setActiveAuth('SignUp')} />
-        )}
       </div>
       
     </section>

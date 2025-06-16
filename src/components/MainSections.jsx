@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ProjectCard, CreateCard } from './Cards';
-import { CreateProject, CreateNote } from './modal-group/Modal';
-import Notes from './Notes';
+import { CreateProject, CreateNote} from './modal-group/Modal';
 import { IconTitleSection } from './TitleSection';
 import { fetchProjectData, fetchNoteData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from '../context/ReloadContext';
+import { NoteCard } from './Cards';
 
 
 function MainProjectSection() {
@@ -30,7 +30,7 @@ function MainProjectSection() {
         className='sticky top-0 bg-white pb-2'
       />  
       
-      <section id='project-container' className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
+      <section id='project-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 
           onClick={togglePopUp} 
           title='Create Project' 
@@ -80,7 +80,7 @@ function MainNotesSection() {
         extraIcon={<ReloadIcon />}
         className='sticky top-0 bg-white pb-2'
       />  
-      <section id='note-container' className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
+      <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard  
           onClick={togglePopUp} 
           title='Write a Note' 
@@ -93,7 +93,7 @@ function MainNotesSection() {
         ) : (
           notes.length > 0 &&
             notes.map((note, index) => (
-              <Notes
+              <NoteCard
                 key={`${note.id}-${index}`}
                 title={note.title}
                 message={note.message}

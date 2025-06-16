@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import Notes from './Notes';
 import {IconTitleSection} from './TitleSection';
 import { CreateNote } from './modal-group/Modal';
 import { fetchNoteData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
 import { BarLoader } from 'react-spinners';
+import { NoteCard } from './Cards';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -33,7 +33,7 @@ function NoteSection({className = ''}) {
           <BarLoader color='#228B22' size={20} />
         ) : (
           notes.map((note, index) => (
-            <Notes
+            <NoteCard
               key={`${note.id}-${index}`}
               title={note.title}
               message={note.message}

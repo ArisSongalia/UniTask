@@ -15,6 +15,7 @@ import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
+import { NoteEdit, NoteFocus } from "./modal-group/Modal";
 
 
 function SummaryCard({
@@ -54,10 +55,9 @@ function SummaryCard({
       </span>
 
       <div className="flex gap-1 w-full h-fit">
+        <CountCard count={count} title='Pending Projects'/>
         <CountCard count={taskData.length} title='Assigned Task' className='' />
         <CountCard count={noteData.length} title='Action Notes' className=''/>
-        <CountCard count={count} title='Actions' />
-
       </div>
 
       <Button text='Check Pending'/>
@@ -90,16 +90,16 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
   return (
     <div
       className={`flex flex-col bg-green-50 rounded-lg overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
-      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 h-[15rem] ${className}`}
+      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4  h-[14rem] min-w-[10rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
-          <span className='self-start flex flex-col gap-2 justify-between'>
-            <span className="flex justify-between items-center mb-2">
+          <span className='self-start flex justify-between w-full'>
+            <span className="flex flex-col gap-4 mb-2">
               <h2 className='font-bold text-sm text-green-700'>{title}</h2>
-              <Icon dataFeather='plus' />
+              <p className='text-sm'>{description}</p>
             </span>
-            <p className='text-sm'>{description}</p>
+            <Icon dataFeather='plus' />
           </span>
       </span>
     </div>
@@ -134,20 +134,19 @@ function ProjectCard({
   return (
     <div
       className="flex flex-col bg-white rounded-lg overflow-hidden
-        flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[15rem]"
+        flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[10rem]"
     >
-      <section className="flex gap-4 w-full">
-        <span className='w-full'>
-          <h4 className="font-bold  mb-2 overflow-hidden text-sm text-ellipsis">{title}</h4>
-          <span className='flex items-center gap-2 w-[rem] whitespace-nowrap'>
+      <section className="flex items-start gap-4 w-full">
+        <span className="flex-1 min-w-0">
+          <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{title}</h4>
+          <span className="flex items-center gap-1 whitespace-nowrap">
             <p className="font-semibold text-gray-600 text-xs">{type}</p>
-            <p>•</p>
-            <p className="text-xs font-semibold text-gray-600 ">{date}</p>
+            <p className="text-xs font-semibold text-gray-600">{date}</p>
           </span>
         </span>
 
-        <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="w-fit" />
-        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects'/>}
+        <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="shrink-0" />
+        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects' />}
       </section>
 
       <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">
@@ -158,6 +157,53 @@ function ProjectCard({
         <Button text="Open Project" className="w-full" onClick={handleSetActiveProject} /> 
       </Link>
     </div>
+  );
+}
+
+function NoteCard({
+  className = "",
+  title = "Title",
+  message = "Lorem ipsum dolor sit amet consectetur, adipisicing elitdadadad. Delectus, ipsum doloribus maxime maiores quos eius porro quod suscipit autem dolor distinctio aliquid quaerat. Iste, laborum at accusantium ab tempora voluptatum!",
+  owner = "You",
+  date = "01/01/12",
+  file,
+  id = "",
+}) {
+  const [showPopUp, setShowPopUp] = useState(false);
+
+  const togglePopUp = () => {
+    setShowPopUp(!showPopUp);
+  };
+
+  return (
+    <span>
+      <section
+        onClick={togglePopUp}
+        className={`flex flex-col bg-yellow-50 rounded-lg
+          hover:cursor-pointer shadow-sm hover:bg-yellow-100
+          p-4 justify-between overflow-hidden h-[14rem] min-w-[10rem] ${className}`}
+      >
+        <section className="flex-grow overflow-hidden">
+          <h2 id="note-card-title" className="font-bold mb-4">
+            {title}
+          </h2>
+          <p id="note-card-text" className="text-gray-800 my-2 text-sm">
+            {message}
+            {file && (
+              <span className="block mt-2 text-gray-500 text-xs">
+                Attached File: {file}
+              </span>
+            )}
+          </p>
+        </section>
+
+        <span className="w-full">
+          <p className="text-xs text-gray-600 font-semibold pt-2">From {owner} - {date}</p>
+        </span>
+      </section>
+
+      {showPopUp && <NoteEdit closeModal={togglePopUp} title={title} message={message} owner={owner} file={file} date={date} id={id} />}
+    </span>
   );
 }
 
@@ -359,4 +405,4 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 }
 
 
-export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard, CanvasCard }
+export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard, CanvasCard, NoteCard }

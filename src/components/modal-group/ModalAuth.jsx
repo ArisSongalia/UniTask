@@ -9,7 +9,7 @@ import { AlertCard } from '../Cards';
 import { useNavigate } from 'react-router-dom';
 
 
-function SignUp({ closeModal }) {
+function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
@@ -141,7 +141,7 @@ const handleSignInWithFacebook = async () => {
   );
 }
 
-function SignIn({ closeModal }) {
+function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
@@ -283,6 +283,7 @@ const handleSignInWithFacebook = async () => {
 function CreateUsername({ email, additionalData, closeModal, user }) {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
+  const Navigate = useNavigate();
 
   const handleSetUsername = (e) => {
     const username = e.target.value.trim(); 
@@ -310,8 +311,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
       });
 
       alert('Username saved successfully!');
-      
-      window.location.reload();
+      Navigate('/');
     } catch (error) {
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
     }
@@ -321,17 +321,15 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
         <span className="flex w-full justify-between items-center">
-          <IconTitleSection
+          <HeadTitleSection
             title="Create Username"
-            iconOnClick={closeModal}
-            dataFeather="x"
             className="mb-0"
           />
         </span>
 
         <div className="flex flex-col gap-2">
           <AlertCard
-            text="Please use identifiable username and avoiding inappropriate language."
+            text="Welcome to UniTask! Please use identifiable username and avoiding inappropriate language."
             email={email}
             className="mb-4"
           />
