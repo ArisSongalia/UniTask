@@ -9,8 +9,12 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
 
   return (
     <section 
-      className={`flex border border-opacity-50 rounded-full p-2 gap-2 items-center justify-center text-green-900
-                  w-fit h-8 hover:cursor-pointer hover:bg-green-700 hover:text-white ${className}`} 
+      className={`flex rounded-full p-2 gap-2 items-center justify-center text-green-900
+        w-fit h-8 cursor-pointer bg-green-50
+        hover:bg-green-700 hover:text-white
+        active:bg-green-700 focus:bg-green-50 focus:outline-none
+        ${className}`}
+      style={{ touchAction: 'manipulation' }}
       aria-hidden="true" 
       aria-label={actionText}
       onClick={iconOnClick}

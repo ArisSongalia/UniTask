@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
-import { SignIn, SignUp, handleSignOut } from './modal-group/ModalAuth';
-import Button from './Button';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { IconUser } from './Icon';
+import { IconUser, IconAction } from './Icon';
+import HomeSideBar from './HomeSideBar';
 
 
 function Navbar() {
   const [user, setUser] = useState(null);
   const location = useLocation();
+  const [showPopUp, setShowPopUp] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -22,6 +22,10 @@ function Navbar() {
 
   if (location.pathname === '/Project') {
     return null;
+  }
+
+  const toggleShowPopUp = () => {
+    setShowPopUp(!showPopUp);
   }
 
 
@@ -37,20 +41,20 @@ function Navbar() {
         <span className="flex w-fit gap-2 items-center">
           {user ? (
             <>
-              <Button
-                onClick={handleSignOut}
-                className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700"
-                text="Sign-Out"
-                dataFeather='plus'
-              />
               <IconUser user={user}/>       
             </>
           ) :
             null
           }
+
+          <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={toggleShowPopUp} />
         </span>
       </div>
-      
+      {showPopUp && 
+      <HomeSideBar 
+        className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
+        closeModal={toggleShowPopUp}
+      />}
     </section>
   );
 }

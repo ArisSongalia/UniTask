@@ -28,7 +28,7 @@ function NoteSection({className = ''}) {
       <IconTitleSection title='Notes' dataFeather='plus' iconOnClick={togglePopUp} />
       {showPopUp && <CreateNote closeModal={togglePopUp} projectId={activeProjectId}/>}
 
-      <section className={`grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-2 w-full bg-white pr-2 rounded-xl overflow-y-auto ${className}`}>
+      <section className={`grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-2 w-full h-full bg-white pr-2 rounded-xl overflow-y-auto ${className}`}>
         {loading ? (
           <BarLoader color='#228B22' size={20} />
         ) : (

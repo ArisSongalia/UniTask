@@ -235,6 +235,7 @@ function UserCard({className='', user, onStateChange}) {
         <img className='w-8 h-8 rounded-full' src={user.photoURL} alt="user-icon" />
         <p className='text-sm'>{user.username}</p>
         <p className='text-sm text-gray-500'>{user.email}</p>
+        
       </span>
     </section>
   )

@@ -125,8 +125,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-red-500' text='Google'/>
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-blue-500' text='Facebook'/>
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-red-600' text='Google'/>
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-blue-600' text='Facebook'/>
           </section>
         </section>
       </div>
@@ -264,8 +264,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-red-500' text='Google' />
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-blue-500' text='Facebook' />
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-red-600' text='Google' />
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.5rem] w-[2.5rem] px-4 text-white bg-blue-600' text='Facebook' />
           </section>
         </section>
       </div>

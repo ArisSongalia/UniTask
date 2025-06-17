@@ -12,7 +12,7 @@ function CanvasSection() {
 
 
   return (
-    <div className='w-full h-full flex flex-col bg-white rounded-md p-4'>
+    <div className='w-full h-full  flex flex-col bg-white rounded-md p-4'>
       <IconTitleSection title='Canvas' dataFeather='plus' iconOnClick={toggleShowCreateCanvas}/>
       { showCreateCanvas && <CreateCanvas closeModal={toggleShowCreateCanvas} /> }
 

@@ -30,7 +30,7 @@ function Home() {
       <Navbar />
       <div className="flex flex-grow w-full p-4 h-[calc(100vh-4rem)] gap-4 max-w-screen-2xl justify-center">
         <RecentTasks />
-        <HomeSideBar className='hidden md:block'/>
+        <HomeSideBar className='hidden lg:flex'/>
       </div>
     </div>
   );

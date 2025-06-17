@@ -8,6 +8,7 @@ import { AddMembers } from './modal-group/Modal';
 import Button from './Button';
 import SocialSection from './SocialSection';
 import { useReloadContext } from '../context/ReloadContext';
+import TaskSideBar from './TaskSideBar';
 
 
 function TaskNavBar() {
@@ -17,6 +18,7 @@ function TaskNavBar() {
   const [projectData, setProjectData] = useState([]);
   const [showAddMembers, setShowAddMembers] = useState(false);
   const [showSocialSection, setShowSocialSection] = useState(false);
+  const [showTaskSideBar, setShowTaskSideBar] = useState(false);
   const activeLocalProjectID = localStorage.getItem('activeProjectId');
   const { key } = useReloadContext();
 
@@ -47,7 +49,11 @@ function TaskNavBar() {
 
   const toggleShowSocialSection = () => {
     setShowSocialSection(!showSocialSection);
-  }
+  };
+
+  const toggleShowTaskSideBar = () => {
+    setShowTaskSideBar(!showTaskSideBar);
+  };
 
 
   useFetchActiveProjectData(id, setProjectData, setLoading, key)
@@ -72,7 +78,7 @@ function TaskNavBar() {
             </span>
           )}
         </span>
-        <span className='flex items-center gap-4'>
+        <span className='flex items-center gap-1'>
 
           <span id="task-user" className='flex gap-1 p-2 rounded-full bg-blue-50'>
             {loading ? (
@@ -84,11 +90,18 @@ function TaskNavBar() {
             )}
           </span>
 
-          <Button text='Add Members' dataFeather='user-plus' onClick={toggleShowAddMembers}/>
+          <IconAction dataFeather='user-plus' onClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
 
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
-          {showSocialSection && <SocialSection/>}
+          {showSocialSection && <SocialSection />}
+
+          <IconAction dataFeather='plus' className='lg:hidden' iconOnClick={toggleShowTaskSideBar} />
+          {showTaskSideBar && 
+            <TaskSideBar  
+              className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
+              closeModal={toggleShowTaskSideBar}
+            />}
         </span>
       </div>
     </div>

@@ -11,6 +11,7 @@ import { AlertCard } from '../Cards';
 import { useFetchUsers, useFetchActiveProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
+import { handleSignOut } from './ModalAuth';
 
 
 function CreateProject({ closeModal }) {
@@ -638,6 +639,13 @@ function UserProfile({ closeModal, user={} }) {
           </span>
         </span>
         <p className='text-gray-500 text-sm mt-2'>UID: {user.uid}</p>
+
+        <Button
+          onClick={handleSignOut}
+          className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
+          text="Sign-Out"
+          dataFeather='log-out'
+        />
       </div>
     </div>
   );

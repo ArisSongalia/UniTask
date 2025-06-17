@@ -1,8 +1,7 @@
-import React from 'react'
-import ProgressBoard from './ProgressBoard'
-import TaskSideBar from '../components/TaskSideBar'
-import TaskNavBar from './TaskNavBar'
-import { ReloadProvider } from '../context/ReloadContext'
+import ProgressBoard from './ProgressBoard';
+import TaskSideBar from '../components/TaskSideBar';
+import TaskNavBar from './TaskNavBar';
+
 
 function Project() {
   return (
@@ -10,7 +9,7 @@ function Project() {
       <TaskNavBar />
       <div className='flex w-full p-4 h-[calc(100vh-4rem)] gap-4 max-w-screen-2xl justify-center'>
         <ProgressBoard />
-        <TaskSideBar />
+        <TaskSideBar className='hidden lg:block max-w-[30%]'/>
       </div>
     </div>
   )
