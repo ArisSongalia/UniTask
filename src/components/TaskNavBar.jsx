@@ -90,7 +90,7 @@ function TaskNavBar() {
             )}
           </span>
 
-          <IconAction dataFeather='user-plus' onClick={toggleShowAddMembers}/>
+          <IconAction dataFeather='user-plus' iconOnClick={toggleShowAddMembers}/>
           {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
 
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
