@@ -18,8 +18,8 @@ function ButtonIcon({ text = 'Button', onClick, className = '', type = 'button',
   return (
     <button
       type={`${type}`}
-      className={`group flex p-1 items-center rounded-full bg-green-50 text-xs pl-3 pr-4 font-bold h-fit 
-      hover:bg-green-700 hover:text-white border-opacity-60 text-green-700 ${className}`}
+      className={`group flex text-green-800 bg-green-50  p-1 items-center rounded-full text-xs pl-3 pr-4 font-bold h-fit
+      hover:bg-green-700 hover:text-white border-opacity-60 ${className}`}
       onClick={onClick}
     >
       <Icon dataFeather={dataFeather} className='group-hover:text-white text-white' />

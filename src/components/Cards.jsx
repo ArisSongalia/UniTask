@@ -141,7 +141,7 @@ function ProjectCard({
   return (
     <div
       className="flex flex-col bg-white rounded-lg overflow-hidden
-        flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[10rem]"
+        flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
     >
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
@@ -189,7 +189,7 @@ function NoteCard({
         onClick={togglePopUp}
         className={`flex flex-col bg-yellow-50 rounded-lg
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
-          p-4 justify-between h-[14rem] min-w-[10rem] ${className}`}
+          p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
       >
         <section className="flex-grow overflow-hidden">
           <h2 id="note-card-title" className="font-bold mb-4">
