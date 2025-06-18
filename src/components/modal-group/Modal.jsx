@@ -589,40 +589,42 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation}>
-        <section
-          className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
-            h-[30rem] w-[40rem] p-4 justify-between overflow-hidden`}
-        >
-          <section>
-            <span className="flex justify-between w-full gap-2">
-              <span className="flex flex-col">
-                <h2 id="note-card-main" className="font-bold text-lg mb-4 hover:cursor-pointer">
-                  {title}
-                </h2>
-                <p id="note-card-text" className="text-gray-800 font-normal my-2 hover:cursor-pointer">
-                  {message}
-                  {file && (
-                    <span className="block mt-2 text-gray-500 text-xs">
-                      Attached File: {file}
-                    </span>
-                  )}
-                </p>
-              </span>
-              <span className="flex flex-col gap-2">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={closeModal}>
+      <section
+        className="flex flex-col bg-yellow-50 rounded-xl overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
+        onClick={(e) => e.stopPropagation}
+      >
+        <section>
+          <span className="flex flex-col justify-between w-full gap-2">
+            <span className="flex justify-between items-center">
+              <h2 id="note-card-main" className="font-bold text-lg mb-2 hover:cursor-pointer">
+                {title}
+              </h2>
+              <span className="flex gap-2">
                 <IconAction dataFeather="x" iconOnClick={closeModal} />
-                <IconAction dataFeather="edit" iconOnClick={togglePopUp}/>
-                {showPopUp && <CreateNote  closeModal={closeModal} title={title} message={main}/>}
-                <IconAction dataFeather="trash-2" iconOnClick={handleDelete}/>
+                <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
+                {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
+                <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
               </span>
             </span>
-          </section>
-          <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">Note by: {owner} - {date}</p>
+  
+            <p id="note-card-text" className="text-gray-800 font-normal my-2 hover:cursor-pointer w-full break-words">
+              {message}
+              {file && (
+                <span className="block mt-2 text-gray-500 text-xs">
+                  Attached File: {file}
+                </span>
+              )}
+            </p>
+          </span>
         </section>
+        <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">
+          Note by: {owner} - {date}
+        </p>
       </section>
     </div>
   );
+  
 }
 
 function UserProfile({ closeModal, user={} }) {

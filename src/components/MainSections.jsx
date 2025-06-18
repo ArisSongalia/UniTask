@@ -83,7 +83,7 @@ function MainNotesSection() {
       <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard  
           onClick={togglePopUp} 
-          title='Write a Note' 
+          title='Create Note' 
           description='Write a note for you or yourself'
         />
         {showPopUp && <CreateNote closeModal={togglePopUp} />}

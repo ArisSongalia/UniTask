@@ -90,16 +90,16 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
   return (
     <div
       className={`flex flex-col bg-green-50 rounded-lg overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
-      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4  h-[14rem] min-w-[10rem] ${className}`}
+      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4  h-[14rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
-          <span className='self-start flex justify-between w-full'>
-            <span className="flex flex-col gap-4 mb-2">
+          <span className='self-start flex flex-col gap-1 justify-between w-full'>
+            <span className="flex gap-4 mb-2">
               <h2 className='font-bold text-sm text-green-700'>{title}</h2>
-              <p className='text-sm'>{description}</p>
+              <Icon dataFeather='plus' />
             </span>
-            <Icon dataFeather='plus' />
+            <p className='text-sm'>{description}</p>
           </span>
       </span>
     </div>
@@ -134,7 +134,7 @@ function ProjectCard({
   return (
     <div
       className="flex flex-col bg-white rounded-lg overflow-hidden
-        flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[10rem]"
+        flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
     >
       <section className="flex items-start gap-4 w-full">
         <span className="flex-1 min-w-0">
@@ -181,7 +181,7 @@ function NoteCard({
         onClick={togglePopUp}
         className={`flex flex-col bg-yellow-50 rounded-lg
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
-          p-4 justify-between overflow-hidden h-[14rem] min-w-[10rem] ${className}`}
+          p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
       >
         <section className="flex-grow overflow-hidden">
           <h2 id="note-card-title" className="font-bold mb-4">
