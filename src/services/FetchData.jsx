@@ -67,6 +67,7 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
                 date: doc.data().date, 
                 type: doc.data().type,
                 id: doc.data().id,
+                status: doc.data().status,
               });
             });
             setProjectData(projectData);

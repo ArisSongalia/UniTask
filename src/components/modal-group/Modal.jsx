@@ -46,6 +46,7 @@ function CreateProject({ closeModal }) {
         date: form.date,
         type: form.type,
         owner: user.uid,
+        status: "On-going",
       });
 
       await updateDoc(docRef, { id: docRef.id });

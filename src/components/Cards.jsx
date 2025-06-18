@@ -9,13 +9,13 @@ import { FetchUserName } from '../services/FetchData';
 import { doc, getDoc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
-import { useFetchTaskData, fetchNoteData } from '../services/FetchData';
+import { useFetchTaskData, fetchNoteData, fetchProjectData } from '../services/FetchData';
 import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
-import { NoteEdit, NoteFocus } from "./modal-group/Modal";
+import { NoteEdit } from "./modal-group/Modal";
 
 
 function SummaryCard({
@@ -28,7 +28,10 @@ function SummaryCard({
   const { key } = useReloadContext()
   const [noteData, setNoteData] = useState([])
   const [customWhere, setCustomWhere] = useState(null);
-  const [noteLoading, setNoteLoading] = useState(false)
+  const [commonLoading, setCommonLoading] = useState(false)
+  const [projectsData, setProjectData] = useState([]);
+  const pendingProjects = projectsData.filter(project => project.status === 'On-going');
+
 
   useEffect(() => {
     if (user?.uid) {
@@ -42,9 +45,12 @@ function SummaryCard({
     }
   }, [user?.uid]);
 
-  const { taskData, loading } = useFetchTaskData(customWhere, key);
-  fetchNoteData( setNoteData, setNoteLoading, key)
-  
+  const { taskData, loading } = useFetchTaskData(customWhere, key );
+
+
+  fetchNoteData(setNoteData, setCommonLoading, key);
+  fetchProjectData(setProjectData, setCommonLoading, key);
+
 
   return (
   <section className={`flex flex-col bg-green-800 w-full rounded-lg gap-4
@@ -55,7 +61,7 @@ function SummaryCard({
       </span>
 
       <div className="flex gap-1 w-full h-fit">
-        <CountCard count={count} title='Pending Projects'/>
+        <CountCard count={pendingProjects.length} title='Pending Projects'/>
         <CountCard count={taskData.length} title='Assigned Task' className='' />
         <CountCard count={noteData.length} title='Action Notes' className=''/>
       </div>
@@ -95,7 +101,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
           <span className='self-start flex flex-col gap-1 justify-between w-full'>
-            <span className="flex gap-4 mb-2">
+            <span className="flex gap-4 mb-2 justify-between items-center">
               <h2 className='font-bold text-sm text-green-700'>{title}</h2>
               <Icon dataFeather='plus' />
             </span>
@@ -112,6 +118,7 @@ function ProjectCard({
   date = '00/00/00',
   type = 'Solo / Shared',
   id = '',
+  status = 'Status'
   }) {
 
   const { setProjectID } = useProjectContext();
@@ -134,27 +141,28 @@ function ProjectCard({
   return (
     <div
       className="flex flex-col bg-white rounded-lg overflow-hidden
-        flex-grow justify-between border gap-4 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
+        flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[10rem]"
     >
-      <section className="flex items-start gap-4 w-full">
-        <span className="flex-1 min-w-0">
-          <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{title}</h4>
-          <span className="flex items-center gap-1 whitespace-nowrap">
-            <p className="font-semibold text-gray-600 text-xs">{type}</p>
-            <p className="text-xs font-semibold text-gray-600">{date}</p>
+      <section className="flex flex-col items-start gap-2 w-full">
+          <span className='flex items-center w-full justify-between'>
+            <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{title}</h4>
+            <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="shrink-0" />
+            {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects' />}
           </span>
-        </span>
 
-        <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="shrink-0" />
-        {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects' />}
+          <span className="flex flex-wrap gap-1">
+            <p className="font-semibold p-1 text-xs bg-green-50 items-center flex text-green-600">{type}</p>
+            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
+            <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{date}</p>  
+          </span>
       </section>
 
-      <section className="flex flex-col h-full w-full overflow-hidden overflow-y-scroll">
-        <p className="text-sm text-gray-700 mb-2 break-words text-ellipsis pr-2">{description}</p>
+      <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
+        <p className="text-xs text-gray-800 mb-2 break-words text-ellipsis pr-2">{description}</p>
       </section>
 
       <Link to={'./Project'} className="w-full">
-        <Button text="Open Project" className="w-full" onClick={handleSetActiveProject} /> 
+        <Button text={"Open Project"} className="w-full" onClick={handleSetActiveProject} /> 
       </Link>
     </div>
   );
@@ -181,7 +189,7 @@ function NoteCard({
         onClick={togglePopUp}
         className={`flex flex-col bg-yellow-50 rounded-lg
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
-          p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
+          p-4 justify-between h-[14rem] min-w-[10rem] ${className}`}
       >
         <section className="flex-grow overflow-hidden">
           <h2 id="note-card-title" className="font-bold mb-4">
@@ -289,13 +297,12 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
           <span className='flex gap-1 text-xs font-semibold text-gray-600 items-center'>
-            <span>{status}</span>
-            <p>•</p>
-            <p>{deadline}</p>
+            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
+            <p className="text-xs flex p-1 bg-orange-50 font-semibold text-orange-500">{deadline}</p> 
           </span>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
-        {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
+        {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' letMoveStatus = "none"/>}
       </span>
 
       <p className='text-sm py-2'>{description}</p>

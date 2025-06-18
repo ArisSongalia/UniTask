@@ -1,16 +1,15 @@
 import React from 'react';
 import Icon from './Icon';
 
-function Button({ text = 'Button', onClick, className = '', type = 'button', dataFeather = 'arrow-right', iconClassName = ''}) {
+function Button({ text = 'Button', onClick, className = '', type = 'button', iconClassName = ''}) {
   return (
     <button
       type={`${type}`}
-      className={`group flex justify-between items-center p-1 rounded-md bg-green-50 text-xs px-4 font-bold h-fit 
-      hover:bg-green-700 hover:text-white border-opacity-60 text-green-800 ${className}`}
+      className={`flex justify-center bg-green-50 text-xs px-4 font-bold rounded-full
+      hover:bg-green-700 hover:text-white border-opacity-60 text-green-800 p-3 ${className}`}
       onClick={onClick}
     >
-      {text}
-      <Icon dataFeather={dataFeather} className={`group-hover:text-white ${iconClassName}`} />
+       <p className='font-bold text-xs'>{text}</p>
     </button>
   );
 }
@@ -19,12 +18,12 @@ function ButtonIcon({ text = 'Button', onClick, className = '', type = 'button',
   return (
     <button
       type={`${type}`}
-      className={`group flex p-1 justify-between items-center rounded-full bg-green-50 text-xs pl-3 pr-4 font-bold h-fit 
+      className={`group flex p-1 items-center rounded-full bg-green-50 text-xs pl-3 pr-4 font-bold h-fit 
       hover:bg-green-700 hover:text-white border-opacity-60 text-green-700 ${className}`}
       onClick={onClick}
     >
-      <Icon dataFeather={dataFeather} className='group-hover:text-white' />
-      {text}
+      <Icon dataFeather={dataFeather} className='group-hover:text-white text-white' />
+      <p className='font-bold text-xs'>{text}</p>
     </button>
   );
 }
