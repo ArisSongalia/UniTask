@@ -38,8 +38,8 @@ function Popup({ title, closeModal, id, collectionName, letMoveStatus }) {
           ) : (
             <>
               <IconTitleSection title={title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
-              <ButtonIcon text="Mark as Finish" dataFeather="flag" onClick={handleMarkAsFinish} className="bg-blue-700 text-white" />
-              <ButtonIcon text="Delete" dataFeather="trash" onClick={handleDelete} className="bg-red-700 text-white" />
+              <ButtonIcon text="Mark as Finish" dataFeather="flag" onClick={handleMarkAsFinish} className="bg-blue-600 text-white" />
+              <ButtonIcon text="Delete" dataFeather="trash" onClick={handleDelete} className="bg-red-600 text-white" />
             </>
           )
         }
