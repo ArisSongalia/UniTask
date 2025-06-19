@@ -8,8 +8,8 @@ import { useReloadContext } from '../context/ReloadContext'
 import { ReloadIcon } from './ReloadComponent'
 import { where } from 'firebase/firestore'
 import { IconAction } from './Icon'
-import Button from './Button'
 import { CompletedTab } from './modal-group/Modal'
+import { ButtonIcon } from './Button'
 
 function ProgressBoard() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -24,23 +24,23 @@ function ProgressBoard() {
     setShowPopUp(!showPopUp);
   };
 
-  const whereToDo = useMemo(() => where("task-status", "==", "To-do"), []);
-  const whereActive = useMemo(() => where("task-status", "==", "In-progress"), []);
-  const whereFinished = useMemo(() => where("task-status", "==", "Finished"), []);
+  const whereToDo = useMemo(() => where("status", "==", "To-do"), []);
+  const whereActive = useMemo(() => where("status", "==", "In-progress"), []);
+  const whereFinished = useMemo(() => where("status", "==", "Finished"), []);
 
   const { taskData: toDoTasks, loading: loadingToDo } = useFetchTaskData(whereToDo, key);
   const { taskData: inProgressTasks, loading: loadingInProgress } = useFetchTaskData(whereActive, key);
   const { taskData: finishedTasks, loading: loadingFinished } = useFetchTaskData(whereFinished, key);
 
   return (
-    <div className='flex flex-col bg-white rounded-md p-4 h-full w-full overflow-hidden shadow-sm flex-grow-0'>
-      <section className='title-section flex mb-4 justify-between'>
+    <div className='flex flex-col bg-white rounded-md h-full w-full overflow-hidden shadow-sm flex-grow-0'>
+      <section className='title-section flex justify-betweenp p-4 justify-between'>
         <h2 className='font-semibold max-w-[80%] overflow-hidden overflow-ellipsis'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
           <IconAction dataFeather='check-square' iconOnClick={toggleShowCompletedTab} />
           {showCompletedTab && <CompletedTab taskData={finishedTasks} closeModal={toggleShowCompletedTab} />}
-          <Button
+          <ButtonIcon
             text='Create Task'
             dataFeather='plus'
             onClick={togglePopUp}
@@ -67,13 +67,13 @@ function ProgressBoard() {
             ) : (
               toDoTasks.map((taskData) => (
                 <TaskCard
-                  key={taskData['task-id']}
-                  title={taskData['task-title']}
-                  description={taskData['task-description']}
-                  deadline={taskData['task-deadline']}
-                  team={taskData['task-team']}
-                  status={taskData['task-status']}
-                  id={taskData['task-id']}
+                  key={taskData['id']}
+                  title={taskData['title']}
+                  description={taskData['description']}
+                  deadline={taskData['deadline']}
+                  team={taskData['team']}
+                  status={taskData['status']}
+                  id={taskData['id']}
                 />
               ))
             )}
@@ -94,13 +94,13 @@ function ProgressBoard() {
             ) : (
               inProgressTasks.map((taskData) => (
                 <TaskCard
-                  key={taskData['task-id']}
-                  title={taskData['task-title']}
-                  description={taskData['task-description']}
-                  deadline={taskData['task-deadline']}
-                  team={taskData['task-team']}
-                  status={taskData['task-status']}
-                  id={taskData['task-id']}
+                  key={taskData['id']}
+                  title={taskData['title']}
+                  description={taskData['description']}
+                  deadline={taskData['deadline']}
+                  team={taskData['team']}
+                  status={taskData['status']}
+                  id={taskData['id']}
                 />
               ))
             )}

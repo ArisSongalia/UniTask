@@ -14,15 +14,15 @@ function Button({ text = 'Button', onClick, className = '', type = 'button', ico
   );
 }
 
-function ButtonIcon({ text = 'Button', onClick, className = '', type = 'button', dataFeather = ''}) {
+function ButtonIcon({ text = 'Button', onClick, className = '', type = 'button', dataFeather = '', iconClassName = ''}) {
   return (
     <button
       type={`${type}`}
-      className={`group flex text-green-800 bg-green-50  p-1 items-center rounded-full text-xs pl-3 pr-4 font-bold h-fit
+      className={`group flex text-green-800 bg-green-100  px-2 py-1 items-center rounded-full pr-4 text-xs font-bold h-fit
       hover:bg-green-700 hover:text-white border-opacity-60 ${className}`}
       onClick={onClick}
     >
-      <Icon dataFeather={dataFeather} className='group-hover:text-white text-white' />
+      <Icon dataFeather={dataFeather} className={`group-hover:text-white text-green-800 ${iconClassName}`} />
       <p className='font-bold text-xs'>{text}</p>
     </button>
   );

@@ -244,16 +244,17 @@ function CreateTask({ closeModal }) {
   const dateRef = useRef();
   const [projectData, setProjectData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const adjustedDateTimeRef = useRef('');
 
   const [form, setForm] = useState({
-    'task-title': '',
-    'task-description': '',
-    'task-deadline': '',
-    'task-status': 'To-do',
-    'task-file': '',
-    'task-team': [...new Set([])],
-    'task-project-id': projectId,
-    'task-team-uid': [],
+    'title': '',
+    'description': '',
+    'deadline': '',
+    'status': 'To-do',
+    'file': '',
+    'team': [...new Set([])],
+    'project-id': projectId,
+    'team-uid': [],
   });
 
   useFetchActiveProjectData(projectId, setProjectData, setLoading);
@@ -266,6 +267,7 @@ function CreateTask({ closeModal }) {
     const today = new Date();
     today.setHours(today.getHours() + 1)
     const adjustedDateTime = today.toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
+    adjustedDateTimeRef.current = [adjustedDateTime];
 
     if (dateRef.current) {
       dateRef.current.setAttribute('min', adjustedDateTime);
@@ -276,21 +278,21 @@ function CreateTask({ closeModal }) {
   const handleCreateTask = async (e) => {
     e.preventDefault();
 
-    if (!form['task-team'] || form['task-team'].length === 0) {
+    if (!form['team'] || form['team'].length === 0) {
       setMessage({ text: 'Please select task members', color: 'red' });
       return;
     }
 
     try {
       await addDoc(collection(db, 'tasks'), {
-        'task-title': form['task-title'],
-        'task-description': form['task-description'],
-        'task-deadline': form['task-deadline'],
-        'task-status': form['task-status'],
-        'task-file': form['task-file'],
-        'task-project-id': form['task-project-id'],
-        'task-team': form['task-team'],
-        'task-team-uids': form['task-team-uid'],
+        'title': form['title'],
+        'description': form['description'],
+        'deadline': adjustedDateTimeRef.current,
+        'status': form['status'],
+        'file': form['file'],
+        'project-id': form['project-id'],
+        'team': form['team'],
+        'team-uids': form['team-uid'],
       });
 
     } catch (error) {
@@ -308,17 +310,17 @@ function CreateTask({ closeModal }) {
       let updatedTeam;
 
       if (data.isActive) {
-        updatedTeam = [...prevForm['task-team'], {
+        updatedTeam = [...prevForm['team'], {
           uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL
         }];
       } else {
-        updatedTeam = prevForm['task-team'].filter((member) => member.uid !== data.uid)
+        updatedTeam = prevForm['team'].filter((member) => member.uid !== data.uid)
       };
 
       return {
         ...prevForm,
-        'task-team': updatedTeam,
-        'task-team-uid': updatedTeam.map(member => member.uid)
+        'team': updatedTeam,
+        'team-uid': updatedTeam.map(member => member.uid)
       };
     });
   };
@@ -331,26 +333,26 @@ function CreateTask({ closeModal }) {
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
           <AlertCard text='Note: Deadline should atleast be 1 hour.' title='' className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'/>
-          <label htmlFor="task-title" className="flex flex-col text-gray-600">
+          <label htmlFor="title" className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
-              id="task-title"
-              name="task-title"
-              value={form['task-title']}
+              id="title"
+              name="title"
+              value={form['title']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               onChange={handleChange}
               required
             />
           </label>
 
-          <label htmlFor="task-description" className="flex flex-col text-gray-600">
+          <label htmlFor="description" className="flex flex-col text-gray-600">
             Description
             <input
               type="text"
-              id="task-description"
-              name="task-description"
-              value={form['task-description']}
+              id="description"
+              name="description"
+              value={form['description']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               onChange={handleChange}
               required
@@ -363,8 +365,8 @@ function CreateTask({ closeModal }) {
               type="datetime-local"
               id="date"
               ref={dateRef}
-              name="task-deadline"
-              value={form['task-deadline']}
+              name="deadline"
+              value={form['deadline']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
               onChange={handleChange}
             />
@@ -392,8 +394,8 @@ function CreateTask({ closeModal }) {
                 placeholder='Please select atleast one task contributor'
                 readOnly
                 value={
-                  form['task-team'].length > 0
-                    ? form['task-team'].map((member) => member.username).join(', ')
+                  form['team'].length > 0
+                    ? form['team'].map((member) => member.username).join(', ')
                     : ""
                 }
               />
@@ -426,13 +428,13 @@ function CreateCanvas({ closeModal }) {
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
         <form action="" className="flex flex-col space-y-4">
-          <label htmlFor="task-title" className="flex flex-col text-gray-600">
+          <label htmlFor="title" className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
-              id="task-title"
-              name="task-title"
-              value={form['task-title']}
+              id="title"
+              name="title"
+              value={form['title']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
@@ -443,8 +445,8 @@ function CreateCanvas({ closeModal }) {
             <input
               type="datetime-local"
               id="date"
-              name="task-deadline"
-              value={form['task-deadline']}
+              name="deadline"
+              value={form['deadline']}
               className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
             />
           </label>
@@ -658,28 +660,33 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
-      <div className='flex flex-col p-4 bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
-        <section className='flex flex-col gap-1 overflow-y-scroll pr-2'>
-          {loading ? (
-            <span><BarLoader color='#228B22' size={20} /></span>
-          ) : (
-            taskData.length > 0 && (
-              taskData.map((taskData) => (
-                <TaskCard 
-                  key={taskData['task-id']}
-                  title={taskData['task-title']}
-                  description={taskData['task-description']}
-                  deadline={taskData['task-deadline']}
-                  team={taskData['task-team']}
-                  status={taskData['task-status']}
-                  id={taskData['task-id']}
-                  className='h-fit hover:cursor-pointer'
-                />
-              ))
-            )
-          )}
+      <div className='flex flex-col p-4 justify-between bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
+        <section className='h-full'>
+          <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
+          <section className='flex flex-col gap-1 overflow-y-scroll pr-2'>
+            {loading ? (
+              <span><BarLoader color='#228B22' size={20} /></span>
+            ) : (
+              taskData.length > 0 && (
+                taskData.map((taskData) => (
+                  <TaskCard 
+                    key={taskData['id']}
+                    title={taskData['title']}
+                    description={taskData['description']}
+                    deadline={taskData['deadline']}
+                    team={taskData['team']}
+                    status={taskData['status']}
+                    id={taskData['id']}
+                    className='h-fit hover:cursor-pointer'
+                  />
+                ))
+              )
+            )}
+          </section>
         </section>
+        <span className='flex w-full p-2 text-sm justify-center bg-green-50 text-green-800 rounded-md self-end'>
+          <p>Completed {taskData.length} tasks</p>
+        </span>
       </div>
     </div>
   )

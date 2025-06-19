@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
 import { NoteEdit } from "./modal-group/Modal";
+import { useMoveStatus } from '../services/useMoveStatus';
 
 
 function SummaryCard({
@@ -36,7 +37,7 @@ function SummaryCard({
   useEffect(() => {
     if (user?.uid) {
       setCustomWhere(prev => {
-        const newWhere = where("task-team-uids", "array-contains", user.uid);
+        const newWhere = where("team-uids", "array-contains", user.uid);
         if (JSON.stringify(prev) !== JSON.stringify(newWhere)) {
           return newWhere;
         }
@@ -261,56 +262,38 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
 
   const triggerFileInput = () => {
     const fileInput = document.getElementById('file-input');
-    fileInput.click();
+    if (fileInput) fileInput.click();
   };
-
-  const moveStatus = async () => {
-    const taskRef = doc(db, 'tasks', id);
-
-    try {
-      const statusSnap = await getDoc(taskRef);
-
-      if (statusSnap.exists()) {
-        const currentStatus = statusSnap.data()["task-status"];
-        if(currentStatus === "To-do") {
-          await updateDoc(taskRef, { ['task-status']: "In-progress"});
-        } else if (currentStatus === "In-progress") {
-          await updateDoc(taskRef, { ['task-status']: "Finished"});
-        }
-
-        reloadComponent();
-      } else {
-        console.error('Task not found');
-        toast.error('Task not found')
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  
 
   return (
     <div 
       className={`flex flex-col bg-white rounded-lg h-auto border-opacity-50
-        w-full justify-between border gap-2 border-green-600 p-4 ${className}`}
+        w-full justify-between border gap-2 border-green-600 p-2 ${className}`}
     >
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
           <span className='flex gap-1 text-xs font-semibold text-gray-600 items-center'>
             <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
-            <p className="text-xs flex p-1 bg-orange-50 font-semibold text-orange-500">{deadline}</p> 
+            <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600">{deadline}</p> 
           </span>
         </span>
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
-        {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' letMoveStatus = "none"/>}
+        {showPopUp && 
+          <Popup title={title} 
+          id={id} 
+          closeModal={togglePopUp} 
+          collectionName='tasks'
+          />}
       </span>
 
-      <p className='text-sm py-2'>{description}</p>
+      <p className='text-xs py-2'>{description}</p>
       
-      <span id="task-user" className='flex p-2 gap-1 bg-blue-50 rounded-full w-fit'>
+      <span id="user" className='flex p-1 gap-1 bg-blue-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
-            <IconUser key={member.uid} user={member}/>
+            <IconUser key={member.uid} user={member} />
           ))
         ) : (
           null
@@ -320,21 +303,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       { status === "Finished" ? (
         null
       ) : location.pathname === '/Project' ? (
-        <span className="flex w-full gap-1">
-          <Button 
-            text='Upload File' 
-            className='w-full bg-blue-50 hover:bg-blue-700' 
-            onClick={triggerFileInput}
-            dataFeather='file-plus'
-          />
-          <input id='file-input' type="file" className='hidden' />
-          <Button 
-            text='Move Status' 
-            className='w-full'
-            onClick={moveStatus}
-          />
-          <ToastContainer />
-        </span>
+        null
       ) : (
         <Link to={'./Project'}>
           <Button text='Open Task' className='w-full'/>

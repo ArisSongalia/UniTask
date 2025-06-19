@@ -10,17 +10,20 @@ export function useMoveStatus() {
 
     try {
       const statusSnap = await getDoc(taskRef);
-
       if (statusSnap.exists()) {
         const data = statusSnap.data();
         const currentStatus = data.status;
-
-        if (currentStatus === "On-going") {
-          await updateDoc(taskRef, { status: "Finished" });
+          if (currentStatus === "On-going") {
+            await updateDoc(taskRef, { status: "Finished" });
+          } else if (currentStatus === "To-do") {
+            await updateDoc(taskRef, { status: "In-progress"})
+          } else if (currentStatus === "In-progress") {
+            await updateDoc(taskRef, { status: "Finished"}) 
+          } else {
+            console.log("Status is not 'On-going' or 'To-do; no update performed.");
+          }
           reloadComponent();
-        } else {
-          console.log("Status is not 'On-going'; no update performed.");
-        }
+          console.log('Update completed, ID: ', id)
       } else {
         console.log("Document does not exist.");
       }

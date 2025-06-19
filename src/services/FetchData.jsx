@@ -213,12 +213,12 @@ const useFetchTaskData = (customWhere, refreshKey) => {
         if (!querySnapshot.empty) {
           setTaskData(
             querySnapshot.docs.map((doc) => ({
-              "task-title": doc.data()["task-title"],
-              "task-description": doc.data()["task-description"],
-              "task-deadline": doc.data()["task-deadline"],
-              "task-status": doc.data()["task-status"],
-              "task-team": doc.data()["task-team"],
-              "task-id": doc.id,
+              "title": doc.data()["title"],
+              "description": doc.data()["description"],
+              "deadline": doc.data()["deadline"],
+              "status": doc.data()["status"],
+              "team": doc.data()["team"],
+              "id": doc.id,
             }))
           );
         } else {

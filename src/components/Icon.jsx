@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import feather from 'feather-icons';
 import { UserProfile } from './modal-group/Modal';
+import defaultUserIcon from '../assets/default-icon.png'
  
 function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', style = {}, iconOnClick, text = ""}) {
   useEffect(() => {
@@ -59,7 +60,7 @@ function IconUser({ user={}, className=''}) {
 
   return (
     <div className={`hover:cursor-pointer border rounded-full hover:border-green-500  ${className}`}>
-        <img src={user.photoURL} className='h-7 w-7 rounded-full' onClick={handleShowUserProfile}/>
+        <img src={user.photoURL} alt={defaultUserIcon} className='h-6 w-6 rounded-full' onClick={handleShowUserProfile}/>
         {showUserProfile && <UserProfile user={user} closeModal={handleShowUserProfile}/>}
     </div>
 

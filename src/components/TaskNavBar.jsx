@@ -80,7 +80,7 @@ function TaskNavBar() {
         </span>
         <span className='flex items-center gap-1'>
 
-          <span id="task-user" className='flex gap-1 p-2 rounded-full bg-blue-50'>
+          <span id="user" className='flex gap-1 p-1 rounded-full bg-blue-50'>
             {loading ? (
               <BounceLoader color='#228B22' size={25} />
             ) : projectData['team'] && (
