@@ -75,7 +75,7 @@ function CreateProject({ closeModal }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
@@ -205,7 +205,7 @@ function CreateNote({ closeModal, projectId }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center z-10 justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
@@ -366,7 +366,7 @@ function CreateTask({ closeModal, id }) {
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
@@ -466,7 +466,7 @@ function CreateCanvas({ closeModal }) {
   });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
@@ -503,7 +503,7 @@ function CreateCanvas({ closeModal }) {
 }
 
 
-function AddMembers({ closeModal }) {5
+function AddMembers({ closeModal }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", color: ""})
@@ -551,7 +551,7 @@ function AddMembers({ closeModal }) {5
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <input 
@@ -592,7 +592,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <section
           className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
@@ -638,7 +638,7 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={closeModal}>
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={closeModal}>
       <section
         className="flex flex-col bg-yellow-50 rounded-xl overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
         onClick={(e) => e.stopPropagation}
@@ -679,7 +679,7 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
 function UserProfile({ closeModal, user={} }) {
   console.log(user)
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <span className='flex p-2 gap-4 items-center'>
@@ -705,7 +705,7 @@ function UserProfile({ closeModal, user={} }) {
 function CompletedTab({ closeModal, taskData={}, loading}) {
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
       <div className='flex flex-col p-4 justify-between bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
         <section className='h-full'>
           <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
