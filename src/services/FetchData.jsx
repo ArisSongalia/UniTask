@@ -206,8 +206,9 @@ const useFetchTaskData = (customWhere, refreshKey) => {
 
       setLoading(true);
       try {
+        const whereToArray = Array.isArray(customWhere) ? customWhere : [customWhere]
         const taskRef = collection(db, "tasks");
-        const q = query(taskRef, ...customWhere);
+        const q = query(taskRef, ...whereToArray);
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {

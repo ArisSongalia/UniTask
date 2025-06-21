@@ -14,15 +14,13 @@ function AssignedTasks({}) {
 
   useEffect(() => {
     if (user?.uid) {
-      setCustomWhere(prev => {
-        const newWhere = where("task-team-uids", "array-contains", user.uid);
-        if (JSON.stringify(prev) !== JSON.stringify(newWhere)) {
-          return newWhere;
-        }
-        return prev;
-      });
+      setCustomWhere([
+        where("team-uids", "array-contains", user.uid),
+        where("status", "==", "To-do")
+      ]);
     }
   }, [user?.uid]);
+  
 
   const { taskData, loading } = useFetchTaskData(customWhere, key);
 
@@ -39,13 +37,13 @@ function AssignedTasks({}) {
           taskData.length > 0 && (
             taskData.map((taskData) => (
               <TaskCard 
-                key={taskData['task-id']}
-                title={taskData['task-title']}
-                description={taskData['task-description']}
-                deadline={taskData['task-deadline']}
-                team={taskData['task-team']}
-                status={taskData['task-status']}
-                id={taskData['task-id']}
+                key={taskData.id}
+                title={taskData.title}
+                description={taskData.description}
+                deadline={taskData.deadline}
+                team={taskData.team}
+                status={taskData.status}
+                id={taskData.id}
                 className='h-fit hover:cursor-pointer'
               />
             ))

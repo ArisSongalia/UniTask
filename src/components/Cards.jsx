@@ -36,16 +36,12 @@ function SummaryCard({
 
   useEffect(() => {
     if (user?.uid) {
-      setCustomWhere(prev => {
-        const newWhere = where("team-uids", "array-contains", user.uid);
-        if (JSON.stringify(prev) !== JSON.stringify(newWhere)) {
-          return newWhere;
-        }
-        return prev;
-      });
+      setCustomWhere([
+        where("team-uids", "array-contains", user.uid),
+        where("status", "!=", "Finished")
+      ]);
     }
   }, [user?.uid]);
-
   const { taskData, loading } = useFetchTaskData(customWhere, key );
 
 
