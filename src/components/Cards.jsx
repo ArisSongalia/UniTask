@@ -271,21 +271,21 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       className={`flex flex-col bg-white rounded-lg h-auto border-opacity-50
         w-full justify-between border gap-2 border-green-600 p-2 ${className}`}
     >
-      <span className='flex justify-between'>
-        <span>
+      <span className='flex flex-col justify-between'>
+        <span className='flex justify-between w-full'>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
-          <span className='flex gap-1 text-xs font-semibold text-gray-600 items-center'>
+          <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
+          {showPopUp && 
+            <Popup title={title} 
+            id={id} 
+            closeModal={togglePopUp} 
+            collectionName='tasks'
+            />}
+        </span>
+        <span className='flex gap-1 text-xs font-semibold text-gray-600'>
             <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
             <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600">{deadline}</p> 
           </span>
-        </span>
-        <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
-        {showPopUp && 
-          <Popup title={title} 
-          id={id} 
-          closeModal={togglePopUp} 
-          collectionName='tasks'
-          />}
       </span>
 
       <p className='text-xs py-2'>{description}</p>
