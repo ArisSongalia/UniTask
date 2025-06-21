@@ -414,8 +414,8 @@ function CreateTask({ closeModal, id }) {
           {projectData.type === 'Shared' ? (
             <label className="flex flex-col gap-2 text-gray-600">
               Select Team Members
-              <section className='flex flex-col gap-2 p-4 rounded-lg bg-green-50'>
-                <p className='text-green-700'>Available Members</p>
+              <section className='flex flex-col gap-2 p-4 rounded-lg bg-slate-50'>
+                <p className=' font-semibold text-sm'>Available Members</p>
 
                 <section className="grid grid-cols-2 gap-2">
                   {loading ? (
@@ -424,7 +424,6 @@ function CreateTask({ closeModal, id }) {
                     projectData['team'].map((member) => (
                     <UserCard key={member.uid} user={member} onStateChange={handleStateChange} />
                   )))}
-                    
                 </section>
               </section>
 
@@ -442,11 +441,12 @@ function CreateTask({ closeModal, id }) {
                 />
               </div>
 
-              <ButtonIcon text='Add Members' dataFeather='user-plus' />
+
             </label>
           ) : (null)}
 
           <p style={{ color: message.color }}>{message.text}</p>
+          <Button type="submit" text="Create Task" className="py-3" onClick={handleShowAddMembers}/>
         </form>
       </section>
     </div>
