@@ -244,7 +244,6 @@ function UserCard({className='', user, onStateChange}) {
         <img className='w-8 h-8 rounded-full' src={user.photoURL} alt="user-icon" />
         <p className='text-sm'>{user.username}</p>
         <p className='text-sm text-gray-500'>{user.email}</p>
-        
       </span>
     </section>
   )
@@ -282,10 +281,10 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
             collectionName='tasks'
             />}
         </span>
-        <span className='flex gap-1 text-xs font-semibold text-gray-600'>
-            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
-            <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600">{deadline}</p> 
-          </span>
+        <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
+          <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold flex-none">{status}</p>
+          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600 flex-none">{deadline}</p> 
+        </span>
       </span>
 
       <p className='text-xs py-2'>{description}</p>

@@ -8,7 +8,7 @@ import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
-import { useFetchUsers, useFetchActiveProjectData } from '../../services/FetchData';
+import { useFetchUsers, useFetchActiveProjectData, fetchProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
 import { handleSignOut } from './ModalAuth';
@@ -510,8 +510,11 @@ function AddMembers({ closeModal }) {5
   const { key, reloadComponent } = useReloadContext();
   const [members, setMembers] = useState([...new Set([])]);
   const activeProjectId = localStorage.getItem('activeProjectId');
+  const [activeProjectData, setActiveProjectData] = useState([]);
+
 
   useFetchUsers(setUsers, setLoading, key);
+  useFetchActiveProjectData(activeProjectId, setActiveProjectData, setLoading, key)
   
   const handleAddMembers = (user) => {
     setMembers((prevMembers) => {
