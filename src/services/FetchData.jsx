@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../config/firebase';
 import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -207,20 +207,15 @@ const useFetchTaskData = (customWhere, refreshKey) => {
       setLoading(true);
       try {
         const taskRef = collection(db, "tasks");
-        const q = query(taskRef, customWhere);
+        const q = query(taskRef, ...customWhere);
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          setTaskData(
-            querySnapshot.docs.map((doc) => ({
-              "title": doc.data()["title"],
-              "description": doc.data()["description"],
-              "deadline": doc.data()["deadline"],
-              "status": doc.data()["status"],
-              "team": doc.data()["team"],
-              "id": doc.id,
-            }))
-          );
+          const data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          setTaskData(data);
         } else {
           console.log("No task data found");
           setTaskData([]);

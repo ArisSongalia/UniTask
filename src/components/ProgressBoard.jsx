@@ -15,6 +15,8 @@ function ProgressBoard() {
   const [showPopUp, setShowPopUp] = useState(false);
   const { key } = useReloadContext();
   const [showCompletedTab, setShowCompletedTab] = useState(false);
+  const activeProjectId = localStorage.getItem('activeProjectId');
+  const activeProjectWhere = where('project-id', '==', activeProjectId);
 
   const toggleShowCompletedTab = () => {
     setShowCompletedTab(!showCompletedTab);
@@ -24,13 +26,26 @@ function ProgressBoard() {
     setShowPopUp(!showPopUp);
   };
 
-  const whereToDo = useMemo(() => where("status", "==", "To-do"), []);
-  const whereActive = useMemo(() => where("status", "==", "In-progress"), []);
-  const whereFinished = useMemo(() => where("status", "==", "Finished"), []);
+  const whereToDo = useMemo(() => [
+    where("status", "==", "To-do"),
+    where("project-id", "==", activeProjectId)
+  ], [activeProjectId]);
+  
+  const whereActive = useMemo(() => [
+    where("status", "==", "In-progress"),
+    where("project-id", "==", activeProjectId)
+  ], [activeProjectId]);
+  
+  const whereFinished = useMemo(() => [
+    where("status", "==", "Finished"),
+    where("project-id", "==", activeProjectId)
+  ], [activeProjectId]);
 
   const { taskData: toDoTasks, loading: loadingToDo } = useFetchTaskData(whereToDo, key);
   const { taskData: inProgressTasks, loading: loadingInProgress } = useFetchTaskData(whereActive, key);
   const { taskData: finishedTasks, loading: loadingFinished } = useFetchTaskData(whereFinished, key);
+
+  console.log("Active Project ID:", activeProjectId);
 
   return (
     <div className='flex flex-col bg-white rounded-md h-full w-full overflow-hidden shadow-sm flex-grow-0'>
@@ -67,13 +82,13 @@ function ProgressBoard() {
             ) : (
               toDoTasks.map((taskData) => (
                 <TaskCard
-                  key={taskData['id']}
-                  title={taskData['title']}
-                  description={taskData['description']}
-                  deadline={taskData['deadline']}
-                  team={taskData['team']}
-                  status={taskData['status']}
-                  id={taskData['id']}
+                  key={taskData.id}
+                  title={taskData.title}
+                  description={taskData.description}
+                  deadline={taskData.deadline}
+                  team={taskData.team}
+                  status={taskData.status}
+                  id={taskData.id}
                 />
               ))
             )}
@@ -94,13 +109,13 @@ function ProgressBoard() {
             ) : (
               inProgressTasks.map((taskData) => (
                 <TaskCard
-                  key={taskData['id']}
-                  title={taskData['title']}
-                  description={taskData['description']}
-                  deadline={taskData['deadline']}
-                  team={taskData['team']}
-                  status={taskData['status']}
-                  id={taskData['id']}
+                  key={taskData.id}
+                  title={taskData.title}
+                  description={taskData.description}
+                  deadline={taskData.deadline}
+                  team={taskData.team}
+                  status={taskData.status}
+                  id={taskData.id}
                 />
               ))
             )}

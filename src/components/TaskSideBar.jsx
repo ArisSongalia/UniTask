@@ -3,7 +3,7 @@ import NoteSection from './NoteSection'
 import CanvasSection from './CanvasSection'
 import { IconTitleSection } from './TitleSection'
 
-function TaskSideBar({ className = "", closeModal = {} }) {
+function TaskSideBar({ className = "", closeModal = () => {}}) {
   return (
     <span className={`flex w-full lg:w-[35rem] h-full flex-col gap-2 bg-slate-100 ${className}`}>
       <IconTitleSection 

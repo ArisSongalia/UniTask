@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconAction } from '../Icon';
-import Button from '../Button';
+import Button, { ButtonIcon } from '../Button';
 import { IconTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
@@ -25,7 +25,23 @@ function CreateProject({ closeModal }) {
     description: "",
     date: "",
     type: "",
+    team: [],
   });
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      setForm((prev) => ({
+        ...prev,
+        team: [{
+          uid: auth.currentUser.uid,
+          username: auth.currentUser.displayName || 'You',
+          email: auth.currentUser.email || '',
+          photoURL: auth.currentUser.photoURL || '',
+        }],
+        'team-uid': [auth.currentUser.uid],
+      }));
+    }
+  }, [auth.currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,6 +63,7 @@ function CreateProject({ closeModal }) {
         type: form.type,
         owner: user.uid,
         status: "On-going",
+        team: form.team,
       });
 
       await updateDoc(docRef, { id: docRef.id });
@@ -237,14 +254,15 @@ function CreateNote({ closeModal, projectId }) {
 }
 
 
-function CreateTask({ closeModal }) {
+function CreateTask({ closeModal, id }) {
   const { reloadComponent } = useReloadContext()
   const [message, setMessage] = useState({ text: '', color: '' });
-  const projectId = localStorage.getItem('activeProjectId')
   const dateRef = useRef();
   const [projectData, setProjectData] = useState([]);
   const [loading, setLoading] = useState(false);
   const adjustedDateTimeRef = useRef('');
+  const projectId = localStorage.getItem('activeProjectId');
+  const [showAddMembers, setShowAddMembers] = useState(false);
 
   const [form, setForm] = useState({
     'title': '',
@@ -253,9 +271,24 @@ function CreateTask({ closeModal }) {
     'status': 'To-do',
     'file': '',
     'team': [...new Set([])],
-    'project-id': projectId,
     'team-uid': [],
   });
+
+  useEffect(() => {
+    if (auth.currentUser && projectData?.type === 'Solo') {
+      setForm((prev) => ({
+        ...prev,
+        team: [{
+          uid: auth.currentUser.uid,
+          username: auth.currentUser.displayName || 'You',
+          email: auth.currentUser.email || '',
+          photoURL: auth.currentUser.photoURL || '',
+        }],
+        'team-uid': [auth.currentUser.uid],
+      }));
+    }
+  }, [auth.currentUser, projectData?.type]);
+
 
   useFetchActiveProjectData(projectId, setProjectData, setLoading);
   
@@ -278,10 +311,12 @@ function CreateTask({ closeModal }) {
   const handleCreateTask = async (e) => {
     e.preventDefault();
 
-    if (!form['team'] || form['team'].length === 0) {
-      setMessage({ text: 'Please select task members', color: 'red' });
-      return;
-    }
+    if(projectData.type === "Shared"){
+      if (!form['team'] || form['team'].length === 0) {
+        setMessage({ text: 'Please select task members', color: 'red' });
+        return;
+      }
+    } 
 
     try {
       await addDoc(collection(db, 'tasks'), {
@@ -290,7 +325,7 @@ function CreateTask({ closeModal }) {
         'deadline': adjustedDateTimeRef.current,
         'status': form['status'],
         'file': form['file'],
-        'project-id': form['project-id'],
+        'project-id': projectId,
         'team': form['team'],
         'team-uids': form['team-uid'],
       });
@@ -325,10 +360,14 @@ function CreateTask({ closeModal }) {
     });
   };
 
+  const handleShowAddMembers = () => {
+    setShowAddMembers(!showAddMembers);
+  };
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] h-[40rem] p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-xl w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
@@ -372,38 +411,42 @@ function CreateTask({ closeModal }) {
             />
           </label>
 
-          <label className="flex flex-col gap-2 text-gray-600">
-            Select Team Members
-            <section className='flex flex-col gap-2 p-4 rounded-lg bg-green-50'>
-              <p className='text-green-700'>Available Members</p>
+          {projectData.type === 'Shared' ? (
+            <label className="flex flex-col gap-2 text-gray-600">
+              Select Team Members
+              <section className='flex flex-col gap-2 p-4 rounded-lg bg-green-50'>
+                <p className='text-green-700'>Available Members</p>
 
-              <section className="grid grid-cols-2 gap-2">
-                {loading ? (
-                  <BarLoader color='green'/>
-                ) : projectData['team'] && (
-                  projectData['team'].map((member) => (
-                  <UserCard key={member.uid} user={member} onStateChange={handleStateChange} />
-                )))}
+                <section className="grid grid-cols-2 gap-2">
+                  {loading ? (
+                    <BarLoader color='green'/>
+                  ) : projectData['team'] && (
+                    projectData['team'].map((member) => (
+                    <UserCard key={member.uid} user={member} onStateChange={handleStateChange} />
+                  )))}
+                    
+                </section>
               </section>
-            </section>
 
-            <div className='flex flex-col'>
-              <p className=''>Selected team members will appear here</p>
-              <input
-                className="mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
-                placeholder='Please select atleast one task contributor'
-                readOnly
-                value={
-                  form['team'].length > 0
-                    ? form['team'].map((member) => member.username).join(', ')
-                    : ""
-                }
-              />
-            </div>
-          </label>
+              <div className='flex flex-col'>
+                <p className=''>Selected team members will appear here</p>
+                <input
+                  className="mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
+                  placeholder='Please select atleast one task contributor'
+                  readOnly
+                  value={
+                    form['team'].length > 0
+                      ? form['team'].map((member) => member.username).join(', ')
+                      : ""
+                  }
+                />
+              </div>
+
+              <ButtonIcon text='Add Members' dataFeather='user-plus' />
+            </label>
+          ) : (null)}
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Task" className="py-3" />
         </form>
       </section>
     </div>

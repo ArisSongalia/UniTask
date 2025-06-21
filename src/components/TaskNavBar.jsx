@@ -74,7 +74,11 @@ function TaskNavBar() {
           ) : (
             <span className='flex flex-col'>
               <h1 className='text-lg font-bold mb-1 text-green-700'>{projectData.title}</h1>
-              <p className="text-xs text-gray-600 font-semibold">{projectData.date}</p>
+              <span className='flex gap-1'>
+                <p className="text-xs text-gray-600 font-semibold">{projectData.type}</p>
+                <span className="h-4 border-l border-gray-400"></span>
+                <p className="text-xs text-gray-600 font-semibold">{projectData.date}</p>
+              </span>
             </span>
           )}
         </span>
@@ -90,8 +94,12 @@ function TaskNavBar() {
             )}
           </span>
 
-          <IconAction dataFeather='user-plus' iconOnClick={toggleShowAddMembers}/>
-          {showAddMembers && <AddMembers closeModal={toggleShowAddMembers}/>}
+          { projectData.type === 'Shared' ? (
+            <>
+              <IconAction dataFeather='user-plus' iconOnClick={toggleShowAddMembers} />
+              {showAddMembers && <AddMembers closeModal={toggleShowAddMembers} />}
+            </>
+          ) : (null)}
 
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
           {showSocialSection && <SocialSection />}
