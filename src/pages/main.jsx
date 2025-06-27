@@ -7,11 +7,13 @@ import { ProjectProvider } from '../context/ProjectContext';
 import { ReloadProvider } from '../context/ReloadContext';
 
 createRoot(document.getElementById('root')).render(
-  <ReloadProvider>
-    <ProjectProvider>
-      <Router>
-        <App />
-      </Router>
-    </ProjectProvider>
-  </ReloadProvider>
+  <StrictMode>
+    <ReloadProvider>
+      <ProjectProvider>
+        <Router>
+          <App />
+        </Router>
+      </ProjectProvider>
+    </ReloadProvider>
+  </StrictMode>
 );

@@ -4,7 +4,7 @@ import { UserCard } from './Cards';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
-import { IconUser } from './Icon';
+import { IconAction, IconUser } from './Icon';
 
 function SocialSection({ className = '', closeModal = () => {} }) {
   const [projectData, setProjectData] = useState({});
@@ -19,17 +19,13 @@ function SocialSection({ className = '', closeModal = () => {} }) {
       setID(activeProjectId);
     }
   }, [activeProjectId, key]);
-
-  const handleSetSingleActiveUser = (data) => {
-    setActiveUser(data);
-  }
  
-
   useFetchActiveProjectData(id, setProjectData, setLoading, key);
+  console.log(activeUser)
 
   return (
     <div
-      className={`flex z-50 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-full max-w-[40rem] h-[30rem] overflow-hidden bg-white ${className}`}
+      className={`flex z-50 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-full max-w-[40rem] h-[35rem] overflow-hidden bg-white ${className}`}
     >
       <IconTitleSection
         title="Socials"
@@ -66,11 +62,22 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
         <section
           id="main-message"
-          className="bg-gray-50 rounded-lg w-full h-full overflow-y-auto"
-        ></section>
+          className="flex flex-col bg-gray-50 rounded-lg w-full h-full overflow-y-auto justify-between p-2"
+        >
+        <IconTitleSection 
+          title={activeUser?.username ?? null} 
+          dataFeather='more-vertical'
+          className='bg-slate-50 rounded-full'
+        />
+        <span className='flex h-12 w-full border-2 border-green-700 border-opacity-40 rounded-full self-end items-center gap-1 p-1'>
+          <input className="border border-gray-300 rounded-full px-3 w-full h-full focus:ring-1 focus:ring-green-600 focus:outline-none hover:cursor-pointer" />
+          <IconAction className='justify-end' dataFeather='send'/>
+        </span>
+        </section>
       </section>
     </div>
   );
 }
 
 export default SocialSection;
+  
