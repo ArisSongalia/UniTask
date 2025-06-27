@@ -213,37 +213,39 @@ function NoteCard({
 }
 
 
-function UserCard({className='', user, onStateChange}) {
-  const [isActive, setIsActive] = useState(false)
-
-  const toggleIsActive = () => {
-    setIsActive(!isActive);
-    if (user) {
-      console.log('UserCard Active:', user.uid)
-    } else {
-      console.log('No id')
-    };
-  };
+function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false }) {
+  const [localActive, setLocalActive] = useState(isActive);
 
   useEffect(() => {
+    setLocalActive(isActive);
+  }, [isActive]);
+
+  const toggleIsActive = () => {
+    const newState = !localActive;
+    setLocalActive(newState);
+
     if (onStateChange && user) {
       const { username, email, uid, photoURL } = user;
-      onStateChange({ username, email, uid, photoURL, isActive });
+      onStateChange({ username, email, uid, photoURL, isActive: newState });
     }
-  }, [user, isActive]);
+  };
 
   return (
-    <section 
-      className={`flex items-center border w-full h-[8rem] rounded-lg hover:cursor-pointer aria-selected:bg-green-50 bg-white ${className}`}
-    >
-      <span className={`flex flex-col font-semibold px-3 gap-1 w-full h-full p-4 rounded-md hover:bg-green-50 items-center ${isActive ? 'bg-green-100' : 'bg-solid'}`} onClick={toggleIsActive} >
-        <img className='w-8 h-8 rounded-full' src={user.photoURL} alt="user-icon" />
-        <p className='text-sm'>{user.username}</p>
-        <p className='text-sm text-gray-500'>{user.email}</p>
+    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-lg bg-white ${className}`}>
+      <span
+        className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
+        onClick={toggleIsActive}
+      >
+        <img className="w-6 h-6 rounded-full" src={user.photoURL} alt="user-icon" />
+        <span className="flex flex-col w-full">
+          <p className="text-sm truncate">{user.username}</p>
+          {withEmail && <p className="text-xs opacity-80 truncate">{user.email}</p>}
+        </span>
       </span>
     </section>
-  )
+  );
 }
+
 
 
 function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className, }) {

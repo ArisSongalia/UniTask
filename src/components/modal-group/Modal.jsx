@@ -262,7 +262,7 @@ function CreateTask({ closeModal, id }) {
   const [loading, setLoading] = useState(false);
   const adjustedDateTimeRef = useRef('');
   const projectId = localStorage.getItem('activeProjectId');
-  const [showAddMembers, setShowAddMembers] = useState(false);
+  
 
   const [form, setForm] = useState({
     'title': '',
@@ -360,11 +360,6 @@ function CreateTask({ closeModal, id }) {
     });
   };
 
-  const handleShowAddMembers = () => {
-    setShowAddMembers(!showAddMembers);
-  };
-
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-xl w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -417,12 +412,17 @@ function CreateTask({ closeModal, id }) {
               <section className='flex flex-col gap-2 p-4 rounded-lg bg-slate-50'>
                 <p className=' font-semibold text-sm'>Available Members</p>
 
-                <section className="grid grid-cols-2 gap-2">
+                <section className="grid grid-cols-2 gap-1">
                   {loading ? (
-                    <BarLoader color='green'/>
+                    <BarLoader color='green' />
                   ) : projectData['team'] && (
                     projectData['team'].map((member) => (
-                    <UserCard key={member.uid} user={member} onStateChange={handleStateChange} />
+                      <UserCard
+                      key={member.uid}
+                      user={member}
+                      onStateChange={handleStateChange}
+                      isActive={form.team.some(t => t.uid === member.uid)}
+                    />
                   )))}
                 </section>
               </section>
@@ -446,7 +446,7 @@ function CreateTask({ closeModal, id }) {
           ) : (null)}
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Task" className="py-3" onClick={handleShowAddMembers}/>
+          <Button type="submit" text="Create Task" className="py-3"/>
         </form>
       </section>
     </div>
@@ -515,6 +515,8 @@ function AddMembers({ closeModal }) {
 
   useFetchUsers(setUsers, setLoading, key);
   useFetchActiveProjectData(activeProjectId, setActiveProjectData, setLoading, key)
+
+  console.log(activeProjectData.team)
   
   const handleAddMembers = (user) => {
     setMembers((prevMembers) => {

@@ -102,7 +102,7 @@ function TaskNavBar() {
           ) : (null)}
 
           <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
-          {showSocialSection && <SocialSection />}
+          {showSocialSection && <SocialSection closeModal={toggleShowSocialSection}/>}
 
           <IconAction dataFeather='plus' className='lg:hidden' iconOnClick={toggleShowTaskSideBar} />
           {showTaskSideBar && 

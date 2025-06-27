@@ -14,7 +14,6 @@ function TaskSideBar({ className = "", closeModal = () => {}}) {
         titleClassName='text-lg font bold text-green-800' 
       />
       <NoteSection />
-      <CanvasSection />
     </span>
   )
 }

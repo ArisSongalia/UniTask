@@ -16,7 +16,7 @@ function AssignedTasks({}) {
     if (user?.uid) {
       setCustomWhere([
         where("team-uids", "array-contains", user.uid),
-        where("status", "==", "To-do")
+        where("status", "!=", "Finished")
       ]);
     }
   }, [user?.uid]);
