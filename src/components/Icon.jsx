@@ -6,12 +6,12 @@ import defaultUserIcon from '../assets/default-icon.png'
 function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', style = {}, iconOnClick, text = ""}) {
   useEffect(() => {
     feather.replace();
-  }, []);
+  }, [dataFeather]);
 
   return (
     <section 
-      className={`flex rounded-full p-1 gap-2 items-center justify-center text-green-900
-        w-fit h-fit cursor-pointer bg-green-50 border border-green-800 border-opacity-50
+      className={`flex rounded-full p-[6px] gap-2 items-center justify-center text-green-900
+        w-fit h-fit cursor-pointer bg-green-50 border border-green-600 border-opacity-50
         hover:bg-green-700 hover:text-white
         active:bg-green-700 focus:bg-green-50 focus:outline-none
         ${className}`}
@@ -59,8 +59,8 @@ function IconUser({ user={}, className=''}) {
   };
 
   return (
-    <div className={`hover:cursor-pointer border rounded-full hover:border-green-500  ${className}`}>
-        <img src={user.photoURL} alt={defaultUserIcon} className='h-6 w-6 rounded-full' onClick={handleShowUserProfile}/>
+    <div className={`hover:cursor-pointer border rounded-full h-7 w-7 hover:border-green-500  ${className}`}>
+        <img src={user.photoURL} alt={defaultUserIcon} className='h-full w-full rounded-full' onClick={handleShowUserProfile}/>
         {showUserProfile && <UserProfile user={user} closeModal={handleShowUserProfile}/>}
     </div>
 

@@ -137,25 +137,25 @@ function ProjectCard({
 
   return (
     <div
-      className="flex flex-col bg-white rounded-md overflow-hidden
+      className="flex flex-col bg-white rounded-md overflow-hidden shadow-md
         flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
     >
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
             <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{title}</h4>
-            <IconAction dataFeather="more-horizontal" iconOnClick={togglePopUp} className="shrink-0" />
+            <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
             {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects' />}
           </span>
 
           <span className="flex flex-wrap gap-1">
-            <p className="font-semibold p-1 text-xs bg-green-50 items-center flex text-green-600">{type}</p>
+            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-600">{type}</p>
             <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
             <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{date}</p>  
           </span>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
-        <p className="text-xs text-gray-800 mb-2 break-words text-ellipsis pr-2">{description}</p>
+        <p className="font-semibold p-1 text-xs bg-green-50 border border-green-200 w-fit items-center flex text-green-600">{description}</p>
       </section>
 
       <Link to={'./Project'} className="w-full">
@@ -246,11 +246,8 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   );
 }
 
-
-
 function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className, }) {
   const [showPopUp, setShowPopUp] = useState(false);  
-  const { reloadComponent } = useReloadContext();
   const location = useLocation();
 
   const togglePopUp = () => {
@@ -271,7 +268,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
       <span className='flex flex-col justify-between'>
         <span className='flex justify-between w-full'>
           <h2 className="font-bold mb-1 text-sm">{title}</h2>
-          <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
+          <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0' iconOnClick={togglePopUp}/>
           {showPopUp && 
             <Popup title={title} 
             id={id} 
@@ -285,7 +282,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         </span>
       </span>
 
-      <p className='text-xs bg-green-50 p-1 border border-green-400 text-green-900 rounded-md'>{description}</p>
+      <p className='text-xs bg-green-50 p-1 w-fit border border-green-200 text-green-600 font-semibold'>{description}</p>
       
       <span id="user" className='flex p-1 gap-1 bg-green-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
@@ -309,7 +306,6 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
     </div>
   )
 }
-
 
 function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dolor sit amet. Example text should go here Lorem ipsum dolor sit amet.'}) {
   const [showPopUp, setShowPopUp] = useState(false);
