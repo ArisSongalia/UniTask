@@ -48,9 +48,9 @@ function ProgressBoard() {
   console.log("Active Project ID:", activeProjectId);
 
   return (
-    <div className='flex flex-col bg-white rounded-md h-full w-full overflow-hidden shadow-sm flex-grow-0'>
-      <section className='title-section flex justify-betweenp p-4 justify-between'>
-        <h2 className='font-semibold max-w-[80%] overflow-hidden overflow-ellipsis'>Progress Board</h2>
+    <div className="flex flex-col bg-white rounded-md overflow-hidden h-full w-full shadow-sm flex-grow-0">
+      <section className='title-section flex p-4 justify-between'>
+        <h2 className='font-semibold max-w-[80%]'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
           <IconAction dataFeather='check-square' iconOnClick={toggleShowCompletedTab} />
@@ -66,63 +66,68 @@ function ProgressBoard() {
 
       {showPopUp && <CreateTask closeModal={togglePopUp} />}
 
-      <section className='flex gap-2 h-full w-full bg-[#fafafa] px-4 rounded-lg'>
-
+      <section
+        id="task-board-container"
+        className="flex gap-2 h-full w-full bg-2 px-4 rounded-md overflow-x-auto"
+      >
         {/* To-do Column */}
-        <span className='flex flex-col h-full w-full pt-4 pr-2 border-r-2 border-slate-200 overflow-y-scroll'>
+        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] w-full rounded-md p-2 overflow-y-auto">
           <DisplayTitleSection
-            title='To-do'
-            className='text-sm'
-            displayClassName='bg-yellow-100 text-yellow-900'
+            title="To-do"
+            className="text-sm"
+            displayClassName="bg-yellow-100 text-yellow-900"
             displayCount={toDoTasks.length}
           />
-          <section id='To-do' className='flex flex-col gap-2 h-full'>
+          <section id="To-do" className="flex flex-col gap-2 h-full">
             {loadingToDo ? (
-              <BarLoader color='#228B22' size={20} />
+              <BarLoader color="#228B22" size={20} />
             ) : (
               toDoTasks.map((taskData) => (
-                <TaskCard
-                  key={taskData.id}
-                  title={taskData.title}
-                  description={taskData.description}
-                  deadline={taskData.deadline}
-                  team={taskData.team}
-                  status={taskData.status}
-                  id={taskData.id}
-                />
+                <TaskCard key={taskData.id} {...taskData} />
               ))
             )}
           </section>
-        </span>
+        </div>
 
         {/* In-progress Column */}
-        <span className='flex flex-col h-full w-full pl-2 pt-4'>
+        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
           <DisplayTitleSection
-            title='In-progress'
-            className='text-sm'
-            displayClassName='bg-blue-100 text-blue-900'
+            title="In-progress"
+            className="text-sm"
+            displayClassName="bg-blue-100 text-blue-900"
             displayCount={inProgressTasks.length}
           />
-          <section id='in-progress' className='flex flex-col gap-2'>
+          <section id="in-progress" className="flex flex-col gap-2">
             {loadingInProgress ? (
-              <BarLoader color='#228B22' size={20} />
+              <BarLoader color="#228B22" size={20} />
             ) : (
               inProgressTasks.map((taskData) => (
-                <TaskCard
-                  key={taskData.id}
-                  title={taskData.title}
-                  description={taskData.description}
-                  deadline={taskData.deadline}
-                  team={taskData.team}
-                  status={taskData.status}
-                  id={taskData.id}
-                />
+                <TaskCard key={taskData.id} {...taskData} />
               ))
             )}
           </section>
-        </span>
+        </div>
 
+        {/* To-review Column */}
+        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
+          <DisplayTitleSection
+            title="To-review"
+            className="text-sm"
+            displayClassName="bg-violet-100 text-violet-900"
+            displayCount={inProgressTasks.length}
+          />
+          <section id="To-review" className="flex flex-col gap-2">
+            {loadingInProgress ? (
+              <BarLoader color="#228B22" size={20} />
+            ) : (
+              inProgressTasks.map((taskData) => (
+                <TaskCard key={taskData.id} {...taskData} />
+              ))
+            )}
+          </section>
+        </div>
       </section>
+
     </div>
   );
 }

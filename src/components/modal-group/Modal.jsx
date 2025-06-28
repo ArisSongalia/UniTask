@@ -76,7 +76,7 @@ function CreateProject({ closeModal }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
         <form className="flex flex-col space-y-4">
@@ -88,7 +88,7 @@ function CreateProject({ closeModal }) {
               value={form.title}
               name='title'
               id="project-title"
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
           </label>
@@ -101,7 +101,7 @@ function CreateProject({ closeModal }) {
               type="text"
               name='description'
               id="project-description"
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
           </label>
@@ -115,7 +115,7 @@ function CreateProject({ closeModal }) {
               type="date"
               name="date"
               id="date"
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
               required
             />
           </label>
@@ -206,7 +206,7 @@ function CreateNote({ closeModal, projectId }) {
 
   return (
     <div className="fixed inset-0 flex items-center z-10 justify-center bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
         <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
@@ -217,7 +217,7 @@ function CreateNote({ closeModal, projectId }) {
               value={form.title}
               onChange={handleChange}
               name="title"
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
           </label>
@@ -228,7 +228,7 @@ function CreateNote({ closeModal, projectId }) {
               name="message"
               value={form.message}
               onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none h-[10rem]"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none h-[10rem]"
               required
             />
           </label>
@@ -241,7 +241,7 @@ function CreateNote({ closeModal, projectId }) {
               name="date"
               value={form.date}
               onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
             />
           </label>
 
@@ -362,7 +362,7 @@ function CreateTask({ closeModal, id }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
@@ -374,7 +374,7 @@ function CreateTask({ closeModal, id }) {
               id="title"
               name="title"
               value={form['title']}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               onChange={handleChange}
               required
             />
@@ -387,7 +387,7 @@ function CreateTask({ closeModal, id }) {
               id="description"
               name="description"
               value={form['description']}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               onChange={handleChange}
               required
             />
@@ -401,7 +401,7 @@ function CreateTask({ closeModal, id }) {
               ref={dateRef}
               name="deadline"
               value={form['deadline']}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
               onChange={handleChange}
             />
           </label>
@@ -409,7 +409,7 @@ function CreateTask({ closeModal, id }) {
           {projectData.type === 'Shared' ? (
             <label className="flex flex-col gap-2 text-gray-600">
               Select Team Members
-              <section className='flex flex-col gap-2 p-4 rounded-lg bg-slate-50'>
+              <section className='flex flex-col gap-2 p-4 rounded-md bg-slate-50'>
                 <p className=' font-semibold text-sm'>Available Members</p>
 
                 <section className="grid grid-cols-2 gap-1">
@@ -430,7 +430,7 @@ function CreateTask({ closeModal, id }) {
               <div className='flex flex-col'>
                 <p className=''>Selected team members will appear here</p>
                 <input
-                  className="mt-1 border border-gray-300 rounded-lg px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
+                  className="mt-1 border border-gray-300 rounded-md px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
                   placeholder='Please select atleast one task contributor'
                   readOnly
                   value={
@@ -467,7 +467,7 @@ function CreateCanvas({ closeModal }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
         <form action="" className="flex flex-col space-y-4">
@@ -478,7 +478,7 @@ function CreateCanvas({ closeModal }) {
               id="title"
               name="title"
               value={form['title']}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
           </label>
@@ -490,7 +490,7 @@ function CreateCanvas({ closeModal }) {
               id="date"
               name="deadline"
               value={form['deadline']}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
             />
           </label>
 
@@ -554,7 +554,7 @@ function AddMembers({ closeModal }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <input 
           className='w-full p-2 flex gap-2 bg-gray-50 mb-2 focus:outline-none focus:ring-0 rounded-md'
@@ -597,7 +597,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main mess
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
       <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <section
-          className={`flex flex-col bg-yellow-50 rounded-xl hover:outline-green-700
+          className={`flex flex-col bg-yellow-50 rounded-md hover:outline-green-700
             h-[30rem] w-[40rem] p-4 justify-between overflow-hidden`}
         >
           <section>
@@ -642,7 +642,7 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={closeModal}>
       <section
-        className="flex flex-col bg-yellow-50 rounded-xl overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
+        className="flex flex-col bg-yellow-50 rounded-md overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
         onClick={(e) => e.stopPropagation}
       >
         <section>
@@ -679,10 +679,9 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
 }
 
 function UserProfile({ closeModal, user={} }) {
-  console.log(user)
   return (
-    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
-      <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
+    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex rounded-md justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+      <div id='main' className='flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <span className='flex p-2 gap-4 items-center'>
           <img src={user.photoURL} alt="" className='h-12 w-12 rounded-full'/>

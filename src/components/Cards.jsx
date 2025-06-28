@@ -50,7 +50,7 @@ function SummaryCard({
 
 
   return (
-  <section className={`flex flex-col bg-green-800 w-full rounded-lg gap-4
+  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
       <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
@@ -72,7 +72,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex flex-col items-center h-auto w-full p-2 text-white rounded-lg  ${className}`}
+      className={`flex flex-col items-center h-auto w-full p-2 text-white rounded-md  ${className}`}
     >
         <p className='font-bold text-3xl'>{count}</p>
         <p className='text-sm text-center'>{title}</p>
@@ -82,7 +82,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
 
 function AlertCard({text = 'text', className = ''}) {
   return (
-  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-lg
+  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-md
                        p-4 justify-between h-auto shadow-sm ${className}`}>
         <p>{text}</p>
     </section>
@@ -92,7 +92,7 @@ function AlertCard({text = 'text', className = ''}) {
 function CreateCard({ title = "Title", description = "Description", onClick, className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-green-50 rounded-lg overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
+      className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
       flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4  h-[14rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
@@ -137,7 +137,7 @@ function ProjectCard({
 
   return (
     <div
-      className="flex flex-col bg-white rounded-lg overflow-hidden
+      className="flex flex-col bg-white rounded-md overflow-hidden
         flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
     >
       <section className="flex flex-col items-start gap-2 w-full">
@@ -184,7 +184,7 @@ function NoteCard({
     <span>
       <section
         onClick={togglePopUp}
-        className={`flex flex-col bg-yellow-50 rounded-lg
+        className={`flex flex-col bg-yellow-50 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
           p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
       >
@@ -231,7 +231,7 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-lg bg-white ${className}`}>
+    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`}>
       <span
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
@@ -265,8 +265,8 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
 
   return (
     <div 
-      className={`flex flex-col bg-white rounded-lg h-auto border-opacity-50
-        w-full justify-between border gap-2 border-green-600 p-2 ${className}`}
+      className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
+        w-full justify-between border gap-2 p-2 ${className}`}
     >
       <span className='flex flex-col justify-between'>
         <span className='flex justify-between w-full'>
@@ -285,9 +285,9 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         </span>
       </span>
 
-      <p className='text-xs py-2'>{description}</p>
+      <p className='text-xs bg-green-50 p-1 border border-green-400 text-green-900 rounded-md'>{description}</p>
       
-      <span id="user" className='flex p-1 gap-1 bg-blue-50 rounded-full w-fit'>
+      <span id="user" className='flex p-1 gap-1 bg-green-50 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
             <IconUser key={member.uid} user={member} />
@@ -318,7 +318,7 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-lg h-auto border-opacity-50
+    <div className="flex flex-col bg-white rounded-md h-auto border-opacity-50
                       w-full justify-between border gap-2 border-green-700 p-4">
       <span className='flex justify-between'>
         <span>
@@ -359,7 +359,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 
   return(
     <div 
-      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-lg border-opacity-50 
+      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-md border-opacity-50 
       shadow-sm border border-green-600 ${className}`}
     >
       <span className='flex justify-between'>
@@ -370,7 +370,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
       </span>
-      <span className='w-full h-full bg-gray-50 rounded-lg'></span>
+      <span className='w-full h-full bg-gray-50 rounded-md'></span>
 
       <Button text='Open Canvas' onClick={toggleShowCanvas} dataFeather='maximize'/>
       {showCanvas && <MainCanvas closeModal={toggleShowCanvas}/>}

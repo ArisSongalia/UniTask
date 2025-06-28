@@ -10,8 +10,8 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
 
   return (
     <section 
-      className={`flex rounded-full p-2 gap-2 items-center justify-center text-green-900
-        w-fit h-8 cursor-pointer bg-green-50 border border-green-800 border-opacity-50
+      className={`flex rounded-full p-1 gap-2 items-center justify-center text-green-900
+        w-fit h-fit cursor-pointer bg-green-50 border border-green-800 border-opacity-50
         hover:bg-green-700 hover:text-white
         active:bg-green-700 focus:bg-green-50 focus:outline-none
         ${className}`}

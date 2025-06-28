@@ -60,7 +60,7 @@ function TaskNavBar() {
 
   return (
     <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>
-      <div className='flex max-w-screen-2xl w-full py-2 px-4 justify-between items-center sticky top-0'>
+      <div className='flex max-w-screen-2xl w-full p-2 justify-between items-center sticky top-0'>
         <span className='flex gap-2 items-center'>
           <Link to='/'>
             <IconAction 

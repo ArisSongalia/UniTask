@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import TitleSection, { IconTitleSection } from './TitleSection';
 import { UserCard } from './Cards';
 import { useFetchActiveProjectData } from '../services/FetchData';
@@ -14,6 +14,8 @@ function SocialSection({ className = '', closeModal = () => {} }) {
   const [activeUser, setActiveUser] = useState();
   const activeProjectId = localStorage.getItem('activeProjectId');
 
+  
+
   useEffect(() => {
     if (activeProjectId) {
       setID(activeProjectId);
@@ -21,7 +23,6 @@ function SocialSection({ className = '', closeModal = () => {} }) {
   }, [activeProjectId, key]);
  
   useFetchActiveProjectData(id, setProjectData, setLoading, key);
-  console.log(activeUser)
 
   return (
     <div
@@ -62,17 +63,26 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
         <section
           id="main-message"
-          className="flex flex-col bg-gray-50 rounded-lg w-full h-full overflow-y-auto justify-between p-2"
+          className="flex flex-col bg-gray-50 rounded-lg w-full h-full justify-end overflow-y-auto p-2"
         >
-        <IconTitleSection 
-          title={activeUser?.username ?? null} 
-          dataFeather='more-vertical'
-          className='bg-slate-50 rounded-full'
-        />
-        <span className='flex h-12 w-full border-2 border-green-700 border-opacity-40 rounded-full self-end items-center gap-1 p-1'>
+        {activeUser ? (
+          <IconTitleSection 
+            title={activeUser?.username ?? null} 
+            dataFeather='more-vertical'
+            className='bg-slate-50 rounded-full'
+          />
+        ) : (
+          <span className='text-gray-600'>Select a user to chat with</span>
+        )}  
+
+        <section id='messageDisplay' className='flex h-full w-full'>
+
+        </section>
+
+        <section id='messageInput' className='flex h-12 w-full border-2 border-green-700 border-opacity-40 rounded-full self-end items-center gap-1 p-1'>
           <input className="border border-gray-300 rounded-full px-3 w-full h-full focus:ring-1 focus:ring-green-600 focus:outline-none hover:cursor-pointer" />
           <IconAction className='justify-end' dataFeather='send'/>
-        </span>
+        </section>
         </section>
       </section>
     </div>

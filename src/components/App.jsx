@@ -9,7 +9,7 @@ function App() {
   return (
         <div
           id="main-container"
-          className='flex w-full h-full justify-center'
+          className=''
         >
           <Routes>
             <Route path='/' element={<Home />} />

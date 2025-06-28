@@ -1,8 +1,8 @@
 body {
   background-color: #f7f7f7;
   min-height: 100vh;
-  height: calc(var(--vh) * 100);
   margin: 0;
+  padding: 0;
 }
 
 * {
