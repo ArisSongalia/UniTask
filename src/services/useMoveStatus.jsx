@@ -18,9 +18,11 @@ export function useMoveStatus() {
           } else if (currentStatus === "To-do") {
             await updateDoc(taskRef, { status: "In-progress"})
           } else if (currentStatus === "In-progress") {
+            await updateDoc(taskRef, { status: "To-Review"}) 
+          } else if (currentStatus === "To-Review") {
             await updateDoc(taskRef, { status: "Finished"}) 
           } else {
-            console.log("Status is not 'On-going' or 'To-do; no update performed.");
+            console.log("No update performed.");
           }
           reloadComponent();
           console.log('Update completed, ID: ', id)

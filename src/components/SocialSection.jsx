@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import TitleSection, { IconTitleSection } from './TitleSection';
-import { UserCard } from './Cards';
+import { EveryOneCard, UserCard } from './Cards';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
@@ -37,6 +37,8 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
       <section className="flex gap-2 h-full">
         <section id="user-chat-heads" className=" flex flex-col min-w-fit h-full w-[16rem]">
+          <EveryOneCard projectData={projectData}/>
+
           {loading ? (
             <BarLoader color='green' />
           ) : projectData['team'] ? (

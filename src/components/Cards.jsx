@@ -5,7 +5,7 @@ import { IconAction } from './Icon';
 import { Link, useLocation } from 'react-router-dom';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
-import { FetchUserName } from '../services/FetchData';
+import { FetchUserName, useFetchActiveProjectData } from '../services/FetchData';
 import { doc, getDoc, query, updateDoc, where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { db } from '../config/firebase';
@@ -155,7 +155,10 @@ function ProjectCard({
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
-        <p className="font-semibold p-1 text-xs bg-green-50 border border-green-200 w-fit items-center flex text-green-600">{description}</p>
+        <p 
+          className="text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold">
+          {description}
+        </p>
       </section>
 
       <Link to={'./Project'} className="w-full">
@@ -236,11 +239,58 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
       >
-        <img className="w-6 h-6 rounded-full" src={user.photoURL} alt="user-icon" />
+        <img className="w-6 h-6 rounded-full" src={user?.photoURL?? null} alt="user-icon" />
         <span className="flex flex-col w-full">
-          <p className="text-sm truncate">{user.username}</p>
-          {withEmail && <p className="text-xs opacity-80 truncate">{user.email}</p>}
+          <p className="text-sm truncate">{user?.username ?? 'user'}</p>
+          {withEmail && <p className="text-xs opacity-80 truncate">{user?.email ?? null}</p>}
         </span>
+      </span>
+    </section>
+  );
+}
+
+function EveryOneCard({projectData, className, isActive = false}){
+  const [localActive, setLocalActive] = useState(isActive);
+
+  useEffect(() => {
+    setLocalActive(isActive);
+  }, [isActive]);
+
+  const toggleIsActive = () => {
+    const newState = !localActive;
+    setLocalActive(newState);
+
+    if (onStateChange && user) {
+      const { username, email, uid, photoURL } = user;
+      onStateChange({ username, email, uid, photoURL, isActive: newState });
+    }
+  };
+  
+  return (
+    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`}>
+      <span
+        className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
+        onClick={toggleIsActive}
+      >   
+        {!projectData ? (
+          null
+        ) : projectData.team && projectData.team.map((member) => (
+          <>
+            <span className='flex w-full p-1 rounded-md'>
+              <IconUser key={member.uid} user={member} />
+            </span>
+          </>
+        ))}
+
+        {!projectData ? (
+          null
+        ) : projectData.team && projectData.team.map((member) => (
+          <>
+            <span className='flex flex-row bg-blue-50 w-full p-1 rounded-md'>
+              <p className='text-xs'>@{member.username}</p>
+            </span>
+          </>
+        ))}
       </span>
     </section>
   );
@@ -282,12 +332,15 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         </span>
       </span>
 
-      <p className='text-xs bg-green-50 p-1 w-fit border border-green-200 text-green-600 font-semibold'>{description}</p>
+      <p
+        className='text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold'>
+        {description}
+      </p>
       
-      <span id="user" className='flex p-1 gap-1 bg-green-50 rounded-full w-fit'>
+      <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
         {!team || team.length > 0 ?(
           team.map((member) => (
-            <IconUser key={member.uid} user={member} />
+            <IconUser key={member.uid} user={member} className='h-6 w-6'/>
           ))
         ) : (
           null
@@ -375,4 +428,4 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 }
 
 
-export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard, CanvasCard, NoteCard }
+export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard, CanvasCard, NoteCard, EveryOneCard }

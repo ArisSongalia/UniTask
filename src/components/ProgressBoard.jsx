@@ -36,6 +36,11 @@ function ProgressBoard() {
     where("project-id", "==", activeProjectId)
   ], [activeProjectId]);
   
+  const whereToReview = useMemo(() => [
+    where("status", "==", "To-Review"),
+    where("project-id", "==", activeProjectId)
+  ], [activeProjectId]);
+
   const whereFinished = useMemo(() => [
     where("status", "==", "Finished"),
     where("project-id", "==", activeProjectId)
@@ -43,6 +48,7 @@ function ProgressBoard() {
 
   const { taskData: toDoTasks, loading: loadingToDo } = useFetchTaskData(whereToDo, key);
   const { taskData: inProgressTasks, loading: loadingInProgress } = useFetchTaskData(whereActive, key);
+  const { taskData: toReviewTasks, loading: loadingToReview } = useFetchTaskData(whereToReview, key);
   const { taskData: finishedTasks, loading: loadingFinished } = useFetchTaskData(whereFinished, key);
 
   console.log("Active Project ID:", activeProjectId);
@@ -54,7 +60,7 @@ function ProgressBoard() {
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
           <IconAction dataFeather='check-square' iconOnClick={toggleShowCompletedTab} />
-          {showCompletedTab && <CompletedTab taskData={finishedTasks} closeModal={toggleShowCompletedTab} />}
+          {showCompletedTab && <CompletedTab taskData={finishedTasks} closeModal={toggleShowCompletedTab} loading={loadingFinished} />}
           <ButtonIcon
             text='Create Task'
             dataFeather='plus'
@@ -94,7 +100,7 @@ function ProgressBoard() {
           <DisplayTitleSection
             title="In-progress"
             className="text-sm"
-            displayClassName="bg-blue-100 text-blue-900"
+            displayClassName="bg-green-100 text-green-900"
             displayCount={inProgressTasks.length}
           />
           <section id="in-progress" className="flex flex-col gap-2">
@@ -117,10 +123,10 @@ function ProgressBoard() {
             displayCount={inProgressTasks.length}
           />
           <section id="To-review" className="flex flex-col gap-2">
-            {loadingInProgress ? (
+            {loadingToReview ? (
               <BarLoader color="#228B22" size={20} />
             ) : (
-              inProgressTasks.map((taskData) => (
+              toReviewTasks.map((taskData) => (
                 <TaskCard key={taskData.id} {...taskData} />
               ))
             )}

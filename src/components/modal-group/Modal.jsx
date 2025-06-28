@@ -712,7 +712,7 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
           <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
           <section className='flex flex-col gap-1 overflow-y-scroll pr-2'>
             {loading ? (
-              <span><BarLoader color='#228B22' size={20} /></span>
+              <BarLoader color='#228B22' size={20}/>
             ) : (
               taskData.length > 0 && (
                 taskData.map((taskData) => (

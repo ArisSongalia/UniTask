@@ -6,16 +6,17 @@ import { IconTitleSection } from './TitleSection';
 
 function HomeSideBar({className = '', closeModal = () => {} }) {
   return (
-    <div id="header" className={`flex w-full lg:w-[35rem] h-full flex-col gap-2 bg-slate-100 ${className}`}>
+    <div id="header" className={`flex w-full lg:w-[35rem] h-full flex-col bg-gray-100 ${className}`}>
     <IconTitleSection 
       title='Data' 
       dataFeather='x' 
       iconOnClick={closeModal}
-      className='p-4 pb-0 bg-white lg:hidden' 
-      titleClassName='text-lg font-bold text-green-800' 
+      className='p-4 pb-2 bg-white lg:hidden' 
+      titleClassName='text-md font-bold' 
     />
-      <SummaryCard title="Daily Summary"/>
-      <AssignedTasks />
+    
+    <SummaryCard title="Daily Summary"/>
+    <AssignedTasks />
     </div>
   )
 }
