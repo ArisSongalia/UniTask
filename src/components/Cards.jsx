@@ -268,7 +268,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   };
   
   return (
-    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-200 ${className}`}>
+    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-300 ${className}`}>
       <span
         className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}

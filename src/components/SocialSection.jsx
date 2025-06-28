@@ -36,36 +36,41 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
       <section className="flex gap-2 h-full">
         <section id="user-chat-heads" className=" flex flex-col min-w-fit h-full w-[16rem]">
-          <EveryOneCard projectData={projectData} isActive={activeUser?.tag === 'everyone'} onStateChange={(data) => {
-            if (data.isActive) {
-              setActiveUser(data);
-            } else {
-              setActiveUser(null);
-            }
-          }}/>
-
           {loading ? (
-            <BarLoader color='green' />
+            <BarLoader color="green" />
           ) : projectData['team'] ? (
-            projectData['team'].map((member) => (
-              <UserCard
-              key={member.uid}
-              user={member}
-              withEmail={false}
-              isActive={activeUser?.uid === member.uid}
-              onStateChange={(data) => {
-                if (data.isActive) {
-                  setActiveUser(data);
-                } else {
-                  setActiveUser(null);
-                }
-              }}
-            />
-          
-          ))) : (
-            <p className='text-slate-700 text-sm'>No active members available</p>
-          )
-          }
+            <>
+              <EveryOneCard
+                projectData={projectData}
+                isActive={activeUser?.tag === 'everyone'}
+                onStateChange={(data) => {
+                  if (data.isActive) {
+                    setActiveUser(data);
+                  } else {
+                    setActiveUser(null);
+                  }
+                }}
+              />
+
+              {projectData.team.map((member) => (
+                <UserCard
+                  key={member.uid}
+                  user={member}
+                  withEmail={false}
+                  isActive={activeUser?.uid === member.uid}
+                  onStateChange={(data) => {
+                    if (data.isActive) {
+                      setActiveUser(data);
+                    } else {
+                      setActiveUser(null);
+                    }
+                  }}
+                />
+              ))}
+            </>
+          ) : (
+            <p className="text-slate-700 text-sm">No active members available</p>
+          )}
         </section>
 
         <section
