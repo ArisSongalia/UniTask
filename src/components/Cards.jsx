@@ -249,7 +249,7 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   );
 }
 
-function EveryOneCard({projectData, className, isActive = false}){
+function EveryOneCard({projectData, className, onStateChange, isActive = false}){
   const [localActive, setLocalActive] = useState(isActive);
 
   useEffect(() => {
@@ -260,37 +260,28 @@ function EveryOneCard({projectData, className, isActive = false}){
     const newState = !localActive;
     setLocalActive(newState);
 
-    if (onStateChange && user) {
-      const { username, email, uid, photoURL } = user;
-      onStateChange({ username, email, uid, photoURL, isActive: newState });
+    if (onStateChange && projectData) {
+      const memberNames = projectData.team.map((member) => member.username)
+      const { team } = projectData;
+      onStateChange({ tag: 'everyone', team, memberNames, isActive: newState });
     }
   };
   
   return (
-    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`}>
+    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-200 ${className}`}>
       <span
         className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
       >   
+      <span className='flex gap-1 w-full p-1 rounded-md'>
         {!projectData ? (
           null
         ) : projectData.team && projectData.team.map((member) => (
-          <>
-            <span className='flex w-full p-1 rounded-md'>
-              <IconUser key={member.uid} user={member} />
-            </span>
-          </>
+          <IconUser key={member.uid} user={member} />
         ))}
+      </span>
 
-        {!projectData ? (
-          null
-        ) : projectData.team && projectData.team.map((member) => (
-          <>
-            <span className='flex flex-row bg-blue-50 w-full p-1 rounded-md'>
-              <p className='text-xs'>@{member.username}</p>
-            </span>
-          </>
-        ))}
+      <p className='text-sm'>@everyone</p>
       </span>
     </section>
   );

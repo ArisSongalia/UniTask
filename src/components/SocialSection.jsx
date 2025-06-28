@@ -13,7 +13,6 @@ function SocialSection({ className = '', closeModal = () => {} }) {
   const [id, setID] = useState();
   const [activeUser, setActiveUser] = useState();
   const activeProjectId = localStorage.getItem('activeProjectId');
-
   
 
   useEffect(() => {
@@ -37,7 +36,13 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
       <section className="flex gap-2 h-full">
         <section id="user-chat-heads" className=" flex flex-col min-w-fit h-full w-[16rem]">
-          <EveryOneCard projectData={projectData}/>
+          <EveryOneCard projectData={projectData} isActive={activeUser?.tag === 'everyone'} onStateChange={(data) => {
+            if (data.isActive) {
+              setActiveUser(data);
+            } else {
+              setActiveUser(null);
+            }
+          }}/>
 
           {loading ? (
             <BarLoader color='green' />
@@ -69,7 +74,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         >
         {activeUser ? (
           <IconTitleSection 
-            title={activeUser?.username ?? null} 
+            title={activeUser?.username ?? activeUser?.memberNames?.join(', ')} 
             dataFeather='more-vertical'
             className='bg-slate-50 rounded-full'
           />
