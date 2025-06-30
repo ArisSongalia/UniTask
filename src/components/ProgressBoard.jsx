@@ -16,7 +16,6 @@ function ProgressBoard() {
   const { key } = useReloadContext();
   const [showCompletedTab, setShowCompletedTab] = useState(false);
   const activeProjectId = localStorage.getItem('activeProjectId');
-  const activeProjectWhere = where('project-id', '==', activeProjectId);
 
   const toggleShowCompletedTab = () => {
     setShowCompletedTab(!showCompletedTab);

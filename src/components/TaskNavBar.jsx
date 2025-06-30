@@ -1,62 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { IconAction, IconUser } from './Icon';
 import { Link } from 'react-router-dom';
-import { useProjectContext } from '../context/ProjectContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BounceLoader, BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
-import Button from './Button';
 import SocialSection from './SocialSection';
 import { useReloadContext } from '../context/ReloadContext';
 import TaskSideBar from './TaskSideBar';
 
 
 function TaskNavBar() {
-  const { fetchID } = useProjectContext();
-  const [id, setId] = useState(null);
-  const [loading, setLoading] = useState(true)
-  const [projectData, setProjectData] = useState([]);
-  const [showAddMembers, setShowAddMembers] = useState(false);
-  const [showSocialSection, setShowSocialSection] = useState(false);
-  const [showTaskSideBar, setShowTaskSideBar] = useState(false);
-  const activeLocalProjectID = localStorage.getItem('activeProjectId');
+  const projectId = localStorage.getItem('activeProjectId');
   const { key } = useReloadContext();
 
-  useEffect(() => {
-    const fetchProjectID = async () => {
-      try {
-        const projectID = await fetchID();
-        console.log("Fetched Project ID:", projectID);
-        setId(projectID);
-      } catch (error) {
-        console.error('Error fetching project id: ', error);
-      }
-    };
+  const [visibility, setVisbility] =  useState({
+    addMembers: false,
+    socialSection: false,
+    taskSideBar: false,
+  })
 
-    if (!activeLocalProjectID) {
-      fetchProjectID;
-    } else {
-      setId(activeLocalProjectID);
-      setLoading(false);
-      console.log('Local storage project is used');
-    };
-
-  }, [fetchID, activeLocalProjectID, key]);
-
-  const toggleShowAddMembers = () => {
-    setShowAddMembers(!showAddMembers);
-  };
-
-  const toggleShowSocialSection = () => {
-    setShowSocialSection(!showSocialSection);
-  };
-
-  const toggleShowTaskSideBar = () => {
-    setShowTaskSideBar(!showTaskSideBar);
-  };
+  const toggleVisbility = (section) => {
+    setVisbility((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }))
+  }
 
 
-  useFetchActiveProjectData(id, setProjectData, setLoading, key)
+  const { projectData, loading } = useFetchActiveProjectData(projectId, key)
 
   return (
     <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>
@@ -96,20 +67,21 @@ function TaskNavBar() {
 
           { projectData.type === 'Shared' ? (
             <>
-              <IconAction dataFeather='user-plus' iconOnClick={toggleShowAddMembers} />
-              {showAddMembers && <AddMembers closeModal={toggleShowAddMembers} />}
+              <IconAction dataFeather='user-plus' iconOnClick={() => toggleVisbility('addMembers')} />
+              {visibility.addMembers && <AddMembers closeModal={() => toggleVisbility('addMembers')} />}
             </>
           ) : (null)}
 
-          <IconAction dataFeather='message-square' iconOnClick={toggleShowSocialSection} />
-          {showSocialSection && <SocialSection closeModal={toggleShowSocialSection}/>}
+          <IconAction dataFeather='message-square' iconOnClick={() => toggleVisbility('socialSection')} />
+          {visibility.socialSection && <SocialSection closeModal={() => toggleVisbility('socialSection')} />}
 
-          <IconAction dataFeather='plus' className='lg:hidden' iconOnClick={toggleShowTaskSideBar} />
-          {showTaskSideBar && 
-            <TaskSideBar  
+          <IconAction dataFeather='plus' className='lg:hidden' iconOnClick={() => toggleVisbility('taskSideBar')} />
+          {visibility.taskSideBar && 
+            <TaskSideBar 
+              closeModal={() => toggleVisbility('taskSideBar')}
               className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
-              closeModal={toggleShowTaskSideBar}
-            />}
+             />
+          }
         </span>
       </div>
     </div>

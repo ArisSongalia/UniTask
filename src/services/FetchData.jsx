@@ -151,7 +151,11 @@ const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
   }, [setNoteData, setLoading, refreshKey])
 }
 
-const useFetchActiveProjectData = (id, setProjectData, setLoading, refreshKey) => {
+const useFetchActiveProjectData = (id, refreshKey) => {
+  const [projectData, setProjectData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+
   useEffect(() => {
     if (!id) {
       console.warn('Waiting for valid document ID...');
@@ -160,7 +164,6 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading, refreshKey) =
   
     const fetchData = async () => {
       try {
-        setLoading(true);
         const projectRef = doc(db, 'projects', id);
         const projectDoc = await getDoc(projectRef);
   
@@ -171,6 +174,7 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading, refreshKey) =
         }
       } catch (error) {
         console.error('Error fetching project data:', error);
+        setProjectData({});
       } finally {
         setLoading(false);
       }
@@ -189,7 +193,10 @@ const useFetchActiveProjectData = (id, setProjectData, setLoading, refreshKey) =
     }
   
     return () => unsubscribe();
-  }, [id, setProjectData, setLoading, refreshKey]);
+  }, [id, projectData, loading, refreshKey]);
+
+  
+  return { projectData, loading}
 };
 
 const useFetchTaskData = (customWhere, refreshKey) => {
