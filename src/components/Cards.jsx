@@ -274,7 +274,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
         onClick={toggleIsActive}
       >   
       <span className='flex gap-1 w-full p-1 rounded-md'>
-        {!projectData ? (
+        {!projectData.team.length > 0 ? (
           null
         ) : projectData.team && projectData.team.map((member) => (
           <IconUser key={member.uid} user={member} />
@@ -334,7 +334,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
             <IconUser key={member.uid} user={member} className='h-6 w-6'/>
           ))
         ) : (
-          null
+          <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
         )}
       </span>
 

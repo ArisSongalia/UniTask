@@ -195,7 +195,7 @@ const useFetchActiveProjectData = (id, refreshKey) => {
     return () => unsubscribe();
   }, [id, projectData, loading, refreshKey]);
 
-  
+
   return { projectData, loading}
 };
 
@@ -240,8 +240,6 @@ const useFetchTaskData = (customWhere, refreshKey) => {
 
   return { taskData, loading};
 };
-
-
 
 const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   useEffect(() => {
