@@ -4,7 +4,7 @@ import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firesto
 import { onAuthStateChanged } from 'firebase/auth';
 
 
-function FetchUserName() {
+function useFetchUserName() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -49,28 +49,23 @@ function FetchUserName() {
 }
 
 
-const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => { 
+const useFetchProjectData = ( refreshKey ) => { 
+  const [projectData, setProjectData] = useState({});
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchProjectData = async (user) => {
       try {
         if (user) {
           const projectRef = collection(db, 'projects');
           const q = query(projectRef, where("owner", "==", user.uid))
-          
           const querySnapshot = await getDocs(q);
+          
           if (!querySnapshot.empty) {
-            const projectData = [];
-            querySnapshot.forEach((doc) => {
-              projectData.push({
-                title: doc.data().title,
-                description: doc.data().description,
-                date: doc.data().date, 
-                type: doc.data().type,
-                id: doc.data().id,
-                status: doc.data().status,
-              });
-            });
-            setProjectData(projectData);
+            const data = querySnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+            }))
+            setProjectData(data);
           }  else {
             setProjectData([]);
           }
@@ -97,10 +92,14 @@ const fetchProjectData = ( setProjectData, setLoading, refreshKey ) => {
     return () => unsubscribe();
   }, [setProjectData, setLoading, refreshKey]);
 
-  return null;
+  return {projectData, loading};
 }
 
-const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
+const useFetchNoteData = ( refreshKey, customWhere ) => {
+  const [noteData, setNoteData] = useState({});
+  const [loading, setLoading] = useState(true)
+
+
   useEffect(() => {
     const fetchNoteData = async (user) => {
       try {
@@ -109,20 +108,14 @@ const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
           const q = customWhere 
             ? query(noteRef, customWhere) 
             : query(noteRef, where("owner", "==", user.uid));
-
           const querySnapshot = await getDocs(q);
+      
           if (!querySnapshot.empty) {
-            const NoteData = [];
-            querySnapshot.forEach((doc) => {
-              NoteData.push({
-                title: doc.data().title,
-                message: doc.data().message,
-                file: doc.data().file,
-                date: doc.data().date,
-                id: doc.data().id,
-              });
-            });
-            setNoteData(NoteData);
+            const data = querySnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+            }))
+            setNoteData(data);
           } else {
             setNoteData([]);
           }
@@ -149,6 +142,8 @@ const fetchNoteData = ( setNoteData, setLoading, refreshKey, customWhere ) => {
     return () => unsubscribe();
 
   }, [setNoteData, setLoading, refreshKey])
+
+  return{ noteData, loading }
 }
 
 const useFetchActiveProjectData = (id, refreshKey) => {
@@ -284,5 +279,5 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
 
 
 
-export { FetchUserName, useFetchUsers, fetchProjectData, fetchNoteData, useFetchActiveProjectData, useFetchTaskData};
+export { useFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData};
 

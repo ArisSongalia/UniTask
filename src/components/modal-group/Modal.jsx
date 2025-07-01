@@ -8,7 +8,7 @@ import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
 import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
-import { useFetchUsers, useFetchActiveProjectData, fetchProjectData } from '../../services/FetchData';
+import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
 import { handleSignOut } from './ModalAuth';
@@ -586,49 +586,8 @@ function AddMembers({ closeModal }) {
   );
 }
 
-function NoteFocus({ closeModal, title = 'Title goes here...', main = 'Main message goes here...', user = 'User', date = '00/00/0000'}) {
-  const [isClicked, setIsClicked] = useState(false);
 
-  const toggleClick = () => {
-    setIsClicked(!isClicked);
-  };
-
-  return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
-      <section className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-        <section
-          className={`flex flex-col bg-yellow-50 rounded-md hover:outline-green-700
-            h-[30rem] w-[40rem] p-4 justify-between overflow-hidden`}
-        >
-          <section>
-            <span className="flex justify-between w-full gap-2">
-              <span className="flex flex-col">
-                <h2 id="note-card-main" className="font-bold text-lg mb-4 ">
-                  {title}
-                </h2>
-                <p id="note-card-text" className="text-gray-800 font-normal my-2">
-                  {main}
-                </p>
-              </span>
-              <span className="flex flex-col gap-2">
-                <IconAction dataFeather="x" iconOnClick={closeModal} />
-                <IconAction
-                  dataFeather='check'
-                  iconOnClick={toggleClick}
-                  className={`${isClicked ? 'bg-green-700 text-white': ''}`}
-                />
-              </span>
-            </span>
-          </section>
-          <p className="text-xs text-gray-600 font-semibold">Note by: {user} - {date}</p>
-        </section>
-      </section>
-    </div>
-  );
-}
-
-
-function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main message goes here...', file, owner = "owner", date = '00/00/0000', id}) {
+function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main message goes here...', file, owner = "owner", date = '00/00/0000', id}) {
   const [showPopUp, setShowPopUp] = useState(false);
   const togglePopUp = () => {
     setShowPopUp(!showPopUp)
@@ -652,10 +611,10 @@ function NoteEdit({ closeModal, title = 'Title goes here...', message = 'Main me
                 {title}
               </h2>
               <span className="flex gap-2">
-                <IconAction dataFeather="x" iconOnClick={closeModal} />
-                <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
                 {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
                 <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
+                <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
+                <IconAction dataFeather="x" iconOnClick={closeModal} />
               </span>
             </span>
   
@@ -739,4 +698,4 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, NoteEdit, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab}
+export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab}

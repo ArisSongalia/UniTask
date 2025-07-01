@@ -119,7 +119,7 @@ function ProgressBoard() {
             title="To-review"
             className="text-sm"
             displayClassName="bg-violet-100 text-violet-900"
-            displayCount={inProgressTasks.length}
+            displayCount={toReviewTasks.length}
           />
           <section id="To-review" className="flex flex-col gap-2">
             {loadingToReview ? (

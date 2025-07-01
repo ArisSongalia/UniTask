@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {IconTitleSection} from './TitleSection';
 import { CreateNote } from './modal-group/Modal';
-import { fetchNoteData } from '../services/FetchData';
+import { useFetchNoteData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
 import { BarLoader } from 'react-spinners';
@@ -9,18 +9,15 @@ import { NoteCard } from './Cards';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);
-  const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { key } = useReloadContext();
   const activeProjectId = localStorage.getItem('activeProjectId');
-
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   }
 
   const customWhere = where("project-id", "==", activeProjectId);
-  fetchNoteData(setNotes, setLoading, key, customWhere);
+  const { noteData, loading } = useFetchNoteData(key, customWhere)
 
   
   return (
@@ -32,7 +29,7 @@ function NoteSection({className = ''}) {
         {loading ? (
           <BarLoader color='#228B22' size={20} />
         ) : (
-          notes.map((note, index) => (
+          noteData.map((note, index) => (
             <NoteCard
               key={`${note.id}-${index}`}
               title={note.title}

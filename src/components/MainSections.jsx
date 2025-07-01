@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ProjectCard, CreateCard } from './Cards';
 import { CreateProject, CreateNote} from './modal-group/Modal';
 import { IconTitleSection } from './TitleSection';
-import { fetchProjectData, fetchNoteData } from '../services/FetchData';
+import { useFetchProjectData, useFetchNoteData } from '../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from '../context/ReloadContext';
@@ -11,15 +11,13 @@ import { NoteCard } from './Cards';
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
 
-  fetchProjectData( setProjects, setLoading, key)
+  const { projectData, loading } = useFetchProjectData(key)
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -42,8 +40,8 @@ function MainProjectSection() {
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
         ) : (
-          projects.length > 0 && (
-            projects.map((project, index) => (
+          projectData.length > 0 && (
+            projectData.map((project, index) => (
                 <ProjectCard
                   key={`${project.id}-${index}`}
                   title={project.title}
@@ -62,8 +60,6 @@ function MainProjectSection() {
 }
 
 function MainNotesSection() {
-  const [notes, setNotes] = useState([]);  
-  const [loading, setLoading] = useState(true);
   const [showPopUp, setShowPopUp] = useState(false); 
   const { key } = useReloadContext();
 
@@ -71,7 +67,8 @@ function MainNotesSection() {
     setShowPopUp(!showPopUp); 
   };
 
-  fetchNoteData(setNotes, setLoading, key);
+  const { noteData, loading }  = useFetchNoteData(key)
+
 
   return (
     <div className='w-full h-fit'>
@@ -92,8 +89,8 @@ function MainNotesSection() {
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>
         ) : (
-          notes.length > 0 &&
-            notes.map((note, index) => (
+          noteData.length > 0 &&
+            noteData.map((note, index) => (
               <NoteCard
                 key={`${note.id}-${index}`}
                 title={note.title}

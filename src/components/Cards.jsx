@@ -5,18 +5,17 @@ import { IconAction } from './Icon';
 import { Link, useLocation } from 'react-router-dom';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
-import { FetchUserName, useFetchActiveProjectData } from '../services/FetchData';
-import { doc, getDoc, query, updateDoc, where } from 'firebase/firestore';
+import { useFetchUserName, useFetchActiveProjectData } from '../services/FetchData';
+import { where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
-import { db } from '../config/firebase';
-import { useFetchTaskData, fetchNoteData, fetchProjectData } from '../services/FetchData';
+import { useFetchTaskData, useFetchNoteData, useFetchProjectData } from '../services/FetchData';
 import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
-import { NoteEdit } from "./modal-group/Modal";
-import { useMoveStatus } from '../services/useMoveStatus';
+import { NoteFocus } from "./modal-group/Modal";
+import { BarLoader } from 'react-spinners';
 
 
 function SummaryCard({
@@ -27,11 +26,7 @@ function SummaryCard({
 
   const user = useAuth();
   const { key } = useReloadContext()
-  const [noteData, setNoteData] = useState([])
   const [customWhere, setCustomWhere] = useState(null);
-  const [commonLoading, setCommonLoading] = useState(false)
-  const [projectsData, setProjectData] = useState([]);
-  const pendingProjects = projectsData.filter(project => project.status === 'On-going');
 
 
   useEffect(() => {
@@ -42,11 +37,12 @@ function SummaryCard({
       ]);
     }
   }, [user?.uid]);
-  const { taskData, loading } = useFetchTaskData(customWhere, key );
 
-
-  fetchNoteData(setNoteData, setCommonLoading, key);
-  fetchProjectData(setProjectData, setCommonLoading, key);
+  const { taskData, loading: taskLoading } = useFetchTaskData(customWhere, key );
+  const { projectData, loading: projectLoading } = useFetchProjectData(key);
+  const { noteData, loading: noteLoading } = useFetchNoteData(key);
+  const projectArray = Object.values(projectData);
+  const pendingProjects = projectArray.filter(project => project.status === 'On-going');
 
 
   return (
@@ -54,13 +50,25 @@ function SummaryCard({
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
       <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
-        <p className='font-semibold text-sm'>Hi <span><FetchUserName /></span>, Here's your tasks📋</p>
+        <p className='font-semibold text-sm'>Hi <span><useFetchUserName /></span>, Here's your tasks📋</p>
       </span>
 
       <div className="flex gap-1 w-full h-fit">
-        <CountCard count={pendingProjects.length} title='Pending Projects'/>
-        <CountCard count={taskData.length} title='Assigned Task' className='' />
-        <CountCard count={noteData.length} title='Action Notes' className=''/>
+        {!projectLoading ?(
+          <CountCard count={pendingProjects.length} title='Pending Projects'/>
+        ) : (
+          <BarLoader color='white' />
+        )}
+        {!taskLoading?(        
+          <CountCard count={taskData.length} title='Assigned Task' className='' />
+        ) : (
+          <BarLoader color='white' />
+        )}
+        {!noteLoading ?(
+          <CountCard count={noteData.length} title='Action Notes' className=''/>
+        ) : (
+          <BarLoader color='white' />
+        )}
       </div>
 
       <Button text='Check Pending'/>
@@ -75,7 +83,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
       className={`flex flex-col items-center h-auto w-full p-2 text-white rounded-md  ${className}`}
     >
         <p className='font-bold text-3xl'>{count}</p>
-        <p className='text-sm text-center'>{title}</p>
+        <p className='text-xs text-center'>{title}</p>
     </section>
   )
 }
@@ -210,7 +218,7 @@ function NoteCard({
         </span>
       </section>
 
-      {showPopUp && <NoteEdit closeModal={togglePopUp} title={title} message={message} owner={owner} file={file} date={date} id={id} />}
+      {showPopUp && <NoteFocus closeModal={togglePopUp} title={title} message={message} owner={owner} file={file} date={date} id={id} />}
     </span>
   );
 }

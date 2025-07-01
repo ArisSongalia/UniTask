@@ -80,6 +80,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
               title={activeUser?.username ?? activeUser?.memberNames?.join(', ')}
               dataFeather="more-vertical"
               className="bg-slate-50 rounded-full"
+              titleClassName='text-sm'
             />
           ) : (
             <span className="text-gray-600">Select a user to chat with</span>
