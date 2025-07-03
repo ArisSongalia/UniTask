@@ -107,7 +107,7 @@ const useFetchNoteData = ( refreshKey, customWhere ) => {
           const noteRef = collection(db, 'notes');
           const q = customWhere 
             ? query(noteRef, customWhere) 
-            : query(noteRef, where("owner", "==", user.uid));
+            : query(noteRef, where("ownerUid", "==", user.uid));
           const querySnapshot = await getDocs(q);
       
           if (!querySnapshot.empty) {

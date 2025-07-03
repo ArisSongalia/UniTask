@@ -146,7 +146,7 @@ function ProjectCard({projectData}) {
             <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
             <div className='relative'>
               <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-              {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' />}
+              {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' className='bg-white' />}
             </div>
           </span>
 
@@ -186,7 +186,7 @@ function NoteCard({
       <div
         onClick={togglePopUp}
         className={`flex flex-col bg-white border border-yellow-300 rounded-md
-          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-fit
+          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
           p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
       {showPopUp && 

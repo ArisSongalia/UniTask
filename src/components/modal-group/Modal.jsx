@@ -193,7 +193,7 @@ function CreateNote({ closeModal, projectId }) {
         message: form.message,
         date: form.date,
         owner: user.displayName,
-        ownerUid: user.displayName,
+        ownerUid: user.uid,
         ['project-id']: projectId || null,
       }); 
 

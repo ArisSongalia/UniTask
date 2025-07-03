@@ -88,11 +88,7 @@ function MainNotesSection() {
             noteData.map((note, index) => (
               <NoteCard
                 key={`${note.id}-${index}`}
-                title={note.title}
-                message={note.message}
-                date={note.date}
-                file={note.file}
-                id={note.id}
+                noteData={note}
               />
             ))
         )}
