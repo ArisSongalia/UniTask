@@ -183,15 +183,17 @@ function NoteCard({
   };
 
   return (
-    <div>
       <div
         onClick={togglePopUp}
-        className={`flex flex-col bg-yellow-50 rounded-md
-          hover:cursor-pointer shadow-sm hover:bg-yellow-100
-          p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
+        className={`flex flex-col bg-white border border-yellow-300 rounded-md
+          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-fit
+          p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
+      {showPopUp && 
+        <NoteFocus closeModal={togglePopUp} noteData={noteData} 
+      />}
         <section className="flex-grow w-full">
-          <h2 id="note-card-title" className="font-bold mb-4">
+          <h2 id="note-card-title" className="font-bold">
             {noteData.title}
           </h2>
           <p id="note-card-text" className="text-gray-800 my-2 text-sm">
@@ -205,12 +207,12 @@ function NoteCard({
         </section>
 
         <div className="w-full text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
-          <p>{noteData.owner} - {noteData.date}</p>
+          <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
+          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
         </div>
       </div>
 
-      {showPopUp && <NoteFocus closeModal={togglePopUp} noteData={noteData} />}
-    </div>
+      
   );
 }
 
@@ -331,13 +333,13 @@ function TaskCard({taskData, className}) {
           </div>
         </span>
         <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
-          <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
-          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600 flex-none">{taskData.deadline}</p> 
+          <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
+          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p> 
         </span>
       </span>
 
       <p
-        className='text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold'>
+        className='text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-700 font-semibold'>
         {taskData.description}
       </p>
       
@@ -347,7 +349,7 @@ function TaskCard({taskData, className}) {
             <IconUser key={member.uid} user={member} className='h-6 w-6'/>
           ))
         ) : (
-          <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
+          <span className='bg-red-50 text-red-700 px-1 text-xs'>No members assigned</span>
         )}
       </span>
 

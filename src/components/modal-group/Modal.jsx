@@ -244,6 +244,7 @@ function CreateNote({ closeModal, projectId }) {
               value={form.date}
               onChange={handleChange}
               className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              required
             />
           </label>
 
@@ -632,7 +633,7 @@ function NoteFocus({ closeModal, noteData}) {
         </section>
         <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
           <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
-          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>{noteData.date}</p>
+          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
         </span>
       </section>
     </ModalOverlay>
@@ -700,8 +701,41 @@ function TaskFocus({closeModal, taskData, loading}) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <div className='h-[30rem] w-[30rem] flex bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+      <div className='flex flex-col h-[30rem] w-[30rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x'/>
+        <div className='flex flex-col justify-between h-full w-full'>
+          <div className="flex flex-col">
+            <span className='flex gap-1 text-xs font-semibold text-gray-600 justify-between flex-wrap'>
+              <section className='flex gap-1 h-fit'>
+                <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
+                <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p>
+              </section>
+
+              <section className='flex gap-1 items-center'>
+                <IconAction dataFeather='trash' />
+                <IconAction dataFeather='edit' />
+
+                <ButtonIcon text='Move Status' dataFeather='arrow-up'/>
+              </section>
+            </span>
+            <p
+              id='description'
+              className='text-xs bg-green-50 p-1 my-4 w-fit border border-green-300 rounded-sm text-green-700 font-semibold'>
+              {taskData.description}
+            </p>
+          </div>
+
+          <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
+          {!taskData.team || taskData.team.length > 0 ?(
+            taskData.team.map((member) => (
+              <IconUser key={member.uid} user={member} className='h-6 w-6'/>
+            ))
+          ) : (
+            <span className='bg-red-50 text-red-700 px-1 text-xs'>No members assigned</span>
+          )}
+                </span>
+        </div>
+
       </div>
     </ModalOverlay>
   )
