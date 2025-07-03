@@ -192,7 +192,8 @@ function CreateNote({ closeModal, projectId }) {
         title: form.title,
         message: form.message,
         date: form.date,
-        owner: user.uid,
+        owner: user.displayName,
+        ownerUid: user.displayName,
         ['project-id']: projectId || null,
       }); 
 
@@ -588,7 +589,7 @@ function AddMembers({ closeModal }) {
 }
 
 
-function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main message goes here...', file, owner = "owner", date = '00/00/0000', id}) {
+function NoteFocus({ closeModal, noteData}) {
   const [showPopUp, setShowPopUp] = useState(false);
   const togglePopUp = () => {
     setShowPopUp(!showPopUp)
@@ -596,20 +597,20 @@ function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main m
   const { reloadComponent } = useReloadContext();
 
   const handleDelete = async () => {
-    await deleteData( id, 'notes', reloadComponent );
+    await deleteData( noteData.id, 'notes', reloadComponent );
   }
 
   return (
     <ModalOverlay onClick={closeModal}>
       <section
-        className="flex flex-col bg-yellow-50 rounded-md overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
+        className="flex flex-col bg-white rounded-md overflow-auto hover:outline-green-700 w-[40rem] max-w-[full] h-[30rem] p-4 justify-between"
         onClick={(e) => e.stopPropagation}
       >
         <section>
           <span className="flex flex-col justify-between w-full gap-2">
             <span className="flex justify-between items-center">
               <h2 id="note-card-main" className="font-bold text-lg mb-2 hover:cursor-pointer">
-                {title}
+                {noteData.title}
               </h2>
               <span className="flex gap-2">
                 {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
@@ -620,18 +621,19 @@ function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main m
             </span>
   
             <p id="note-card-text" className="text-gray-800 font-normal my-2 hover:cursor-pointer w-full break-words">
-              {message}
-              {file && (
+              {noteData.message}
+              {noteData.file && (
                 <span className="block mt-2 text-gray-500 text-xs">
-                  Attached File: {file}
+                  Attached File: {noteData.file}
                 </span>
               )}
             </p>
           </span>
         </section>
-        <p className="text-xs text-gray-600 font-semibold hover:cursor-pointer">
-          Note by: {owner} - {date}
-        </p>
+        <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
+          <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
+          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>{noteData.date}</p>
+        </span>
       </section>
     </ModalOverlay>
   );
@@ -677,6 +679,7 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
               taskData.length > 0 && (
                 taskData.map((taskData) => (
                   <TaskCard 
+                    key={taskData.id}
                     taskData={taskData}
                     className='h-fit hover:cursor-pointer shadow-sm'
                   />

@@ -32,11 +32,7 @@ function NoteSection({className = ''}) {
           noteData.map((note, index) => (
             <NoteCard
               key={`${note.id}-${index}`}
-              title={note.title}
-              message={note.message}
-              user="You"
-              date={note.date}
-              id={note.id}
+              noteData={note}
               className='h-fit rounded-xl'
             />
           ))

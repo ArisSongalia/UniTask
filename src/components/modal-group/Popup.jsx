@@ -22,7 +22,7 @@ function Popup({ closeModal, className = '',  collectionName, data }) {
 
   return (
       <div
-        className={`flex flex-col absolute z-20 right-0 mt-1 p-4 bg-white rounded-md w-[15rem] h-auto cursor-default *:${className}`}
+        className={`flex flex-col absolute z-20 top-0 right-0 p-4 bg-white border rounded-md w-[15rem] h-auto cursor-default shadow-md${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title={data.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />

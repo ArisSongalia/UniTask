@@ -144,8 +144,10 @@ function ProjectCard({projectData}) {
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
             <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
-            <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-            {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' />}
+            <div className='relative'>
+              <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
+              {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' />}
+            </div>
           </span>
 
           <span className="flex flex-wrap gap-1">
@@ -171,12 +173,8 @@ function ProjectCard({projectData}) {
 
 function NoteCard({
   className = "",
-  title = "Title",
-  message = "Lorem ipsum dolor sit amet consectetur, adipisicing elitdadadad. Delectus, ipsum doloribus maxime maiores quos eius porro quod suscipit autem dolor distinctio aliquid quaerat. Iste, laborum at accusantium ab tempora voluptatum!",
-  owner = "You",
-  date = "01/01/12",
-  file,
-  id = "",
+  noteData,
+  file
 }) {
   const [showPopUp, setShowPopUp] = useState(false);
 
@@ -185,19 +183,19 @@ function NoteCard({
   };
 
   return (
-    <span>
-      <section
+    <div>
+      <div
         onClick={togglePopUp}
         className={`flex flex-col bg-yellow-50 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-100
           p-4 justify-between h-[14rem] min-w-[9rem] ${className}`}
       >
-        <section className="flex-grow overflow-hidden">
+        <section className="flex-grow w-full">
           <h2 id="note-card-title" className="font-bold mb-4">
-            {title}
+            {noteData.title}
           </h2>
           <p id="note-card-text" className="text-gray-800 my-2 text-sm">
-            {message}
+            {noteData.message}
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
                 Attached File: {file}
@@ -206,13 +204,13 @@ function NoteCard({
           </p>
         </section>
 
-        <span className="w-full">
-          <p className="text-xs text-gray-600 font-semibold pt-2">From {owner} - {date}</p>
-        </span>
-      </section>
+        <div className="w-full text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
+          <p>{noteData.owner} - {noteData.date}</p>
+        </div>
+      </div>
 
-      {showPopUp && <NoteFocus closeModal={togglePopUp} title={title} message={message} owner={owner} file={file} date={date} id={id} />}
-    </span>
+      {showPopUp && <NoteFocus closeModal={togglePopUp} noteData={noteData} />}
+    </div>
   );
 }
 
@@ -322,13 +320,15 @@ function TaskCard({taskData, className}) {
       <span className='flex flex-col justify-between'>
         <span className='flex justify-between w-full'>
           <h2 className="font-bold mb-1 text-sm">{taskData.title}</h2>
-          <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0 bg-white border-none' iconOnClick={() => toggleVisbility('popUp')}/>
-          {visibilitity.popUp && 
-            <Popup 
-              data={taskData}
-              closeModal={() => toggleVisbility('popUp')} 
-              collectionName='tasks'
-            />}
+          <div className='relative'>
+            <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0 bg-white border-none' iconOnClick={() => toggleVisbility('popUp')}/>
+            {visibilitity.popUp && 
+              <Popup 
+                data={taskData}
+                closeModal={() => toggleVisbility('popUp')} 
+                collectionName='tasks'
+              />}
+          </div>
         </span>
         <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
           <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
