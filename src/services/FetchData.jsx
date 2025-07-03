@@ -4,7 +4,7 @@ import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firesto
 import { onAuthStateChanged } from 'firebase/auth';
 
 
-function useFetchUserName() {
+function UseFetchUserName() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,7 @@ function useFetchUserName() {
 
 
 const useFetchProjectData = ( refreshKey ) => { 
-  const [projectData, setProjectData] = useState({});
+  const [projectData, setProjectData] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchProjectData = async (user) => {
@@ -96,7 +96,7 @@ const useFetchProjectData = ( refreshKey ) => {
 }
 
 const useFetchNoteData = ( refreshKey, customWhere ) => {
-  const [noteData, setNoteData] = useState({});
+  const [noteData, setNoteData] = useState([]);
   const [loading, setLoading] = useState(true)
 
 
@@ -279,5 +279,5 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
 
 
 
-export { useFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData};
+export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData};
 

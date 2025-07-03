@@ -11,14 +11,17 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
   return (
     <section 
       className={`flex rounded-full p-[6px] gap-2 items-center justify-center text-green-900
-        w-fit h-fit cursor-pointer bg-green-50 border border-green-600 border-opacity-50
+        w-fit h-fit cursor-pointer bg-green-50 border border-opacity-50
         hover:bg-green-700 hover:text-white
         active:bg-green-700 focus:bg-green-50 focus:outline-none
         ${className}`}
       style={{ touchAction: 'manipulation' }}
       aria-hidden="true" 
       aria-label={actionText}
-      onClick={iconOnClick}
+      onClick={(e) => {
+        e.stopPropagation(),
+        iconOnClick()
+      }}
     >
       <i 
         data-feather={dataFeather} 

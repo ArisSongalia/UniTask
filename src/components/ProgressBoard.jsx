@@ -12,18 +12,19 @@ import { CompletedTab } from './modal-group/Modal'
 import { ButtonIcon } from './Button'
 
 function ProgressBoard() {
-  const [showPopUp, setShowPopUp] = useState(false);
+  const [visibilitity, setVisbility] = useState({
+    completedTab: false,
+    createTask: false,
+  })
   const { key } = useReloadContext();
-  const [showCompletedTab, setShowCompletedTab] = useState(false);
   const activeProjectId = localStorage.getItem('activeProjectId');
 
-  const toggleShowCompletedTab = () => {
-    setShowCompletedTab(!showCompletedTab);
-  };
-
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
-  };
+  const toggleVisibility = (section) => {
+    setVisbility(prev => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  }
 
   const whereToDo = useMemo(() => [
     where("status", "==", "To-do"),
@@ -58,25 +59,23 @@ function ProgressBoard() {
         <h2 className='font-semibold max-w-[80%]'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
-          <IconAction dataFeather='check-square' iconOnClick={toggleShowCompletedTab} />
-          {showCompletedTab && <CompletedTab taskData={finishedTasks} closeModal={toggleShowCompletedTab} loading={loadingFinished} />}
+          <IconAction dataFeather='check-square' iconOnClick={() => toggleVisibility('completedTab')} />
+          {visibilitity.completedTab && <CompletedTab taskData={finishedTasks} closeModal={() => toggleVisibility('completedTab')} loading={loadingFinished} />}
           <ButtonIcon
             text='Create Task'
             dataFeather='plus'
-            onClick={togglePopUp}
-            className='w-fit'
+            onClick={() => toggleVisibility('createTask')}
           />
+          {visibilitity.createTask && <CreateTask closeModal={() => toggleVisibility('createTask')} />}
         </span>
       </section>
-
-      {showPopUp && <CreateTask closeModal={togglePopUp} />}
 
       <section
         id="task-board-container"
         className="flex gap-2 h-full w-full bg-2 px-4 rounded-md overflow-x-auto"
       >
         {/* To-do Column */}
-        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] w-full rounded-md p-2 overflow-y-auto">
+        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] w-full rounded-md p-2 overflow-y-auto">
           <DisplayTitleSection
             title="To-do"
             className="text-sm"
@@ -88,18 +87,17 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toDoTasks.map((taskData) => (
-                <TaskCard key={taskData.id} {...taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>
         </div>
 
         {/* In-progress Column */}
-        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
+        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
           <DisplayTitleSection
             title="In-progress"
             className="text-sm"
-            displayClassName="bg-green-100 text-green-900"
             displayCount={inProgressTasks.length}
           />
           <section id="in-progress" className="flex flex-col gap-2">
@@ -107,14 +105,14 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               inProgressTasks.map((taskData) => (
-                <TaskCard key={taskData.id} {...taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>
         </div>
 
         {/* To-review Column */}
-        <div className="flex flex-col h-full bg-gray-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
+        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
           <DisplayTitleSection
             title="To-review"
             className="text-sm"
@@ -126,7 +124,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toReviewTasks.map((taskData) => (
-                <TaskCard key={taskData.id} {...taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>

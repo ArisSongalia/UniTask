@@ -12,6 +12,7 @@ import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '.
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
 import { handleSignOut } from './ModalAuth';
+import ModalOverlay from '../ModalOverlay';
 
 
 function CreateProject({ closeModal }) {
@@ -75,7 +76,7 @@ function CreateProject({ closeModal }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
 
@@ -156,7 +157,7 @@ function CreateProject({ closeModal }) {
           <Button type="submit" text="Create Project" className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
         </form>
       </section>
-    </div>
+    </ModalOverlay>
   );
 }
 
@@ -205,7 +206,7 @@ function CreateNote({ closeModal, projectId }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center z-10 justify-center bg-black bg-opacity-50" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
@@ -249,7 +250,7 @@ function CreateNote({ closeModal, projectId }) {
           <Button type="submit" text="Create Note" className="py-3" dataFeather='plus'/>
         </form>
       </section>
-    </div>
+    </ModalOverlay>
   );
 }
 
@@ -361,7 +362,7 @@ function CreateTask({ closeModal, id }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
 
@@ -449,7 +450,7 @@ function CreateTask({ closeModal, id }) {
           <Button type="submit" text="Create Task" className="py-3"/>
         </form>
       </section>
-    </div>
+    </ModalOverlay>
   );
 }
 
@@ -466,7 +467,7 @@ function CreateCanvas({ closeModal }) {
   });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
 
@@ -498,7 +499,7 @@ function CreateCanvas({ closeModal }) {
           <Button type="submit" text="Create Canvas" className="py-3" />
         </form>
       </section>
-    </div>
+    </ModalOverlay>
   );
 }
 
@@ -553,7 +554,7 @@ function AddMembers({ closeModal }) {
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10 bg-black bg-opacity-50" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
         <input 
@@ -582,7 +583,7 @@ function AddMembers({ closeModal }) {
         <p style={{color: message.color}}>{message.text}</p>
         <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
       </section>
-    </div>
+    </ModalOverlay>
   );
 }
 
@@ -599,7 +600,7 @@ function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main m
   }
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <section
         className="flex flex-col bg-yellow-50 rounded-md overflow-auto hover:outline-green-700 w-full max-w-[40rem] h-[30rem] p-4 justify-between"
         onClick={(e) => e.stopPropagation}
@@ -632,14 +633,14 @@ function NoteFocus({ closeModal, title = 'Title goes here...', message = 'Main m
           Note by: {owner} - {date}
         </p>
       </section>
-    </div>
+    </ModalOverlay>
   );
   
 }
 
 function UserProfile({ closeModal, user={} }) {
   return (
-    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex rounded-md justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <div id='main' className='flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
         <span className='flex p-2 gap-4 items-center'>
@@ -658,14 +659,14 @@ function UserProfile({ closeModal, user={} }) {
           dataFeather='log-out'
         />
       </div>
-    </div>
+    </ModalOverlay>
   );
 }
 
 function CompletedTab({ closeModal, taskData={}, loading}) {
 
   return (
-    <div className='fixed inset-0 z-10 bg-black bg-opacity-50 text-gray-700 flex justify-center items-center w-[100vw] h-[100vh]' onClick={closeModal}>
+    <ModalOverlay onClick={closeModal}>
       <div className='flex flex-col p-4 justify-between bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
         <section className='h-full'>
           <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
@@ -676,14 +677,8 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
               taskData.length > 0 && (
                 taskData.map((taskData) => (
                   <TaskCard 
-                    key={taskData['id']}
-                    title={taskData['title']}
-                    description={taskData['description']}
-                    deadline={taskData['deadline']}
-                    team={taskData['team']}
-                    status={taskData['status']}
-                    id={taskData['id']}
-                    className='h-fit hover:cursor-pointer'
+                    taskData={taskData}
+                    className='h-fit hover:cursor-pointer shadow-sm'
                   />
                 ))
               )
@@ -694,8 +689,19 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
           <p>Completed {taskData.length} tasks</p>
         </span>
       </div>
-    </div>
+    </ModalOverlay>
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab}
+function TaskFocus({closeModal, taskData, loading}) {
+
+  return (
+    <ModalOverlay onClick={closeModal}>
+      <div className='h-[30rem] w-[30rem] flex bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x'/>
+      </div>
+    </ModalOverlay>
+  )
+}
+
+export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus}

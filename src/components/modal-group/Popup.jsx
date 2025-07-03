@@ -6,44 +6,44 @@ import Button, { ButtonIcon } from '../Button';
 import { useMoveStatus } from '../../services/useMoveStatus';
 
 
-function Popup({ title, closeModal, id, collectionName }) {
+function Popup({ closeModal, className = '',  collectionName, data }) {
   const { reloadComponent } = useReloadContext();
   const moveStatus = useMoveStatus();
 
   const handleMarkAsFinish = async () => {
-    await moveStatus({ name: collectionName, id: id}); 
+    await moveStatus({ name: collectionName, id: data.id, team: data.team}); 
     closeModal();
   };
 
   const handleDelete = async () => {
-    await deleteData(id, collectionName, reloadComponent);
+    await deleteData(data.id, collectionName, reloadComponent);
     closeModal();
   };
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-      onClick={closeModal}
-    >
       <div
-        className="flex flex-col p-4 bg-white rounded-2xl gap-1 w-[15rem] h-auto cursor-default"
+        className={`flex flex-col absolute z-20 right-0 mt-1 p-4 bg-white rounded-md w-[15rem] h-auto cursor-default *:${className}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title={title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
+        <IconTitleSection title={data.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
         <ButtonIcon 
           text="Move Status" 
           dataFeather="flag" 
+          className='border-none p-1 bg-white'
           onClick={handleMarkAsFinish} 
         />
         <ButtonIcon 
           text="Delete" 
           dataFeather="trash"
+          className='border-none p-1 bg-white'
           onClick={handleDelete} 
-          className="bg-red-100 text-red-800 hover:bg-red-800"
-          iconClassName='text-red-800'
+         />
+        <ButtonIcon 
+          text="Edit" 
+          className='border-none p-1 bg-white'
+          dataFeather="edit"
          />
       </div>
-    </div>
   );
 }
 

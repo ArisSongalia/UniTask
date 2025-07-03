@@ -5,17 +5,17 @@ import { IconAction } from './Icon';
 import { Link, useLocation } from 'react-router-dom';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
-import { useFetchUserName, useFetchActiveProjectData } from '../services/FetchData';
 import { where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
-import { useFetchTaskData, useFetchNoteData, useFetchProjectData } from '../services/FetchData';
+import { useFetchTaskData, useFetchNoteData, useFetchProjectData, UseFetchUserName } from '../services/FetchData';
 import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
-import { NoteFocus } from "./modal-group/Modal";
+import { NoteFocus, TaskFocus } from "./modal-group/Modal";
 import { BarLoader } from 'react-spinners';
+import ModalOverlay from './ModalOverlay';
 
 
 function SummaryCard({
@@ -41,8 +41,7 @@ function SummaryCard({
   const { taskData, loading: taskLoading } = useFetchTaskData(customWhere, key );
   const { projectData, loading: projectLoading } = useFetchProjectData(key);
   const { noteData, loading: noteLoading } = useFetchNoteData(key);
-  const projectArray = Object.values(projectData);
-  const pendingProjects = projectArray.filter(project => project.status === 'On-going');
+  const pendingProjects = projectData.filter(project => project.status === 'On-going');
 
 
   return (
@@ -50,10 +49,10 @@ function SummaryCard({
                        p-4 justify-between text-white h-auto shadow-sm ${className}`}>
       <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
-        <p className='font-semibold text-sm'>Hi <span><useFetchUserName /></span>, Here's your tasks📋</p>
+        <p className='font-semibold text-sm'>Hi <UseFetchUserName />, Here's your tasks📋</p>
       </span>
 
-      <div className="flex gap-1 w-full h-fit">
+      <div className="flex w-full h-fit">
         {!projectLoading ?(
           <CountCard count={pendingProjects.length} title='Pending Projects'/>
         ) : (
@@ -80,10 +79,10 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
   return (  
     <section 
       id='tasks' 
-      className={`flex flex-col items-center h-auto w-full p-2 text-white rounded-md  ${className}`}
+      className={`flex flex-col items-center h-auto w-full text-white rounded-md  ${className}`}
     >
         <p className='font-bold text-3xl'>{count}</p>
-        <p className='text-xs text-center'>{title}</p>
+        <p className='text-xs font-semibold text-center shrink-0'>{title}</p>
     </section>
   )
 }
@@ -117,14 +116,8 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
   );
 }
 
-function ProjectCard({ 
-  title = 'Project Name', 
-  description = 'Example text should go here',
-  date = '00/00/00',
-  type = 'Solo / Shared',
-  id = '',
-  status = 'Status'
-  }) {
+function ProjectCard({projectData}) {
+  console.log(projectData)
 
   const { setProjectID } = useProjectContext();
 
@@ -150,22 +143,22 @@ function ProjectCard({
     >
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
-            <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{title}</h4>
+            <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
             <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-            {showPopUp && <Popup closeModal={togglePopUp} title={title} id={id} collectionName='projects' />}
+            {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' />}
           </span>
 
           <span className="flex flex-wrap gap-1">
-            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-600">{type}</p>
-            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{status}</p>
-            <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{date}</p>  
+            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-600">{projectData.type}</p>
+            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{projectData.status}</p>
+            <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{projectData.date}</p>  
           </span>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
         <p 
           className="text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold">
-          {description}
+          {projectData.description}
         </p>
       </section>
 
@@ -276,7 +269,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   };
   
   return (
-    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-300 ${className}`}>
+    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-600 ${className}`}>
       <span
         className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
@@ -295,50 +288,62 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   );
 }
 
-function TaskCard({title = 'Task Title', description = 'Description', deadline = '', team, status, id, className, }) {
-  const [showPopUp, setShowPopUp] = useState(false);  
+function TaskCard({taskData, className}) {
   const location = useLocation();
+  const [visibilitity, setVisbility] = useState({
+    popUp: false,
+    taskFocus: false,
+  })
 
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
-  };
 
   const triggerFileInput = () => {
     const fileInput = document.getElementById('file-input');
     if (fileInput) fileInput.click();
   };
-  
+
+  const toggleVisbility = (section) => {
+    setVisbility((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }))
+  }
+
 
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
-        w-full justify-between border gap-2 p-2 ${className}`}
+        w-full justify-between border gap-2 p-2 hover:cursor-pointer ${className}`}
+      onClick={() => toggleVisbility('taskFocus')}
     >
+    {visibilitity.taskFocus && 
+      <TaskFocus closeModal={() => toggleVisbility('taskFocus')} taskData={taskData}/>
+    }
+
       <span className='flex flex-col justify-between'>
         <span className='flex justify-between w-full'>
-          <h2 className="font-bold mb-1 text-sm">{title}</h2>
-          <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0' iconOnClick={togglePopUp}/>
-          {showPopUp && 
-            <Popup title={title} 
-            id={id} 
-            closeModal={togglePopUp} 
-            collectionName='tasks'
+          <h2 className="font-bold mb-1 text-sm">{taskData.title}</h2>
+          <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0 bg-white border-none' iconOnClick={() => toggleVisbility('popUp')}/>
+          {visibilitity.popUp && 
+            <Popup 
+              data={taskData}
+              closeModal={() => toggleVisbility('popUp')} 
+              collectionName='tasks'
             />}
         </span>
         <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
-          <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold flex-none">{status}</p>
-          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600 flex-none">{deadline}</p> 
+          <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
+          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-600 flex-none">{taskData.deadline}</p> 
         </span>
       </span>
 
       <p
         className='text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold'>
-        {description}
+        {taskData.description}
       </p>
       
       <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
-        {!team || team.length > 0 ?(
-          team.map((member) => (
+        {!taskData.team || taskData.team.length > 0 ?(
+          taskData.team.map((member) => (
             <IconUser key={member.uid} user={member} className='h-6 w-6'/>
           ))
         ) : (
@@ -346,7 +351,7 @@ function TaskCard({title = 'Task Title', description = 'Description', deadline =
         )}
       </span>
 
-      { status === "Finished" ? (
+      { taskData.status === "Finished" ? (
         null
       ) : location.pathname === '/Project' ? (
         null

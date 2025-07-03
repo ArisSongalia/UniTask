@@ -5,8 +5,10 @@ import { useReloadContext } from "../context/ReloadContext";
 export function useMoveStatus() {
   const { reloadComponent } = useReloadContext();
 
-  const moveStatus = async ({ name, id }) => {
+  const moveStatus = async ({ name, id, team }) => {
     const taskRef = doc(db, name, id);
+
+    if(team.length === 0) return alert('Cannot move status: No available members assigned')
 
     try {
       const statusSnap = await getDoc(taskRef);

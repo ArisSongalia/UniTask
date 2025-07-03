@@ -41,15 +41,10 @@ function MainProjectSection() {
           <span><BarLoader color='#228B22' size={20} /></span>
         ) : (
           projectData.length > 0 && (
-            projectData.map((project, index) => (
+            projectData.map((project) => (
                 <ProjectCard
-                  key={`${project.id}-${index}`}
-                  title={project.title}
-                  description={project.description}
-                  date={project.date}
-                  type={project.type}
-                  id={project.id}
-                  status={project.status}
+                  key={project.id}
+                  projectData={project}
                 />
             ))
           )
