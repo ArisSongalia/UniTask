@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { IconAction } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
@@ -14,6 +14,8 @@ import { TaskCard } from '../Cards';
 import { handleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import AssignedTasks from '../AssignedTasks';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -764,21 +766,44 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
       label: 'Assigned Tasks',
       onClick: () => setActiveSection('Assigned Tasks'),
       isActive: activeSection === 'Assigned Tasks',
-      dataFeather: 'check-square'
+      dataFeather: 'check-square',
+      key: 'title',
     },
     {
       label: 'Pending Projects',
       onClick: () => setActiveSection('Pending Projects'),
       isActive: activeSection === 'Pending Projects',
-      dataFeather: 'briefcase'
+      dataFeather: 'briefcase',
+      key: 'title',
     },
     {
       label: 'Action Notes',
       onClick: () => setActiveSection('Action Notes'),
       isActive: activeSection === 'Action Notes',
-      dataFeather: 'pape    rclip'
+      dataFeather: 'paperclip',
+      key: 'title',
     }
   ]
+
+  const columns = useMemo(() => 
+    titles.map((item) => ({
+      header: item.label,
+      key: item.key
+    })),
+  [titles]);
+
+
+  const table = useReactTable({
+    data: activeSection === 'Assigned Tasks'
+      ? taskData
+      : activeSection === 'Pending Projects' 
+      ? projectData 
+      : activeSection === 'Action Notes'
+      ? noteData
+      : null ,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
     <ModalOverlay>
@@ -786,18 +811,35 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
         <IconTitleSection title='Pending Tasks' dataFeather='x' iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
-        <div className='flex w-full h-full'>
-          {activeSection === 'Pending Projects' && projectData.map((project) => (
-            <ProjectCard projectData={project} key={project.id} />
-          ))}
-          {activeSection === 'Assigned Tasks' && taskData.map((task) => (
-            <TaskCard taskData={task} key={task.id} />
-          ))}
-          {activeSection === 'Action Notes' && noteData.map((note) => (
-            <NoteCard noteData={note} key={note.id} />
-          ))}
-        </div>
+        <table className='w-full h-full bg-white'>
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th key={header.id} className='border px-2 py-1 text-xs font-semibold bg-green-50 text-left'>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext()
+                      )
+                    }
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map(row => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} className='border px-2 py-1'>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
 
+        </table>
       </div>
     </ModalOverlay>
   )
