@@ -117,8 +117,6 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
 }
 
 function ProjectCard({projectData}) {
-  console.log(projectData)
-
   const { setProjectID } = useProjectContext();
 
   const handleSetActiveProject = async () => {
@@ -146,7 +144,7 @@ function ProjectCard({projectData}) {
             <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
             <div className='relative'>
               <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-              {showPopUp && <Popup closeModal={togglePopUp} data={projectData} collectionName='projects' className='bg-white' />}
+              {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' className='bg-white' />}
             </div>
           </span>
 
@@ -326,7 +324,7 @@ function TaskCard({taskData, className}) {
             <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0 bg-white border-none' iconOnClick={() => toggleVisbility('popUp')}/>
             {visibilitity.popUp && 
               <Popup 
-                data={taskData}
+                taskData={taskData}
                 closeModal={() => toggleVisbility('popUp')} 
                 collectionName='tasks'
               />}

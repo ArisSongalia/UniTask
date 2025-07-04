@@ -16,18 +16,18 @@ import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 
 
-function CreateProject({ closeModal }) {
+function CreateProject({ closeModal, projectData }) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ text: "", color: "" });
   const dateRef = useRef('');
 
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    date: "",
-    type: "",
-    team: [],
+    title: projectData?.title || "",
+    description: projectData?.description || "",
+    date: projectData?.date || "",
+    type: projectData?.type || "",
+    team: projectData?.team || [],
   });
 
   useEffect(() => {
@@ -155,7 +155,7 @@ function CreateProject({ closeModal }) {
             </div>
           </label>
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Project" className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
+          <Button type="submit" text={projectData? 'Update Project' : 'Create Project'} className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
         </form>
       </section>
     </ModalOverlay>
@@ -727,7 +727,7 @@ function TaskFocus({closeModal, taskData, loading, collectionName = 'tasks'}) {
             <TitleSection title='Description' buttonText='Move Status' buttonVisible={false}/>
             <p
               id='description'
-              className='text-sm p-1 w-fit font-semibold'>
+              className='text-sm'>
               {taskData.description}
             </p>
           </div>
