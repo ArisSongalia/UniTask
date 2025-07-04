@@ -10,7 +10,6 @@ import TaskSideBar from './TaskSideBar';
 
 
 function TaskNavBar() {
-  const projectId = localStorage.getItem('activeProjectId');
   const { key } = useReloadContext();
 
   const [visibility, setVisbility] =  useState({
@@ -27,13 +26,13 @@ function TaskNavBar() {
   }
 
 
-  const { projectData, loading } = useFetchActiveProjectData(projectId, key)
+  const { projectData, loading } = useFetchActiveProjectData(key)
 
   return (
     <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>
       <div className='flex max-w-screen-2xl w-full p-2 justify-between items-center sticky top-0'>
         <span className='flex gap-2 items-center'>
-          <Link to='/'>
+          <Link to='/Home'>
             <IconAction 
               dataFeather='arrow-left' 
               className='h-[2.5rem] w-[2.5rem] border-none justify-center' 

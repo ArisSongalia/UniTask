@@ -146,9 +146,10 @@ const useFetchNoteData = ( refreshKey, customWhere ) => {
   return{ noteData, loading }
 }
 
-const useFetchActiveProjectData = (id, refreshKey) => {
+const useFetchActiveProjectData = ( refreshKey ) => {
   const [projectData, setProjectData] = useState({});
   const [loading, setLoading] = useState(true);
+  const id = localStorage.getItem('activeProjectId')
 
 
   useEffect(() => {

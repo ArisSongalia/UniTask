@@ -35,16 +35,10 @@ function AssignedTasks({}) {
           <span><BarLoader color='#228B22' size={20} /></span>
         ) : (
           taskData.length > 0 && (
-            taskData.map((taskData) => (
+            taskData.map((data) => (
               <TaskCard 
-                key={taskData.id}
-                title={taskData.title}
-                description={taskData.description}
-                deadline={taskData.deadline}
-                team={taskData.team}
-                status={taskData.status}
-                id={taskData.id}
-                className='h-fit hover:cursor-pointer'
+                key={data.id}
+                taskData={data}
               />
             ))
           )

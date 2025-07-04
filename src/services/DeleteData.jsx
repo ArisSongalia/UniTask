@@ -2,9 +2,7 @@ import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useReloadContext } from '../context/ReloadContext';
 
-const deleteData = async ({id, collectionName}) => {
-  const { reloadComponent } = useReloadContext();
-
+const deleteData = async ({id, collectionName, reloadComponent}) => {
   try {
 
     if (!id) {

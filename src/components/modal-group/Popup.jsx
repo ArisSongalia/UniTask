@@ -9,6 +9,7 @@ import { CreateProject, CreateTask } from './Modal';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData }) {
+  const { reloadComponent } = useReloadContext();
   const [showUpdateInfo, setShowUpdateInfo] = useState(false);
   const moveStatus = useMoveStatus();
 
@@ -18,7 +19,7 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
   };
 
   const handleDelete = async () => {
-    await deleteData({id: taskData?.id || projectData?.id, collectionName: collectionName});
+    await deleteData({id: taskData?.id || projectData?.id, collectionName: collectionName, reloadComponent: reloadComponent});
     closeModal();
   };
 

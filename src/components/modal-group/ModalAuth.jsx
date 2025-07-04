@@ -47,7 +47,7 @@ const handleSignInWithGoogle = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/');
+      navigate('/Home');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -66,7 +66,7 @@ const handleSignInWithFacebook = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/');
+      navigate('/Home');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -169,7 +169,7 @@ function SignIn() {
         setShowCreateUsername(true);
       } else {
         setMessage({text: "User succesfully signed in", color: "green"});
-        navigate('/');
+        navigate('/Home');
       }
     } catch (error) {
       setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -188,7 +188,7 @@ const handleSignInWithGoogle = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"});
-      navigate('/');
+      navigate('/Home');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -207,7 +207,7 @@ const handleSignInWithFacebook = async () => {
       setShowCreateUsername(true);
     } else {
       setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/');
+      navigate('/Home');
     }
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
@@ -311,7 +311,7 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
       });
 
       alert('Username saved successfully!');
-      Navigate('/');
+      Navigate('/Home');
     } catch (error) {
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
     }

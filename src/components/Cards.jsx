@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Button from './Button'
 import Icon from './Icon'
 import { IconAction } from './Icon';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { where } from 'firebase/firestore';
@@ -300,6 +300,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
 
 function TaskCard({taskData, className}) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [visibilitity, setVisbility] = useState({
     popUp: false,
     taskFocus: false,
@@ -318,12 +319,19 @@ function TaskCard({taskData, className}) {
     }))
   }
 
+  if(!taskData) return <span className='text-sm bg-red-50 p-1 w-fit text-red-800'>Cannot load task</span>
 
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
         w-full justify-between border gap-2 p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
-      onClick={() => toggleVisbility('taskFocus')}
+      onClick={() => {
+        if(location.pathname ==='/Project') {
+          toggleVisbility('taskFocus')
+        } else if(location.pathname === '/Home') {
+          navigate('/Project');
+        }
+      }}
     >
     {visibilitity.taskFocus && 
       <TaskFocus closeModal={() => toggleVisbility('taskFocus')} taskData={taskData}/>
@@ -354,24 +362,14 @@ function TaskCard({taskData, className}) {
       </p>
       
       <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
-        {!taskData.team || taskData.team.length > 0 ?(
+        {taskData.team && taskData.team.length > 0 ? (
           taskData.team.map((member) => (
-            <IconUser key={member.uid} user={member} className='h-6 w-6'/>
+            <IconUser key={member.uid} user={member} className='h-6 w-6' />
           ))
         ) : (
           <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
         )}
       </span>
-
-      { taskData.status === "Finished" ? (
-        null
-      ) : location.pathname === '/Project' ? (
-        null
-      ) : (
-        <Link to={'./Project'}>
-          <Button text='Open Task' className='w-full'/>
-        </Link>
-      )}
     </div>
   )
 }

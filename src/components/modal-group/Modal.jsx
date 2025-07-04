@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { IconAction } from '../Icon';
+import { IconAction, IconUser } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
@@ -15,7 +15,6 @@ import { handleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
-import AssignedTasks from '../AssignedTasks';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -261,13 +260,12 @@ function CreateNote({ closeModal, projectId }) {
 
 
 function CreateTask({ closeModal, taskData}) {
-  const { reloadComponent } = useReloadContext()
+  const { key, reloadComponent } = useReloadContext();
   const [message, setMessage] = useState({ text: '', color: '' });
   const dateRef = useRef();
-  const [projectData, setProjectData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const adjustedDateTimeRef = useRef('');
   const projectId = localStorage.getItem('activeProjectId');
+  const { projectData, loading } = useFetchActiveProjectData(key)
   
 
   const [form, setForm] = useState({
@@ -294,9 +292,6 @@ function CreateTask({ closeModal, taskData}) {
       }));
     }
   }, [auth.currentUser, projectData?.type]);
-
-
-  useFetchActiveProjectData(projectId, setProjectData, setLoading);
   
 
   const handleChange = async (e) => {
@@ -316,6 +311,7 @@ function CreateTask({ closeModal, taskData}) {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
+    const taskRef = doc(db, 'tasks', taskData.id);
 
     if(projectData.type === "Shared"){
       if (!form['team'] || form['team'].length === 0) {
@@ -325,16 +321,31 @@ function CreateTask({ closeModal, taskData}) {
     } 
 
     try {
-      await addDoc(collection(db, 'tasks'), {
-        'title': form['title'],
-        'description': form['description'],
-        'deadline': adjustedDateTimeRef.current,
-        'status': form['status'],
-        'file': form['file'],
-        'project-id': projectId,
-        'team': form['team'],
-        'team-uids': form['team-uid'],
-      });
+      if(taskData.id) {
+        await updateDoc(taskRef, {
+          'title': form['title'],
+          'description': form['description'],
+          'deadline': adjustedDateTimeRef.current,
+          'status': form['status'],
+          'file': form['file'],
+          'project-id': projectId,
+          'team': form['team'],
+          'team-uids': form['team-uid'],
+        });
+
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          'title': form['title'],
+          'description': form['description'],
+          'deadline': adjustedDateTimeRef.current,
+          'status': form['status'],
+          'file': form['file'],
+          'project-id': projectId,
+          'team': form['team'],
+          'team-uids': form['team-uid'],
+        });
+      }
+      
 
     } catch (error) {
       console.error('Error creating task: ', error);
@@ -449,10 +460,12 @@ function CreateTask({ closeModal, taskData}) {
 
 
             </label>
-          ) : (null)}
+            ) 
+            : (null)
+          }
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text={taskData ? 'Update Task' : 'Createa Task'} className="py-3">
+          <Button type="submit" text={taskData ? 'Update Task' : 'Create Task'} className="py-3">
           </Button>
         </form>
       </section>
@@ -785,13 +798,25 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
     }
   ]
 
-  const columns = useMemo(() => 
-    titles.map((item) => ({
-      header: item.label,
-      key: item.key
-    })),
-  [titles]);
+  const columns = useMemo(() => [
+    {
+      header: 'Status',
+      key: 'status',
+      meta: {
+        className: 'text-green-700'
+      } 
+    },
+    {
+      header: 'Name',
+      key: 'title',
+      meta: {
+        className: 'text-blue-700'
+      }
+    }
 
+  ], []);
+
+  
 
   const table = useReactTable({
     data: activeSection === 'Assigned Tasks'
@@ -807,7 +832,7 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
 
   return (
     <ModalOverlay>
-      <div className='flex flex-col max-h-full max-w-full h-[40rem] w-[50rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+      <div className='flex flex-col max-h-full max-w-full h-[40rem] w-[60rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Pending Tasks' dataFeather='x' iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
@@ -816,7 +841,11 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th key={header.id} className='border px-2 py-1 text-xs font-semibold bg-green-50 text-left'>
+                  <th 
+                    key={header.id} 
+                    className={`border px-2 py-1 text-xs font-semibold text-left ${header.column.columnDef.meta?.className ?? ''}`}
+
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext()
@@ -827,6 +856,7 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
               </tr>
             ))}
           </thead>
+
           <tbody>
             {table.getRowModel().rows.map(row => (
               <tr key={row.id}>

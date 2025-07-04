@@ -32,7 +32,7 @@ function Navbar() {
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-fit sticky top-0 shadow-sm">
       <div className="flex items-center justify-between w-full p-3 max-w-screen-2xl">
-          <Link to="/" className="flex items-center gap-2 text-green-900 text-lg font-bold">
+          <Link to="/Home" className="flex items-center gap-2 text-green-900 text-lg font-bold">
           <img src={unitask} alt="UniTask" className="w-6 h-6" />
           
             UniTask
