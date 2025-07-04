@@ -174,7 +174,7 @@ function ProjectCard({projectData}) {
         </p>
       </section>
 
-      <Link to={'./Project'} className="w-full">
+      <Link to={'/Project'} className="w-full">
         <Button text={"Open Project"} className="w-full" onClick={handleSetActiveProject} /> 
       </Link>
     </div>
