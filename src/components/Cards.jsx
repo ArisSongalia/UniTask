@@ -13,7 +13,7 @@ import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
-import { NoteFocus, TaskFocus } from "./modal-group/Modal";
+import { NoteFocus, PendingTasks, TaskFocus } from "./modal-group/Modal";
 import { BarLoader } from 'react-spinners';
 import ModalOverlay from './ModalOverlay';
 
@@ -27,7 +27,12 @@ function SummaryCard({
   const user = useAuth();
   const { key } = useReloadContext()
   const [customWhere, setCustomWhere] = useState(null);
+  const [showPendingTasks, setShowPendingTasks] = useState(false);
 
+  
+  const handleShowPendingTasks = () => {
+    setShowPendingTasks(!showPendingTasks);
+  }
 
   useEffect(() => {
     if (user?.uid) {
@@ -70,7 +75,14 @@ function SummaryCard({
         )}
       </div>
 
-      <Button text='Check Pending'/>
+      <Button text='Check Pending' onClick={handleShowPendingTasks} />
+      {showPendingTasks && 
+      <PendingTasks 
+        closeModal={handleShowPendingTasks} 
+        taskData={taskData} 
+        projectData={projectData}
+        noteData={noteData}
+      />}
     </section>
   )
 }

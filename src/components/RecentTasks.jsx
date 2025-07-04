@@ -23,7 +23,6 @@ function RecentTasks() {
     <section className="flex flex-col flex-grow w-full bg-white p-4 h-full rounded-md shadow-sm">
       <MultiTitleSection
         titles={titles}
-        onTitleClick={setActiveSection}
       />
       <div className="w-full overflow-y-scroll pr-2">
         {activeSection === 'project' && <MainProjectSection />}

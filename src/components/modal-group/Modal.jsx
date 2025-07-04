@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconAction } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
-import TitleSection, { IconTitleSection } from '../TitleSection';
+import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
-import { UserCard } from '../Cards';
+import { NoteCard, ProjectCard, UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
 import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
@@ -699,7 +699,7 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
   )
 }
 
-function TaskFocus({closeModal, taskData, loading, collectionName = 'tasks'}) {
+function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) {
   const { reloadComponent } = useReloadContext();
   const moveStatus = useMoveStatus();
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -757,4 +757,50 @@ function TaskFocus({closeModal, taskData, loading, collectionName = 'tasks'}) {
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus}
+function PendingTasks({ closeModal, taskData, projectData, noteData }) {
+  const [activeSection, setActiveSection] = useState('Assigned Tasks')
+  const titles = [
+    {
+      label: 'Assigned Tasks',
+      onClick: () => setActiveSection('Assigned Tasks'),
+      isActive: activeSection === 'Assigned Tasks',
+      dataFeather: 'check-square'
+    },
+    {
+      label: 'Pending Projects',
+      onClick: () => setActiveSection('Pending Projects'),
+      isActive: activeSection === 'Pending Projects',
+      dataFeather: 'briefcase'
+    },
+    {
+      label: 'Action Notes',
+      onClick: () => setActiveSection('Action Notes'),
+      isActive: activeSection === 'Action Notes',
+      dataFeather: 'pape    rclip'
+    }
+  ]
+
+  return (
+    <ModalOverlay>
+      <div className='flex flex-col max-h-full max-w-full h-[40rem] w-[50rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title='Pending Tasks' dataFeather='x' iconOnClick={closeModal} />
+        <MultiTitleSection titles={titles} />
+
+        <div className='flex w-full h-full'>
+          {activeSection === 'Pending Projects' && projectData.map((project) => (
+            <ProjectCard projectData={project} key={project.id} />
+          ))}
+          {activeSection === 'Assigned Tasks' && taskData.map((task) => (
+            <TaskCard taskData={task} key={task.id} />
+          ))}
+          {activeSection === 'Action Notes' && noteData.map((note) => (
+            <NoteCard noteData={note} key={note.id} />
+          ))}
+        </div>
+
+      </div>
+    </ModalOverlay>
+  )
+}
+
+export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, PendingTasks}
