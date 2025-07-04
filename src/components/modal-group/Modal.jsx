@@ -29,6 +29,7 @@ function CreateProject({ closeModal, projectData }) {
     date: projectData?.date || "",
     type: projectData?.type || "",
     team: projectData?.team || [],
+    status: projectData?.status || "On-going"
   });
 
   useEffect(() => {
@@ -58,23 +59,37 @@ function CreateProject({ closeModal, projectData }) {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    try {
-      const docRef = await addDoc(collection(db, 'projects'), {
-        title: form.title,
-        description: form.description,
-        date: form.date,
-        type: form.type,
-        owner: user.uid,
-        status: "On-going",
-        team: form.team,
-      });
+    const projectRef = doc(db, 'projects', projectData.id);
 
-      await updateDoc(docRef, { id: docRef.id });
-      reloadComponent();
-      closeModal();
+    try {
+      if(projectData.id) {
+        await updateDoc(projectRef, {
+          title: form.title,
+          description: form.description,
+          date: form.date,
+          type: form.type,
+          owner: projectData.owner,
+          status: form.status,
+          team: form.team,
+        })
+      } else {
+        await addDoc(collection(db, 'projects'), {
+          title: form.title,
+          description: form.description,
+          date: form.date,
+          type: form.type,
+          owner: user.uid,
+          status: form.status,
+          team: form.team,
+        });
+      }
     } catch (error) {
       setMessage({ text: `Error Creating Project: ${error.message}`, color: "red" });
-    }
+    } finally {
+      setMessage({ text: 'Succefully Created Task', color: 'green'});
+      reloadComponent();
+      closeModal();
+    };
   };
 
   return (
@@ -345,10 +360,8 @@ function CreateTask({ closeModal, taskData}) {
           'team-uids': form['team-uid'],
         });
       }
-      
 
     } catch (error) {
-      console.error('Error creating task: ', error);
       setMessage({ text: `Error Creating Task: ${error.message}`, color: 'red' });
     } finally {
       setMessage({ text: 'Succefully Created Task', color: 'green'});
