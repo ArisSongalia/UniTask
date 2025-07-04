@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconAction } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
-import { IconTitleSection } from '../TitleSection';
+import TitleSection, { IconTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
@@ -13,6 +13,7 @@ import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
 import { handleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
+import { useMoveStatus } from '../../services/useMoveStatus';
 
 
 function CreateProject({ closeModal }) {
@@ -257,7 +258,7 @@ function CreateNote({ closeModal, projectId }) {
 }
 
 
-function CreateTask({ closeModal, id }) {
+function CreateTask({ closeModal, taskData}) {
   const { reloadComponent } = useReloadContext()
   const [message, setMessage] = useState({ text: '', color: '' });
   const dateRef = useRef();
@@ -268,13 +269,13 @@ function CreateTask({ closeModal, id }) {
   
 
   const [form, setForm] = useState({
-    'title': '',
-    'description': '',
-    'deadline': '',
-    'status': 'To-do',
-    'file': '',
-    'team': [...new Set([])],
-    'team-uid': [],
+    'title': taskData?.title || '',
+    'description': taskData?.description || '',
+    'deadline': taskData?.deadline || '',
+    'status': taskData?.status || 'To-do',
+    'file': taskData?.file || '',
+    'team': taskData?.team || [...new Set([])],
+    'team-uids': taskData?.['team-uids'] || [],
   });
 
   useEffect(() => {
@@ -287,7 +288,7 @@ function CreateTask({ closeModal, id }) {
           email: auth.currentUser.email || '',
           photoURL: auth.currentUser.photoURL || '',
         }],
-        'team-uid': [auth.currentUser.uid],
+        'team-uids': [auth.currentUser.uid],
       }));
     }
   }, [auth.currentUser, projectData?.type]);
@@ -449,7 +450,8 @@ function CreateTask({ closeModal, id }) {
           ) : (null)}
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Task" className="py-3"/>
+          <Button type="submit" text={taskData ? 'Update Task' : 'Createa Task'} className="py-3">
+          </Button>
         </form>
       </section>
     </ModalOverlay>
@@ -697,43 +699,57 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
   )
 }
 
-function TaskFocus({closeModal, taskData, loading}) {
+function TaskFocus({closeModal, taskData, loading, collectionName = 'tasks'}) {
+  const { reloadComponent } = useReloadContext();
+  const moveStatus = useMoveStatus();
+  const [showCreateTask, setShowCreateTask] = useState(false);
+
+
+  const handleMoveStatus = async () => {
+    await moveStatus({ name: collectionName, id: taskData.id, team: taskData.team })
+  };
+
+  const handleDeleteData = async () => {
+    await deleteData(taskData.id, collectionName, reloadComponent)
+  };
+
+  const handleShowCreateTask = () => {
+    setShowCreateTask(!showCreateTask);
+  };
+
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <div className='flex flex-col h-[30rem] w-[30rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+      <div className='flex flex-col h-[30rem] w-[40rem] max-h-full max-w-full bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x'/>
         <div className='flex flex-col justify-between h-full w-full'>
           <div className="flex flex-col">
-            <span className='flex gap-1 text-xs font-semibold text-gray-600 justify-between flex-wrap'>
-              <section className='flex gap-1 h-fit'>
-                <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
-                <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p>
-              </section>
-
-              <section className='flex gap-1 items-center'>
-                <IconAction dataFeather='trash' />
-                <IconAction dataFeather='edit' />
-
-                <ButtonIcon text='Move Status' dataFeather='arrow-up'/>
-              </section>
-            </span>
+            <TitleSection title='Description' buttonText='Move Status' buttonVisible={false}/>
             <p
               id='description'
-              className='text-xs bg-green-50 p-1 my-4 w-fit border border-green-300 rounded-sm text-green-700 font-semibold'>
+              className='text-sm p-1 w-fit font-semibold'>
               {taskData.description}
             </p>
           </div>
 
-          <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
-          {!taskData.team || taskData.team.length > 0 ?(
-            taskData.team.map((member) => (
-              <IconUser key={member.uid} user={member} className='h-6 w-6'/>
-            ))
-          ) : (
-            <span className='bg-red-50 text-red-700 px-1 text-xs'>No members assigned</span>
-          )}
-                </span>
+          <div className='flex w-full justify-between border-t-2 pt-2'>
+            <section id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit h-fit'>
+              {!taskData.team || taskData.team.length > 0 ?(
+                taskData.team.map((member) => (
+                  <IconUser key={member.uid} user={member} className='h-6 w-6'/>
+                ))
+              ) : (
+                <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
+              )}
+            </section>
+              
+            <section className='flex gap-1 items-center'>
+              <IconAction dataFeather='trash' iconOnClick={handleDeleteData}/>
+              <IconAction dataFeather='edit' iconOnClick={handleShowCreateTask}/>
+              {showCreateTask && <CreateTask taskData={taskData} closeModal={handleShowCreateTask}/>}
+              <Button text='Move Status' onClick={handleMoveStatus} />
+            </section>
+          </div>
         </div>
 
       </div>

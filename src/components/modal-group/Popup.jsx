@@ -7,16 +7,15 @@ import { useMoveStatus } from '../../services/useMoveStatus';
 
 
 function Popup({ closeModal, className = '',  collectionName, data }) {
-  const { reloadComponent } = useReloadContext();
   const moveStatus = useMoveStatus();
 
-  const handleMarkAsFinish = async () => {
+  const handleMoveStatus = async () => {
     await moveStatus({ name: collectionName, id: data.id, team: data.team}); 
     closeModal();
   };
 
   const handleDelete = async () => {
-    await deleteData(data.id, collectionName, reloadComponent);
+    await deleteData(data.id, collectionName);
     closeModal();
   };
 
@@ -30,7 +29,7 @@ function Popup({ closeModal, className = '',  collectionName, data }) {
           text="Move Status" 
           dataFeather="flag" 
           className='border-none p-1 bg-white'
-          onClick={handleMarkAsFinish} 
+          onClick={handleMoveStatus} 
         />
         <ButtonIcon 
           text="Delete" 

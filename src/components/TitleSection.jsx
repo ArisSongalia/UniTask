@@ -3,7 +3,7 @@ import Button from './Button'
 import { IconAction } from './Icon'
 import icon from '../assets/unitask.svg'
 
-function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon}) {
+function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon, buttonVisible}) {
   return ( 
     <section className='flex w-full mb-4 justify-between'>
         <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
@@ -11,10 +11,15 @@ function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, cl
           <h2>{nextTitle}</h2>
         </span>
       <span>
+
+      {buttonVisible === false ?  (
+        null
+      ) : (
         <span className='flex gap-2'>
-          <Button text={`${buttonText}`} onClick={buttonOnClick}/>
-          {extraIcon}
-        </span>
+        <Button text={`${buttonText}`} onClick={buttonOnClick}/>
+        {extraIcon}
+      </span>
+      )}
       </span>
 
     </section>

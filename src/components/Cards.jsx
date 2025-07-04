@@ -122,9 +122,9 @@ function ProjectCard({projectData}) {
   const { setProjectID } = useProjectContext();
 
   const handleSetActiveProject = async () => {
-    if (id) {
-      setProjectID(id);
-      localStorage.setItem('activeProjectId', id);
+    if (projectData.id) {
+      setProjectID(projectData.id);
+      localStorage.setItem('activeProjectId', projectData.id);
     } else {
       console.error("Error: Project does not exist");
     }
@@ -312,7 +312,7 @@ function TaskCard({taskData, className}) {
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
-        w-full justify-between border gap-2 p-2 hover:cursor-pointer ${className}`}
+        w-full justify-between border gap-2 p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
       onClick={() => toggleVisbility('taskFocus')}
     >
     {visibilitity.taskFocus && 
@@ -349,7 +349,7 @@ function TaskCard({taskData, className}) {
             <IconUser key={member.uid} user={member} className='h-6 w-6'/>
           ))
         ) : (
-          <span className='bg-red-50 text-red-700 px-1 text-xs'>No members assigned</span>
+          <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
         )}
       </span>
 
