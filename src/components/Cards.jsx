@@ -101,9 +101,10 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
 
 function AlertCard({text = 'text', className = ''}) {
   return (
-  <section className={`flex flex-col bg-green-50 border text-green-900 border-green-300 w-full cursor-pointer rounded-md
-                       p-4 justify-between h-auto shadow-sm ${className}`}>
-        <p>{text}</p>
+    <section className={`flex bg-yellow-50 border text-sm text-yellow-800 border-yellow-300 w-full cursor-pointer
+                       p-1 items-center n h-auto shadow-sm hover:cursor-default ${className}`}>
+      <Icon dataFeather='alert-circle' className='text-yellow-800'/>
+      <p>{text}</p>
     </section>
   )
 }
@@ -217,7 +218,7 @@ function NoteCard({
         </section>
 
         <div className="w-full text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
-          <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
+          <p className='p-1 bg-green-50 w-fit text-green-800'>{noteData.owner}</p>
           <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
         </div>
       </div>

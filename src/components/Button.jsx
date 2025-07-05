@@ -6,7 +6,7 @@ function Button({ text = 'Button', onClick, className = '', type = 'button', ico
     <button
       type={`${type}`}
       className={`flex justify-center bg-green-50 text-xs px-4 font-bold rounded-full
-      hover:bg-green-700 hover:text-white border-opacity-60 border border-green-600 text-green-800 p-2 ${className}`}
+      hover:bg-green-700 hover:text-white border-opacity-60 border border-green-600 text-green-700 p-2 ${className}`}
       onClick={onClick}
     >
        <p className='font-bold text-xs'>{text}</p>

@@ -68,9 +68,7 @@ function CreateProject({ closeModal, projectData }) {
           description: form.description,
           date: form.date,
           type: form.type,
-          owner: projectData.owner,
           status: form.status,
-          team: form.team,
         })
       } else {
         await addDoc(collection(db, 'projects'), {
@@ -138,38 +136,40 @@ function CreateProject({ closeModal, projectData }) {
             />
           </label>
 
-          <label className="flex flex-col text-gray-600">
-            Task Type
-            <div className="flex items-center space-x-4 mt-2">
-              <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input
-                  onChange={handleChange}
-                  type="radio"
-                  id="solo"
-                  value="Solo"
-                  name='type'
-                  checked={form.type === "Solo"}
-                  className="hover:cursor-pointer"
-                  required
-                />
-                <span>Solo</span>
-              </label>
+          {!projectData ? (
+            <label className="flex flex-col text-gray-600">
+              Task Type
+              <div className="flex items-center space-x-4 mt-2">
+                <label className="flex items-center space-x-2 hover:cursor-pointer">
+                  <input
+                    onChange={handleChange}
+                    type="radio"
+                    id="solo"
+                    value="Solo"
+                    name='type'
+                    checked={form.type === "Solo"}
+                    className="hover:cursor-pointer"
+                    required
+                  />
+                  <span>Solo</span>
+                </label>
 
-              <label className="flex items-center space-x-2 hover:cursor-pointer">
-                <input
-                  onChange={handleChange}
-                  value="Shared"
-                  checked={form.type === "Shared"}
-                  type="radio"
-                  id="shared"
-                  name='type'
-                  className=" hover:cursor-pointer"
-                  required
-                />
-                <span>Shared</span>
-              </label>
-            </div>
-          </label>
+                <label className="flex items-center space-x-2 hover:cursor-pointer">
+                  <input
+                    onChange={handleChange}
+                    value="Shared"
+                    checked={form.type === "Shared"}
+                    type="radio"
+                    id="shared"
+                    name='type'
+                    className=" hover:cursor-pointer"
+                    required
+                  />
+                  <span>Shared</span>
+                </label>
+              </div>
+            </label>
+          ) : ( <AlertCard text='Changing project type is not allowed when editing'/> )}
           <p style={{ color: message.color }}>{message.text}</p>
           <Button type="submit" text={projectData? 'Update Project' : 'Create Project'} className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
         </form>
@@ -845,7 +845,10 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
 
   return (
     <ModalOverlay>
-      <div className='flex flex-col max-h-full max-w-full h-[40rem] w-[60rem] bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
+      <div
+        className='flex flex-col max-h-[95vh] max-w-[60rem] w-full h-full bg-white p-4 rounded-md overflow-x-auto'
+        onClick={(e) => e.stopPropagation()}
+      >
         <IconTitleSection title='Pending Tasks' dataFeather='x' iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
