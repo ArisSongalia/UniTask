@@ -59,10 +59,10 @@ function CreateProject({ closeModal, projectData }) {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    const projectRef = doc(db, 'projects', projectData.id);
-
+    
     try {
-      if(projectData.id) {
+      if(projectData?.id) {
+        const projectRef = doc(db, 'projects', projectData.id);
         await updateDoc(projectRef, {
           title: form.title,
           description: form.description,
@@ -92,8 +92,8 @@ function CreateProject({ closeModal, projectData }) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Create Project' iconOnClick={closeModal} dataFeather='x' />
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title={!projectData ? ('Create Project') : ('Update Project')} iconOnClick={closeModal} dataFeather='x' />
 
         <form className="flex flex-col space-y-4">
           <label htmlFor="project-title" className="flex flex-col text-gray-600">
@@ -225,7 +225,7 @@ function CreateNote({ closeModal, projectId }) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
 
         <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
@@ -326,7 +326,6 @@ function CreateTask({ closeModal, taskData}) {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
-    const taskRef = doc(db, 'tasks', taskData.id);
 
     if(projectData.type === "Shared"){
       if (!form['team'] || form['team'].length === 0) {
@@ -336,7 +335,8 @@ function CreateTask({ closeModal, taskData}) {
     } 
 
     try {
-      if(taskData.id) {
+      if(taskData?.id) {
+        const taskRef = doc(db, 'tasks', taskData.id);
         await updateDoc(taskRef, {
           'title': form['title'],
           'description': form['description'],
@@ -392,8 +392,8 @@ function CreateTask({ closeModal, taskData}) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] max-h-[40rem] h-auto p-6 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Create Task' dataFeather='x' iconOnClick={closeModal} />
+      <section className="flex flex-col bg-white rounded-md w-[35rem] max-h-[40rem] h-auto p-4 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title={taskData ? ('Update Task') : ('Create Task')} dataFeather='x' iconOnClick={closeModal} className='' />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
           <AlertCard text='Note: Deadline should atleast be 1 hour.' title='' className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'/>

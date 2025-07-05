@@ -4,7 +4,7 @@ import Icon from './Icon'
 import { IconAction } from './Icon';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Popup from './modal-group/Popup';
-import { useProjectContext } from '../context/ProjectContext';
+import { ProjectContext, useProjectContext } from '../context/ProjectContext';
 import { where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { useFetchTaskData, useFetchNoteData, useFetchProjectData, UseFetchUserName } from '../services/FetchData';
@@ -15,7 +15,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
 import { NoteFocus, PendingTasks, TaskFocus } from "./modal-group/Modal";
 import { BarLoader } from 'react-spinners';
-import ModalOverlay from './ModalOverlay';
 
 
 function SummaryCard({
@@ -150,7 +149,7 @@ function ProjectCard({projectData}) {
   return (
     <div
       className="flex flex-col bg-white rounded-md overflow-hidden shadow-md
-        flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
+      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
     >
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
@@ -302,10 +301,21 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
 function TaskCard({taskData, className}) {
   const location = useLocation();
   const navigate = useNavigate();
+  const projectId = taskData['project-id'];
+  const { setProjectID } = useProjectContext();
   const [visibilitity, setVisbility] = useState({
     popUp: false,
     taskFocus: false,
   })
+  
+  const handleSetActiveProject = async () => {
+    if (taskData['project-id']) {
+      setProjectID(taskData['project-id']);
+      localStorage.setItem('activeProjectId', taskData['project-id']);
+    } else {
+      console.error("Error: Project does not exist");
+    }
+  };
 
 
   const triggerFileInput = () => {
@@ -330,7 +340,10 @@ function TaskCard({taskData, className}) {
         if(location.pathname ==='/Project') {
           toggleVisbility('taskFocus')
         } else if(location.pathname === '/Home') {
-          navigate('/Project');
+          if(taskData?.['project-id']) {
+            handleSetActiveProject();
+            navigate('/Project');
+          }
         }
       }}
     >
@@ -362,7 +375,7 @@ function TaskCard({taskData, className}) {
         {taskData.description}
       </p>
       
-      <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit'>
+      <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit' onClick={(e) => e.stopPropagation()}>
         {taskData.team && taskData.team.length > 0 ? (
           taskData.team.map((member) => (
             <IconUser key={member.uid} user={member} className='h-6 w-6' />
