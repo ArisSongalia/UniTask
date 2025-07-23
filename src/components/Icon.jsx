@@ -29,7 +29,11 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
         aria-hidden="true"
       ></i>
 
-      {text}
+      {text? (
+        <span className='text-xs font-semibold pr-1'>{text}</span>
+      ) : (
+        null
+      )}
     </section>
   );
 }

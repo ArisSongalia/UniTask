@@ -4,7 +4,7 @@ import Icon from './Icon'
 import { IconAction } from './Icon';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Popup from './modal-group/Popup';
-import { ProjectContext, useProjectContext } from '../context/ProjectContext';
+import { useProjectContext } from '../context/ProjectContext';
 import { where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
 import { useFetchTaskData, useFetchNoteData, useFetchProjectData, UseFetchUserName } from '../services/FetchData';
@@ -56,23 +56,17 @@ function SummaryCard({
         <p className='font-semibold text-sm'>Hi <UseFetchUserName />, Here's your tasks📋</p>
       </span>
 
-      <div className="flex w-full h-fit">
-        {!projectLoading ?(
-          <CountCard count={pendingProjects.length} title='Pending Projects'/>
+      
+
+        {!projectLoading || !noteLoading || !taskLoading ?(
+          <div className="flex w-full h-fit">
+            <CountCard count={pendingProjects.length} title='Pending Projects'/>
+            <CountCard count={taskData.length} title='Assigned Task' />
+            <CountCard count={noteData.length} title='Action Notes' className=''/>
+          </div>
         ) : (
-          <BarLoader color='white' />
+          <BarLoader color='white' className='self-center'/>
         )}
-        {!taskLoading?(        
-          <CountCard count={taskData.length} title='Assigned Task' className='' />
-        ) : (
-          <BarLoader color='white' />
-        )}
-        {!noteLoading ?(
-          <CountCard count={noteData.length} title='Action Notes' className=''/>
-        ) : (
-          <BarLoader color='white' />
-        )}
-      </div>
 
       <Button text='Check Pending' onClick={handleShowPendingTasks} />
       {showPendingTasks && 
@@ -279,7 +273,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   };
   
   return (
-    <section className={`flex border w-full max-w-[18rem] h-fit rounded-md bg-white border-green-600 ${className}`}>
+    <section className={`flex border w-full max-w-[18rem] h-fit rounded-lg bg-white ${className}`}>
       <span
         className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
@@ -288,7 +282,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
         {!projectData.team.length > 0 ? (
           null
         ) : projectData.team && projectData.team.map((member) => (
-          <IconUser key={member.uid} user={member} />
+          <IconUser key={member.uid} user={member} className='border-2' />
         ))}
       </span>
 
