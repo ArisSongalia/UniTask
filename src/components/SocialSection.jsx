@@ -61,7 +61,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
   return (
     <div
-      className={`flex z-50 absolute top-20 shadow-md right-4 flex-col p-4 rounded-md w-full max-w-[40rem] h-[35rem] overflow-hidden bg-white ${className}`}
+      className={`flex z-50 absolute top-20 shadow-md right-0 flex-col p-4 rounded-md w-full max-w-[40rem] h-[35rem] overflow-hidden bg-white ${className}`}
     >
       <IconTitleSection
         title="Socials"
@@ -114,11 +114,11 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 titleClassName='text-sm'
               />
 
-              <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1">
+              <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
                 {sentMessageData.map((message) => (
                   <section className='flex justify-end' key={message.timestamp}>
                     <span
-                      className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full w-fit'
+                      className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
                     >
                       {message.text}
                     </span>
@@ -128,7 +128,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 {receivedMessageData.map((message) => (
                   <section className="flex justify-start" key={message.timestamp}>
                     <span
-                      className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800 max-w-[60%] max-h-fit h-full justify-self-start w-fit'
+                      className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
                     >
                       {message.text}
                     </span>
