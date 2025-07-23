@@ -278,34 +278,59 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   }, [setUsers, setLoading, refreshKey])
 };
 
-const useFetchMessageData = ( refreshKey ) => {
-  const [messageData, setMessageData] = useState(null);
+const useFetchMessageData = ( activeUser ) => {
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [sentMessageData, setSentMessageData] = useState([]);
+  const [receivedMessageData, setReceivedMessageData] = useState([]);
   const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
+    if(!activeUser) {
+      setSentMessageData([]);
+      setReceivedMessageData([]);
+      setLoading(false);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 1000)
+
+    console.log("Fetching messages with uid: ", activeUser.uid)
+
     const fetchMessages = async () => {
       setLoading(true);
 
       try{
-        const messageRef = collection(db, 'messages');
-        const projectDoc = await getDoc(messageRef);
+        const qSent = query(collection(db, 'messages'), where('messageTo', '==', activeUser.uid), where('senderId', '==', auth.currentUser.uid));
+        const snapshotSent = await getDocs(qSent);
+        const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSentMessageData(sentMessages);
 
-        if(projectDoc.exists()) {
-          setMessageData(projectDoc.data())
-        } else {
-          console.error('No message found');
-          setMessageData(null);
-        }
+        const qReceived = query(collection(db, 'messages'), where('messageTo', '==', auth.currentUser.uid ), where('senderId', '==',  activeUser.uid));        
+        const snapshotReceived = await getDocs(qReceived)
+        const receivedMessages = snapshotReceived.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setReceivedMessageData(receivedMessages);
+
       } catch (error) {
         console.log("Error accesing message data: ", error)
+        setSentMessageData([])
+        setReceivedMessageData([])
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchMessages();
-  }, [setLoading, refreshKey])
 
-  return {messageData, loading};
+    return () => {
+      clearInterval(interval);
+    }
+    
+  }, [activeUser, refreshKey])
+
+  return {sentMessageData, receivedMessageData, loading};
 }
 
 

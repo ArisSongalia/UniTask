@@ -7,7 +7,8 @@ import { BarLoader } from 'react-spinners';
 import { IconAction } from './Icon';
 import { auth, db } from '../config/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-
+import { useFetchMessageData } from '../services/FetchData';
+import { ReloadIcon } from './ReloadComponent';
 
 
 function reducer(state, action) {
@@ -19,18 +20,28 @@ function reducer(state, action) {
   }
 }
 
+
 function SocialSection({ className = '', closeModal = () => {} }) {
   const { key } = useReloadContext();
   const projectId = localStorage.getItem('activeProjectId');
-  const { projectData, loading } = useFetchActiveProjectData(projectId, key);
-  const messageRef = useRef(null);
-
   const initialState = {
     activeUser: null,
   };
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { activeUser } = state;
+
+  const { projectData, projectLoading } = useFetchActiveProjectData(projectId, key);
+  const messageRef = useRef(null);  
+  const { sentMessageData, receivedMessageData, messageLoading } = useFetchMessageData(activeUser);
 
   const handleSendMessage = async () => {
-    if (!messageRef.current || !messageRef.current.value || !activeUser) console.log('No active user or input')
+    const messageText = messageRef.current.value.trim();
+    if (messageText === '') return; 
+
+    if (!messageRef.current || !messageRef.current.value || !activeUser) {
+      console.log('No active user or input')
+      return
+    } 
 
     try{
       await addDoc(collection(db, 'messages'), {
@@ -39,7 +50,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         timestamp: serverTimestamp(),
         type: 'text',
         readBy: [],
-        messageTo: activeUser,
+        messageTo: activeUser.uid,
       })
     } catch(error) {
         console.log('Error sending message: ', error)
@@ -47,9 +58,6 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         messageRef.current.value = "";
     }
   }
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { activeUser } = state;
 
   return (
     <div
@@ -64,7 +72,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
       <section className="flex gap-2 h-full">
         <section id="user-chat-heads" className="flex flex-col min-w-fit h-full w-[16rem]">
-          {loading ? (
+          {projectLoading ? (
             <BarLoader color="green" />
           ) : projectData?.team ? (
             <>
@@ -106,7 +114,27 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 titleClassName='text-sm'
               />
 
-              <section id="messageDisplay" className="flex h-full w-full"></section>
+              <div id="messageDisplay" className="flex flex-col h-full w-full gap-1">
+                {sentMessageData.map((message) => (
+                  <section className='flex justify-end' key={message.timestamp}>
+                    <span
+                      className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full w-fit'
+                    >
+                      {message.text}
+                    </span>
+                  </section>
+                ))}
+
+                {receivedMessageData.map((message) => (
+                  <section className="flex justify-start" key={message.timestamp}>
+                    <span
+                      className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800 max-w-[60%] max-h-fit h-full justify-self-start w-fit'
+                    >
+                      {message.text}
+                    </span>
+                  </section>
+                ))}
+              </div>
               
               <label
                 htmlFor='messageInput'
