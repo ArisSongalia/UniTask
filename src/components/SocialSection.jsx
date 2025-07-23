@@ -114,7 +114,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 titleClassName='text-sm'
               />
 
-              <div id="messageDisplay" className="flex flex-col h-full w-full gap-1">
+              <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1">
                 {sentMessageData.map((message) => (
                   <section className='flex justify-end' key={message.timestamp}>
                     <span
