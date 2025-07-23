@@ -278,8 +278,36 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   }, [setUsers, setLoading, refreshKey])
 };
 
+const useFetchMessageData = ( refreshKey ) => {
+  const [messageData, setMessageData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      setLoading(true);
 
-export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData};
+      try{
+        const messageRef = collection(db, 'messages');
+        const projectDoc = await getDoc(messageRef);
+
+        if(projectDoc.exists()) {
+          setMessageData(projectDoc.data())
+        } else {
+          console.error('No message found');
+          setMessageData(null);
+        }
+      } catch (error) {
+        console.log("Error accesing message data: ", error)
+      }
+    }
+
+    fetchMessages();
+  }, [setLoading, refreshKey])
+
+  return {messageData, loading};
+}
+
+
+export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData, useFetchMessageData};
 
