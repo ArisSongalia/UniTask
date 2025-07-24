@@ -300,9 +300,8 @@ const useFetchMessageData = ( activeUser ) => {
       sentFilter.push(where('messageTo', '==', activeUser.uid));
       sentFilter.push(where('senderId', '==', auth.currentUser.uid));
 
-      receivedFilter.push(where('messageTo', '==', activeUser.uid));
-      receivedFilter.push(where('senderId', '==', auth.currentUser.uid));
-
+      receivedFilter.push(where('messageTo', '==', auth.currentUser.uid));
+      receivedFilter.push(where('senderId', '==', activeUser.uid));
 
     } else if(activeUser.tag) {
       sentFilter.push(where('messageTo', '==', activeUser.tag));

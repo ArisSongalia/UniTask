@@ -683,7 +683,7 @@ function UserProfile({ closeModal, user={} }) {
             <p className=''>{user.email}</p>
           </span>
         </span>
-        <p className='text-gray-500 text-sm mt-2'>UID: {user.uid}</p>
+        <p className='text-gray-500 text-xs mt-2'>UID: {user.uid}</p>
 
         <Button
           onClick={handleSignOut}

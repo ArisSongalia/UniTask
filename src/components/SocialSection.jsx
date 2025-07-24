@@ -83,7 +83,9 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 }}
               />
 
-              {projectData.team.map((member) => (
+              {projectData.team
+              .filter(member => member.uid !== auth.currentUser.uid)
+              .map((member) => (
                 <UserCard
                   key={member.uid}
                   user={member}
