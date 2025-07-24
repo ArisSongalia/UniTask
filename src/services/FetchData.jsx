@@ -278,78 +278,77 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   }, [setUsers, setLoading, refreshKey])
 };
 
-const useFetchMessageData = ( activeUser ) => {
-  const [refreshKey, setRefreshKey] = useState(0)
+const useFetchMessageData = (activeUser) => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const [sentMessageData, setSentMessageData] = useState([]);
   const [receivedMessageData, setReceivedMessageData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-
-  useEffect(() => {
+  const fetchMessages = async (isInitial = false) => {
     const sentFilter = [];
     const receivedFilter = [];
 
-    if(!activeUser) {
-      setSentMessageData([]);
-      setReceivedMessageData([]);
-      setLoading(false);
-      return;
-    }
+    if (!activeUser) return;
 
-    if(activeUser.uid) {
+    if (activeUser.uid) {
       sentFilter.push(where('messageTo', '==', activeUser.uid));
       sentFilter.push(where('senderId', '==', auth.currentUser.uid));
 
       receivedFilter.push(where('messageTo', '==', auth.currentUser.uid));
       receivedFilter.push(where('senderId', '==', activeUser.uid));
-
-    } else if(activeUser.tag) {
+    } else if (activeUser.tag) {
       sentFilter.push(where('messageTo', '==', activeUser.tag));
       sentFilter.push(where('senderId', '==', auth.currentUser.uid));
 
       receivedFilter.push(where('messageTo', '==', activeUser.tag));
-      receivedFilter.push(where('senderId', '!=', auth.currentUser.uid))
+      receivedFilter.push(where('senderId', '!=', auth.currentUser.uid));
     }
 
-    const interval = setInterval(() => {
-      setRefreshKey(prev => prev + 1);
-    }, 1000)
- 
-    console.log("Fetching messages with uid/tag: ", activeUser.uid ?? activeUser.tag)
+    if (isInitial) setLoading(true);
 
-    const fetchMessages = async () => {
-      setLoading(true);
+    try {
+      const [snapshotSent, snapshotReceived] = await Promise.all([
+        getDocs(query(collection(db, 'messages'), ...sentFilter)),
+        getDocs(query(collection(db, 'messages'), ...receivedFilter)),
+      ]);
 
-      try{
-        const qSent = query(collection(db, 'messages'), ...sentFilter);
-        const snapshotSent = await getDocs(qSent);
-        const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setSentMessageData(sentMessages);
+      const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const receivedMessages = snapshotReceived.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        const qReceived = query(collection(db, 'messages'), ...receivedFilter);        
-        const snapshotReceived = await getDocs(qReceived)
-        const receivedMessages = snapshotReceived.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setReceivedMessageData(receivedMessages);
-
-      } catch (error) {
-        console.log("Error accesing message data: ", error)
-        setSentMessageData([])
-        setReceivedMessageData([])
-      } finally {
+      setSentMessageData(sentMessages);
+      setReceivedMessageData(receivedMessages);
+    } catch (error) {
+      console.log("Error accessing message data:", error);
+      setSentMessageData([]);
+      setReceivedMessageData([]);
+    } finally {
+      if (isInitial) {
         setLoading(false);
+        setInitialLoad(false);
       }
     }
+  };
 
-    fetchMessages();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 1000);
 
-    return () => {
-      clearInterval(interval);
-    }
+    return () => clearInterval(interval);
+  }, []);
 
-  }, [activeUser, refreshKey])
+  useEffect(() => {
+    fetchMessages(true); 
+  }, [activeUser]);
 
-  return {sentMessageData, receivedMessageData, loading};
-}
+  useEffect(() => {
+    if (!initialLoad) fetchMessages();
+  }, [refreshKey]);
+
+  return { sentMessageData, receivedMessageData, loading };
+};
+
 
 
 export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData, useFetchMessageData};

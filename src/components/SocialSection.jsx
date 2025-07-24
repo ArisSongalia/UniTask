@@ -31,7 +31,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
   const { projectData, projectLoading } = useFetchActiveProjectData(projectId, key);
   const messageRef = useRef(null);  
-  const { sentMessageData, receivedMessageData, messageLoading } = useFetchMessageData(activeUser);
+  const { sentMessageData, receivedMessageData, loading: messageLoading } = useFetchMessageData(activeUser);
 
   const handleSendMessage = async () => {
     const messageText = messageRef.current.value.trim();
@@ -102,67 +102,71 @@ function SocialSection({ className = '', closeModal = () => {} }) {
           )}
         </section>
 
-        <section
-          id="chat-window"
-          className="flex flex-col bg-gray-50 rounded-lg w-full h-full justify-end overflow-y-auto p-2"
-        >
-          {activeUser ? (
-            <div className='flex flex-col justify-between items-start h-full'>
-              <IconTitleSection
-                title={activeUser?.username ?? activeUser?.memberNames?.join(', ')}
-                dataFeather="more-vertical"
-                className="bg-slate-50 rounded-full"
-                titleClassName='text-sm'
-              />
+        {messageLoading ? (
+          <BarLoader color="green" />
+        ) : (
+          <section
+            id="chat-window"
+            className="flex flex-col bg-gray-50 rounded-lg w-full h-full justify-end overflow-y-auto p-2"
+          >
+            {activeUser ? (
+              <div className='flex flex-col justify-between items-start h-full'>
+                <IconTitleSection
+                  title={activeUser?.username ?? activeUser?.memberNames?.join(', ')}
+                  dataFeather="more-vertical"
+                  className="bg-slate-50 rounded-full"
+                  titleClassName='text-sm'
+                />
 
-              <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
-                {[...sentMessageData]
-                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
-                .map((message) => (
-                  <section className='flex justify-end' key={message.timestamp}>
-                    <span
-                      className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
-                    >
-                      {message.text}
-                    </span>
-                  </section>
-                ))}
+                <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
+                  {[...sentMessageData]
+                  .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                  .map((message) => (
+                    <section className='flex justify-end' key={message.timestamp}>
+                      <span
+                        className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
+                      >
+                        {message.text}
+                      </span>
+                    </section>
+                  ))}
 
-                {[...receivedMessageData]
-                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
-                .map((message) => (
-                  <section className="flex justify-start gap-1 items-center" key={message.timestamp}>
-                    <IconUser user={activeUser} />
-                    <span
-                      className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
-                    >
-                      {message.text}
-                    </span>
-                  </section>
-                ))}
+                  {[...receivedMessageData]
+                  .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                  .map((message) => (
+                    <section className="flex justify-start gap-1 items-center" key={message.timestamp}>
+                      <IconUser user={activeUser} />
+                      <span
+                        className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
+                      >
+                        {message.text}
+                      </span>
+                    </section>
+                  ))}
+                </div>
+                
+                <label
+                  htmlFor='messageInput'
+                  className="flex h-12 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center"
+                  >
+                  <input
+                    ref={messageRef}
+                    className="border border-gray-300 rounded-sm px-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
+                  />
+                  <IconAction
+                    dataFeather="send"
+                    text='Send'
+                    className='rounded-sm bg-green-50 h-full'
+                    iconOnClick={handleSendMessage}
+                  />
+                </label>
               </div>
-              
-              <label
-                htmlFor='messageInput'
-                className="flex h-12 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center"
-                >
-                <input
-                  ref={messageRef}
-                  className="border border-gray-300 rounded-sm px-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
-                />
-                <IconAction
-                  dataFeather="send"
-                  text='Send'
-                  className='rounded-sm bg-green-50 h-full'
-                  iconOnClick={handleSendMessage}
-                />
-              </label>
-            </div>
-          ) : (
-            <span className="text-gray-600">Select a user to chat with</span>
-          )}
+            ) : (
+              <span className="text-gray-600">Select a user to chat with</span>
+            )}
 
-        </section>
+          </section>
+        )}
       </section>
     </div>
   );
