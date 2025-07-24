@@ -31,7 +31,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
   const { projectData, projectLoading } = useFetchActiveProjectData(projectId, key);
   const messageRef = useRef(null);  
-  const { sentMessageData, receivedMessageData, loading: messageLoading } = useFetchMessageData(activeUser);
+  const { sentMessageData, receivedMessageData, loading: messageLoading } = useFetchMessageData({activeUser, projectId: projectData.id});
 
   const handleSendMessage = async () => {
     const messageText = messageRef.current.value.trim();
@@ -50,6 +50,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         type: 'text',
         readBy: [],
         messageTo: activeUser.uid ?? activeUser.tag,
+        messageFrom: projectData.id,
       })
     } catch(error) {
         console.log('Error sending message: ', error)

@@ -278,7 +278,7 @@ const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   }, [setUsers, setLoading, refreshKey])
 };
 
-const useFetchMessageData = (activeUser) => {
+const useFetchMessageData = (activeUser, projectId) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [sentMessageData, setSentMessageData] = useState([]);
   const [receivedMessageData, setReceivedMessageData] = useState([]);
@@ -309,8 +309,8 @@ const useFetchMessageData = (activeUser) => {
 
     try {
       const [snapshotSent, snapshotReceived] = await Promise.all([
-        getDocs(query(collection(db, 'messages'), ...sentFilter)),
-        getDocs(query(collection(db, 'messages'), ...receivedFilter)),
+        getDocs(query(collection(db, 'messages'), ...sentFilter, where('messageFrom', '==', projectId))),
+        getDocs(query(collection(db, 'messages'), ...receivedFilter, where('messageFrom', '==', projectId))),
       ]);
 
       const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));

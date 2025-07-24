@@ -674,8 +674,8 @@ function NoteFocus({ closeModal, noteData}) {
 function UserProfile({ closeModal, user={} }) {
   return (
     <ModalOverlay onClick={closeModal}>
-      <div id='main' className='flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className='font-semibold'/>
+      <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className=''/>
         <span className='flex p-2 gap-4 items-center'>
           <img src={user.photoURL} alt="" className='h-12 w-12 rounded-full'/>
           <span className='flex flex-col'>
