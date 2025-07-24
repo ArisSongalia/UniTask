@@ -4,7 +4,7 @@ import { EveryOneCard, UserCard } from './Cards';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { BarLoader } from 'react-spinners';
-import { IconAction } from './Icon';
+import { IconAction, IconUser } from './Icon';
 import { auth, db } from '../config/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useFetchMessageData } from '../services/FetchData';
@@ -129,7 +129,8 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 {[...receivedMessageData]
                 .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
                 .map((message) => (
-                  <section className="flex justify-start" key={message.timestamp}>
+                  <section className="flex justify-start gap-1 items-center" key={message.timestamp}>
+                    <IconUser user={activeUser} />
                     <span
                       className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
                     >

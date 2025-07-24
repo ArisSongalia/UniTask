@@ -306,6 +306,7 @@ const useFetchMessageData = ( activeUser ) => {
 
     } else if(activeUser.tag) {
       sentFilter.push(where('messageTo', '==', activeUser.tag));
+      sentFilter.push(where('senderId', '==', auth.currentUser.uid));
 
       receivedFilter.push(where('messageTo', '==', activeUser.tag));
       receivedFilter.push(where('senderId', '!=', auth.currentUser.uid))
