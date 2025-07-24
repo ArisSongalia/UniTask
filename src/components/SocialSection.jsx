@@ -8,7 +8,6 @@ import { IconAction } from './Icon';
 import { auth, db } from '../config/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useFetchMessageData } from '../services/FetchData';
-import { ReloadIcon } from './ReloadComponent';
 
 
 function reducer(state, action) {
@@ -50,7 +49,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         timestamp: serverTimestamp(),
         type: 'text',
         readBy: [],
-        messageTo: activeUser.uid,
+        messageTo: activeUser.uid ?? activeUser.tag,
       })
     } catch(error) {
         console.log('Error sending message: ', error)
