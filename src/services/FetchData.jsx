@@ -286,7 +286,8 @@ const useFetchMessageData = ( activeUser ) => {
 
 
   useEffect(() => {
-    const whereFilter = []
+    const sentFilter = [];
+    const receivedFilter = [];
 
     if(!activeUser) {
       setSentMessageData([]);
@@ -296,28 +297,36 @@ const useFetchMessageData = ( activeUser ) => {
     }
 
     if(activeUser.uid) {
-      whereFilter.push(where('messageTo', '==', activeUser.uid));
-      whereFilter.push(where('senderId', '==', auth.currentUser.uid));
+      sentFilter.push(where('messageTo', '==', activeUser.uid));
+      sentFilter.push(where('senderId', '==', auth.currentUser.uid));
+
+      receivedFilter.push(where('messageTo', '==', activeUser.uid));
+      receivedFilter.push(where('senderId', '==', auth.currentUser.uid));
+
+
     } else if(activeUser.tag) {
-      whereFilter.push(where('messageTo', '==', activeUser.tag));
+      sentFilter.push(where('messageTo', '==', activeUser.tag));
+
+      receivedFilter.push(where('messageTo', '==', activeUser.tag));
+      receivedFilter.push(where('senderId', '!=', auth.currentUser.uid))
     }
 
     const interval = setInterval(() => {
       setRefreshKey(prev => prev + 1);
     }, 1000)
-
+ 
     console.log("Fetching messages with uid/tag: ", activeUser.uid ?? activeUser.tag)
 
     const fetchMessages = async () => {
       setLoading(true);
 
       try{
-        const qSent = query(collection(db, 'messages'), ...whereFilter);
+        const qSent = query(collection(db, 'messages'), ...sentFilter);
         const snapshotSent = await getDocs(qSent);
         const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setSentMessageData(sentMessages);
 
-        const qReceived = query(collection(db, 'messages'), ...whereFilter, where('senderId', '!=', auth.currentUser.uid));        
+        const qReceived = query(collection(db, 'messages'), ...receivedFilter);        
         const snapshotReceived = await getDocs(qReceived)
         const receivedMessages = snapshotReceived.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setReceivedMessageData(receivedMessages);
