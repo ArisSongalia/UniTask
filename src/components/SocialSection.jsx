@@ -115,7 +115,9 @@ function SocialSection({ className = '', closeModal = () => {} }) {
               />
 
               <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
-                {sentMessageData.map((message) => (
+                {[...sentMessageData]
+                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                .map((message) => (
                   <section className='flex justify-end' key={message.timestamp}>
                     <span
                       className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
@@ -125,7 +127,9 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                   </section>
                 ))}
 
-                {receivedMessageData.map((message) => (
+                {[...receivedMessageData]
+                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                .map((message) => (
                   <section className="flex justify-start" key={message.timestamp}>
                     <span
                       className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
