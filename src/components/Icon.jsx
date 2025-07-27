@@ -76,9 +76,9 @@ function IconUser({ user={}, className=''}) {
 
 function IconText({ text = '', color = 'green', className = '', border=false }) {
   return(
-    <p className={`flex flex-none text-xs  bg-${color}-50 p-1 w-fit rounded-sm text-${color}-700 font-semibold ${className} ${border ? `border border-${color}-300` : ''}`}>
+    <span className={`flex flex-none text-xs h-fit  bg-${color}-50 p-1 w-fit rounded-sm text-${color}-700 font-semibold ${className} ${border ? `border border-${color}-300` : ''}`}>
       {text}
-    </p>
+    </span>
   )
 }
 

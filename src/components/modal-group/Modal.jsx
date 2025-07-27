@@ -180,17 +180,17 @@ function CreateProject({ closeModal, projectData }) {
   );
 }
 
-function CreateNote({ closeModal, projectData}) {
+function CreateNote({ closeModal, noteData, projectData}) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const dateRef = useRef('');
 
   const [form, setForm] = useState({
-    title: "",
-    message: "",
+    title: noteData?.title ?? "",
+    message: noteData?.message ?? "",
     file: "",
-    date: "",
+    date: noteData?.date ?? "",
   });
 
   const handleChange = (e) => {
@@ -207,18 +207,33 @@ function CreateNote({ closeModal, projectData}) {
     e.preventDefault();
 
     try {
-      const docRef = await addDoc(collection(db, "notes"), {
-        title: form.title,
-        message: form.message,
-        date: form.date,
-        owner: user.displayName,
-        ownerUid: user.uid,
-        status: 'To-Review',
-        'project-id': projectData?.[0]?.id ?? null,
-        'project-title': projectData?.[0]?.title ?? 'Personal',
-      }); 
+      if (!noteData) {
+        const docRef = await addDoc(collection(db, "notes"), {
+          title: form.title,
+          message: form.message,
+          date: form.date,
+          owner: user.displayName,
+          ownerUid: user.uid,
+          status: noteData?.status ?? 'To-Review',
+          'project-id': projectData?.[0]?.id ?? null,
+          'project-title': projectData?.[0]?.title ?? 'Personal',
+        }); 
 
-      await updateDoc(docRef, { id: docRef.id });
+        await updateDoc(docRef, { id: docRef.id });
+      } else {
+        const docRef = doc(db, 'notes', noteData.id);
+        await updateDoc(docRef, {
+          title: form.title,
+          message: form.message,
+          date: form.date,
+          owner: user.displayName,
+          ownerUid: user.uid,
+          status: noteData?.status ?? 'To-Review',
+          'project-id': projectData?.[0]?.id ?? null,
+          'project-title': projectData?.[0]?.title ?? 'Personal',
+        }); 
+      }
+
       reloadComponent();
       closeModal();
     } catch (error) {
@@ -231,7 +246,7 @@ function CreateNote({ closeModal, projectData}) {
   return (
     <ModalOverlay onClick={closeModal}>
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Create Note' dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection title={(!noteData) ? ('Create Note') : ('Update: ' + noteData.title)} dataFeather='x' iconOnClick={closeModal} />
 
         <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
           <label htmlFor="title" className="flex flex-col text-gray-600">
@@ -271,7 +286,7 @@ function CreateNote({ closeModal, projectData}) {
           </label>
 
           <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Note" className="py-3" dataFeather='plus'/>
+          <Button type="submit" text={(!noteData) ? ('Create Note') : ('Update Note')} className="py-3" dataFeather='plus'/>
         </form>
       </section>
     </ModalOverlay>
@@ -913,3 +928,4 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
 }
 
 export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, PendingTasks}
+ 

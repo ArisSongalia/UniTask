@@ -151,19 +151,15 @@ function ProjectCard({projectData}) {
       flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-3 h-[14rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >
-      <section className="flex flex-col items-start gap-2 w-full">
-          <span className='flex items-center w-full justify-between'>
-            <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
-            <div className='relative'>
-              <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-              {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' />}
-            </div>
-          </span>
+      <section className="flex flex-col items-start w-full">
+          <section className='relative w-full'>
+            <IconTitleSection title={projectData.title} dataFeather='more-vertical' iconOnClick={togglePopUp} underTitle={projectData.date}/>
+            {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' />}
+          </section>
 
           <span className="flex flex-wrap gap-1">
             <IconText text={projectData.type} color="yellow" className="" />
             <IconText text={projectData.status} color="blue" className="" />
-            <IconText text={projectData.date} color="slate" className="" />
           </span>
       </section>
 
@@ -354,14 +350,14 @@ function TaskCard({taskData, className}) {
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
-        w-full justify-between border gap-2 p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
+        w-full justify-between border p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
       onClick={() => {
         if(location.pathname ==='/Project') {
           toggleVisbility('taskFocus')
         } else if(location.pathname === '/Home') {
           if(taskData?.['project-id']) {
             handleSetActiveProject();
-            navigate('/Project');
+            navigate('/Home/Project');
           }
         }
       }}
@@ -370,44 +366,46 @@ function TaskCard({taskData, className}) {
       <TaskFocus closeModal={() => toggleVisbility('taskFocus')} taskData={taskData}/>
     }
 
-      <span className='flex flex-col justify-between'>
-        <span className='flex justify-between w-full'>
-          <h2 className="font-bold mb-1 text-sm">{taskData.title}</h2>
-          <div className='relative'>
-            <IconAction dataFeather='more-vertical' className='' iconOnClick={() => toggleVisbility('popUp')}/>
-            {visibilitity.popUp && 
-              <Popup 
-                taskData={taskData}
-                closeModal={() => toggleVisbility('popUp')} 
-                collectionName='tasks'
-              />}
-          </div>
-        </span>
-        <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
-          {(location.pathname == '/Home') ? (
-            <IconText text={`Task for: ${taskData['project-title']}`} color="yellow" />
-          ) : (
-            null
-          )}
-          <IconText text={taskData.status} color="blue" />
-          <IconText text={taskData.deadline} color="slate" />
-        </span>
+      <span className='flex flex-col'>
+
+        <section className="relative">
+          <IconTitleSection title={taskData.title} underTitle={taskData.deadline} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} />
+          {visibilitity.popUp &&
+            <Popup
+              taskData={taskData}
+              closeModal={() => toggleVisbility('popUp')}
+              collectionName='tasks'
+            />
+          }
+        </section>
       </span>
 
-      <p
-        className='text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-700 font-semibold'>
-        {taskData.description}
-      </p>
+      <IconText color='green' text={taskData.description} />
       
-      <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit' onClick={(e) => e.stopPropagation()}>
-        {taskData.team && taskData.team.length > 0 ? (
-          taskData.team.map((member) => (
-            <IconUser key={member.uid} user={member} className='h-6 w-6' />
-          ))
-        ) : (
-          <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
-        )}
+      <section className="flex gap-1 items-center justify-between mt-2">
+        <section className='flex gap-1'>
+          <IconText text={taskData.status} color="blue" />
+          
+          <span className='flex text-xs font-semibold text-gray-600 flex-wrap'>
+            {(location.pathname == '/Home') ? (
+              <IconText text={`Task for: ${taskData['project-title']}`} color="yellow" />
+            ) : (
+              null
+            )}
+          </span>
+        </section>
+
+        <span id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit' onClick={(e) => e.stopPropagation()}>
+          {taskData.team && taskData.team.length > 0 ? (
+            taskData.team.map((member) => (
+              <IconUser key={member.uid} user={member} className='h-6 w-6' />
+            ))
+          ) : (
+            <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
+          )}
       </span>
+
+      </section>
     </div>
   )
 }

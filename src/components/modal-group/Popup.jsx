@@ -5,7 +5,7 @@ import { useReloadContext } from '../../context/ReloadContext';
 import Button, { ButtonIcon } from '../Button';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useState } from 'react';
-import { CreateProject, CreateTask } from './Modal';
+import { CreateNote, CreateProject, CreateTask } from './Modal';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -50,6 +50,8 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
             <CreateTask taskData={taskData} closeModal={closeModal} />
           ) : projectData? (
             <CreateProject projectData={projectData} closeModal={closeModal} />
+          ) : noteData? (
+            <CreateNote noteData={noteData} closeModal={closeModal} />
           ) : null
         )
         }
