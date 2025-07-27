@@ -158,7 +158,7 @@ function ProjectCard({projectData}) {
           </section>
 
           <span className="flex flex-wrap gap-1">
-            <IconText text={projectData.type} color="yellow" className="" />
+            <IconText text={projectData.type} color="slate" className="" />
             <IconText text={projectData.status} color="blue" className="" />
           </span>
       </section>
@@ -230,7 +230,7 @@ function NoteCard({
           </p>
         </section>
 
-        <div className="flex w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
+        <div className="flex flex-wrap w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
           <IconText text={noteData.owner} color="green" />
           <IconText text={noteData['project-title']} color="blue" />
           <IconText text={noteData.status} color="slate" />
@@ -383,12 +383,12 @@ function TaskCard({taskData, className}) {
       <IconText color='green' text={taskData.description} />
       
       <section className="flex gap-1 items-center justify-between mt-2">
-        <section className='flex gap-1'>
+        <section className='flex flex-wrap gap-1'>
           <IconText text={taskData.status} color="blue" />
           
           <span className='flex text-xs font-semibold text-gray-600 flex-wrap'>
             {(location.pathname == '/Home') ? (
-              <IconText text={`Task for: ${taskData['project-title']}`} color="yellow" />
+              <IconText text={`Task for: ${taskData['project-title']}`} color="slate" />
             ) : (
               null
             )}
