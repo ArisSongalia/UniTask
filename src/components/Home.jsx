@@ -4,11 +4,13 @@ import HomeSideBar from './HomeSideBar';
 import Navbar from './Navbar';
 import { auth } from '../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 
 function Home() {
   const [user, setUser] = useState(undefined);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isProjectView = location.pathname === '/Home/Project';
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -28,10 +30,13 @@ function Home() {
   return (
     <div className="flex flex-col w-full h-[100vh] items-center overflow-auto">
       <Navbar />
-      <div className="flex flex-grow w-full p-2 h-[calc(100vh-5rem)] gap-2 max-w-screen-2xl justify-center">
-        <RecentTasks />
-        <HomeSideBar className='hidden lg:flex'/>
-      </div>
+      {!isProjectView && (
+        <div className="flex flex-grow w-full p-2 h-[calc(100vh-5rem)] gap-2 max-w-screen-2xl justify-center">
+          <RecentTasks />
+          <HomeSideBar className='hidden lg:flex'/>
+        </div>
+      )}
+      <Outlet />
     </div>
   );
 }

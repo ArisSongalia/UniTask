@@ -92,7 +92,7 @@ function CreateProject({ closeModal, projectData }) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-full m-0 max-w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={!projectData ? ('Create Project') : ('Update Project')} iconOnClick={closeModal} dataFeather='x' />
 
         <form className="flex flex-col space-y-4">
@@ -396,7 +396,7 @@ function CreateTask({ closeModal, taskData}) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] max-h-[40rem] h-auto p-4 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <section className="flex flex-col bg-white rounded-md w-full max-w-[35rem] max-h-[40rem] h-auto p-4 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={taskData ? ('Update Task') : ('Create Task')} dataFeather='x' iconOnClick={closeModal} className='' />
 
         <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>

@@ -20,7 +20,7 @@ function Navbar() {
     return () => unsubscribe();
   }, []);
 
-  if (location.pathname === '/Project') {
+  if (location.pathname === '/Home/Project') {
     return null;
   }
 

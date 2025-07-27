@@ -115,7 +115,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
               <h2 className='font-bold text-sm text-green-700'>{title}</h2>
               <Icon dataFeather='plus' />
             </span>
-            <p className='text-sm'>{description}</p>
+            <p className='text-sm text-green-700 font-medium'>{description}</p>
           </span>
       </span>
     </div>
@@ -124,53 +124,54 @@ function CreateCard({ title = "Title", description = "Description", onClick, cla
 
 function ProjectCard({projectData}) {
   const { setProjectID } = useProjectContext();
-
-  const handleSetActiveProject = async () => {
-    if (projectData.id) {
-      setProjectID(projectData.id);
-      localStorage.setItem('activeProjectId', projectData.id);
-    } else {
-      console.error("Error: Project does not exist");
-    }
-  };
-
+  const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
   const togglePopUp = () => { 
     setShowPopUp(!showPopUp);
   };
 
+  const handleHeaderToProject = () => {
+    if (projectData.id) {
+      setProjectID(projectData.id);
+      localStorage.setItem('activeProjectId', projectData.id);
+    } else {
+      console.error("Error: Project does not exist");
+    };
+
+    navigate('./Project')
+  };
+
   return (
+    
     <div
-      className="flex flex-col bg-white rounded-md overflow-hidden shadow-md
-      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-4 h-[14rem] min-w-[9rem]"
+      className="flex flex-col bg-white rounded-md shadow-md hover:border-opacity-100 cursor-pointer hover:bg-green-50
+      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-3 h-[14rem] min-w-[9rem]"
+      onClick={handleHeaderToProject}
     >
       <section className="flex flex-col items-start gap-2 w-full">
           <span className='flex items-center w-full justify-between'>
             <h4 className="font-bold mb-2 overflow-hidden text-sm text-ellipsis whitespace-nowrap">{projectData.title}</h4>
             <div className='relative'>
               <IconAction dataFeather="more-vertical" iconOnClick={togglePopUp} className="shrink-0 p-[4px]" />
-              {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' className='bg-white' />}
+              {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' />}
             </div>
           </span>
 
           <span className="flex flex-wrap gap-1">
-            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-600">{projectData.type}</p>
-            <p className="text-xs flex p-1 text-blue-600 bg-blue-50 font-semibold">{projectData.status}</p>
+            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-700">{projectData.type}</p>
+            <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold">{projectData.status}</p>
             <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{projectData.date}</p>  
           </span>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
         <p 
-          className="text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-600 font-semibold">
+          className="text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-700 font-semibold">
           {projectData.description}
         </p>
       </section>
 
-      <Link to={'/Project'} className="w-full">
-        <Button text={"Open Project"} className="w-full" onClick={handleSetActiveProject} /> 
-      </Link>
     </div>
   );
 }
@@ -191,7 +192,7 @@ function NoteCard({
         onClick={togglePopUp}
         className={`flex flex-col bg-white border border-yellow-300 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
-          p-2 justify-between max-h-[15rem] min-w-[9rem] ${className}`}
+          p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
       {showPopUp && 
         <NoteFocus closeModal={togglePopUp} noteData={noteData} 
@@ -200,7 +201,7 @@ function NoteCard({
           <h2 id="note-card-title" className="font-bold">
             {noteData.title}
           </h2>
-          <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[8rem] overflow-y-scroll overflow-x-hidden">
+          <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[7rem] overflow-y-scroll overflow-x-hidden">
             {noteData.message}
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
