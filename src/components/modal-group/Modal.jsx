@@ -346,6 +346,7 @@ function CreateTask({ closeModal, taskData}) {
           'status': form['status'],
           'file': form['file'],
           'project-id': projectId,
+          'project-title': projectData.title,
           'team': form['team'],
           'team-uids': form['team-uid'],
         });
@@ -358,6 +359,7 @@ function CreateTask({ closeModal, taskData}) {
           'status': form['status'],
           'file': form['file'],
           'project-id': projectId,
+          'project-title': projectData.title,
           'team': form['team'],
           'team-uids': form['team-uid'],
         });

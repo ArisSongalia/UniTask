@@ -191,7 +191,7 @@ function NoteCard({
         onClick={togglePopUp}
         className={`flex flex-col bg-white border border-yellow-300 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
-          p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
+          p-2 justify-between max-h-[15rem] min-w-[9rem] ${className}`}
       >
       {showPopUp && 
         <NoteFocus closeModal={togglePopUp} noteData={noteData} 
@@ -200,7 +200,7 @@ function NoteCard({
           <h2 id="note-card-title" className="font-bold">
             {noteData.title}
           </h2>
-          <p id="note-card-text" className="text-gray-800 my-2 text-sm">
+          <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[8rem] overflow-y-scroll overflow-x-hidden">
             {noteData.message}
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
@@ -210,7 +210,7 @@ function NoteCard({
           </p>
         </section>
 
-        <div className="flex w-full gap-1 text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
+        <div className="flex w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
           <p className='p-1 bg-green-50 w-fit text-green-800'>{noteData.owner}</p>
           <p className='p-1 bg-blue-50 w-fit  text-blue-800'>{noteData['project-title']}</p>
           <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
@@ -360,8 +360,13 @@ function TaskCard({taskData, className}) {
           </div>
         </span>
         <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
+          {(location.pathname == '/Home') ? (
+            <p className="text-xs flex p-1 bg-green-50 font-semibold text-green-700 flex-none">Task for: {taskData['project-title']}</p>
+          ) : (
+            null
+          )}
           <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
-          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p> 
+          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p>
         </span>
       </span>
 
