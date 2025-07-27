@@ -8,18 +8,18 @@ import { useState } from 'react';
 import { CreateProject, CreateTask } from './Modal';
 
 
-function Popup({ closeModal, className = '',  collectionName, taskData, projectData }) {
+function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
   const { reloadComponent } = useReloadContext();
   const [showUpdateInfo, setShowUpdateInfo] = useState(false);
   const moveStatus = useMoveStatus();
 
   const handleMoveStatus = async () => {
-    await moveStatus({ name: collectionName, id: taskData?.id || projectData?.id, team: taskData?.team || 1}); 
+    await moveStatus({ name: collectionName, id: taskData?.id || projectData?.id  || noteData.id, team: taskData?.team || 1}); 
     closeModal();
   };
 
   const handleDelete = async () => {
-    await deleteData({id: taskData?.id || projectData?.id, collectionName: collectionName, reloadComponent: reloadComponent});
+    await deleteData({id: taskData?.id || projectData?.id || noteData.id, collectionName: collectionName, reloadComponent: reloadComponent});
     closeModal();
   };
 
@@ -32,7 +32,7 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
         className={`flex flex-col absolute z-50 top-0 right-0 gap-0 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title={taskData?.title || projectData?.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
+        <IconTitleSection title={taskData?.title || projectData?.title || noteData?.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
         <ButtonIcon 
           text="Move Status" 
           dataFeather="flag" 

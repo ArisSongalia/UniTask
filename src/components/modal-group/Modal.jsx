@@ -15,6 +15,8 @@ import { handleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useProjectContext } from '../../context/ProjectContext';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -61,7 +63,7 @@ function CreateProject({ closeModal, projectData }) {
     e.preventDefault();
     
     try {
-      if(projectData?.id) {
+      if(projectData) {
         const projectRef = doc(db, 'projects', projectData.id);
         await updateDoc(projectRef, {
           title: form.title,
@@ -183,7 +185,6 @@ function CreateNote({ closeModal, projectData}) {
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const dateRef = useRef('');
-  const activeProjectId = localStorage.getItem('activeProjectId');
 
   const [form, setForm] = useState({
     title: "",
@@ -212,8 +213,9 @@ function CreateNote({ closeModal, projectData}) {
         date: form.date,
         owner: user.displayName,
         ownerUid: user.uid,
-        'project-id': projectData[0]?.id ?? null,
-        'project-title': projectData[0]?.title ?? null,
+        status: 'To-Review',
+        'project-id': projectData?.[0]?.id ?? null,
+        'project-title': projectData?.[0]?.title ?? 'Personal',
       }); 
 
       await updateDoc(docRef, { id: docRef.id });
@@ -224,6 +226,7 @@ function CreateNote({ closeModal, projectData}) {
       setMessage({ text: "Failed to create note: " + error.message, color: "red" });
     }
   };
+
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -629,10 +632,18 @@ function NoteFocus({ closeModal, noteData}) {
   const togglePopUp = () => {
     setShowPopUp(!showPopUp)
   }
-  const { reloadComponent } = useReloadContext();
+  const { key, reloadComponent } = useReloadContext();
+  const navigate = useNavigate();
+  const { setProjectID } = useProjectContext();
+  const location = useLocation();
 
   const handleDelete = async () => {
-    await deleteData( noteData.id, 'notes', reloadComponent );
+    await deleteData({ id: noteData.id, collectionName: 'notes', reloadComponent: reloadComponent });
+  }
+
+  const headerToProject = () => {
+    navigate('/Home/Project');
+    setProjectID(noteData?.['project-id'])
   }
 
   return (
@@ -662,13 +673,18 @@ function NoteFocus({ closeModal, noteData}) {
                   Attached File: {noteData.file}
                 </span>
               )}
+              { (noteData['project-id' && location.pathname == '/Home/Project']) ? (
+                <ButtonIcon text={`Go to ${noteData['project-title']}`} dataFeather='arrow-right' onClick={headerToProject} className='mt-2'/>
+              ) : (
+                null
+              )}
             </p>
           </span>
         </section>
         <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
-          <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
+          <p className='p-1 bg-green-50 w-fit text-green-800'>By: {noteData.owner}</p>
           <p className='p-1 bg-blue-50 w-fit  text-blue-800'>In Project: {noteData['project-title']}</p>
-          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
+          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>Deadline: {noteData.date}</p>
         </span>
       </section>
     </ModalOverlay>

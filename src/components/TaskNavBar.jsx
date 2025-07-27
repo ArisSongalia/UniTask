@@ -25,7 +25,6 @@ function TaskNavBar() {
     }))
   }
 
-
   const { projectData, loading } = useFetchActiveProjectData(key)
 
   return (
@@ -37,6 +36,7 @@ function TaskNavBar() {
               dataFeather='arrow-left' 
               className='h-[2.5rem] w-[2.5rem] border-none justify-center' 
               style={{ width: '1.5rem', height: '1.5rem', strokeWidth: '3' }}
+              iconOnClick={() => localStorage.removeItem('activeProjectId')}
             />
           </Link>
           {loading ? (

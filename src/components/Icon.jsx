@@ -10,8 +10,8 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
 
   return (
     <section 
-      className={`flex rounded-full p-[6px] gap-2 items-center justify-center text-green-900
-        w-fit h-fit cursor-pointer
+      className={`flex rounded-full  gap-2 items-center justify-center text-green-900
+        w-fit h-fit cursor-pointer p-[4px] shrink-0 bg-white border-none
         hover:bg-green-700 hover:text-white
         active:bg-green-700 focus:bg-green-50 focus:outline-none
         ${className}`}
@@ -74,6 +74,14 @@ function IconUser({ user={}, className=''}) {
   )
 }
 
+function IconText({ text = '', color = 'green', className = '', border=false }) {
+  return(
+    <p className={`flex flex-none text-xs  bg-${color}-50 p-1 w-fit rounded-sm text-${color}-700 font-semibold ${className} ${border ? `border border-${color}-300` : ''}`}>
+      {text}
+    </p>
+  )
+}
+
 export default Icon;
-export { IconAction, IconUser };
+export { IconAction, IconUser, IconText };
 

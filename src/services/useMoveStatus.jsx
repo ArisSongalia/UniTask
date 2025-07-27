@@ -22,7 +22,7 @@ export function useMoveStatus() {
           } else if (currentStatus === "In-progress") {
             await updateDoc(taskRef, { status: "To-Review"}) 
           } else if (currentStatus === "To-Review") {
-            await updateDoc(taskRef, { status: "Finished"}) 
+            await updateDoc(taskRef, { status: "Reviewed"}) 
           } else {
             console.log("No update performed.");
           }

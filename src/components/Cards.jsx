@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Button from './Button'
-import Icon from './Icon'
+import Icon, {IconText} from './Icon'
 import { IconAction } from './Icon';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Popup from './modal-group/Popup';
@@ -15,6 +15,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
 import { NoteFocus, PendingTasks, TaskFocus } from "./modal-group/Modal";
 import { BarLoader } from 'react-spinners';
+import { IconTitleSection } from './TitleSection';
+import flags from 'react-phone-number-input/flags';
 
 
 function SummaryCard({
@@ -102,20 +104,20 @@ function AlertCard({text = 'text', className = ''}) {
   )
 }
 
-function CreateCard({ title = "Title", description = "Description", onClick, className = ''}) {
+function CreateCard({ title = "Title", description = "Description", onClick, color = 'green', className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
-      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4  h-[14rem] min-w-[9rem] ${className}`}
+      className={`flex flex-col bg-${color}-50 rounded-md overflow-hidden text-${color}-900 hover:cursor-pointer hover:border-opacity-50
+      flex-grow justify-between border-2 gap-4 border-${color}-800 border-opacity-30 hover:bg-${color}-100 p-4  h-[14rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
           <span className='self-start flex flex-col gap-1 justify-between w-full'>
             <span className="flex gap-4 mb-2 justify-between items-center">
-              <h2 className='font-bold text-sm text-green-700'>{title}</h2>
-              <Icon dataFeather='plus' />
+              <h2 className='font-bold text-sm'>{title}</h2>
+              <Icon dataFeather='plus' className={`text-${color}-800`}/>
             </span>
-            <p className='text-sm text-green-700 font-medium'>{description}</p>
+            <p className='text-sm'>{description}</p>
           </span>
       </span>
     </div>
@@ -159,17 +161,14 @@ function ProjectCard({projectData}) {
           </span>
 
           <span className="flex flex-wrap gap-1">
-            <p className="font-semibold p-1 text-xs bg-yellow-50 items-center flex text-yellow-700">{projectData.type}</p>
-            <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold">{projectData.status}</p>
-            <p className="text-xs flex p-1 bg-gray-50 font-semibold text-gray-500">{projectData.date}</p>  
+            <IconText text={projectData.type} color="yellow" className="" />
+            <IconText text={projectData.status} color="blue" className="" />
+            <IconText text={projectData.date} color="slate" className="" />
           </span>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
-        <p 
-          className="text-xs bg-green-50 p-1 w-fit border border-green-300 rounded-sm text-green-700 font-semibold">
-          {projectData.description}
-        </p>
+        <IconText text={projectData.description} color='green' border />
       </section>
 
     </div>
@@ -181,28 +180,52 @@ function NoteCard({
   noteData,
   file
 }) {
-  const [showPopUp, setShowPopUp] = useState(false);
 
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp);
-  };
+  const initialVisibilityState = {
+    popUp: false,
+    noteFocus: false,
+  }
+
+  function reducer(state, action) {
+    switch(action.type){
+      case 'TOGGLE_POPUP':
+        return { ...state, popUp: !state.popUp };
+      case 'NOTE_FOCUS':
+        return { ...state, noteFocus: !state.noteFocus};
+      default:
+        return state;
+    }
+  }
+
+  const [visibilitity, dispatch] = useReducer(reducer, initialVisibilityState);
 
   return (
       <div
-        onClick={togglePopUp}
+        onClick={(e) => {
+          e.stopPropagation();
+          dispatch({ type: 'NOTE_FOCUS' });
+        }}
         className={`flex flex-col bg-white border border-yellow-300 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
           p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
-      {showPopUp && 
-        <NoteFocus closeModal={togglePopUp} noteData={noteData} 
+      {visibilitity.noteFocus && 
+        <NoteFocus closeModal={() => dispatch({ type: 'NOTE_FOCUS' })} noteData={noteData} 
       />}
         <section className="flex-grow w-full">
-          <h2 id="note-card-title" className="font-bold">
-            {noteData.title}
-          </h2>
+          <div className='relative'>
+            <IconTitleSection 
+              title={noteData.title} 
+              dataFeather={'more-vertical'} 
+              iconOnClick={() => dispatch({ type: 'TOGGLE_POPUP'})}
+              underTitle={noteData.date}
+            />
+            {visibilitity.popUp &&
+              <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} collectionName='notes'/>
+            }
+          </div>
           <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[7rem] overflow-y-scroll overflow-x-hidden">
-            {noteData.message}
+            <IconText text={noteData.message} color='yellow' border/>
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
                 Attached File: {file}
@@ -212,9 +235,9 @@ function NoteCard({
         </section>
 
         <div className="flex w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
-          <p className='p-1 bg-green-50 w-fit text-green-800'>{noteData.owner}</p>
-          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>{noteData['project-title']}</p>
-          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
+          <IconText text={noteData.owner} color="green" />
+          <IconText text={noteData['project-title']} color="blue" />
+          <IconText text={noteData.status} color="slate" />
         </div>
       </div>
 
@@ -351,7 +374,7 @@ function TaskCard({taskData, className}) {
         <span className='flex justify-between w-full'>
           <h2 className="font-bold mb-1 text-sm">{taskData.title}</h2>
           <div className='relative'>
-            <IconAction dataFeather='more-vertical' className='p-[4px] shrink-0 bg-white border-none' iconOnClick={() => toggleVisbility('popUp')}/>
+            <IconAction dataFeather='more-vertical' className='' iconOnClick={() => toggleVisbility('popUp')}/>
             {visibilitity.popUp && 
               <Popup 
                 taskData={taskData}
@@ -362,12 +385,12 @@ function TaskCard({taskData, className}) {
         </span>
         <span className='flex gap-1 text-xs font-semibold text-gray-600 flex-wrap'>
           {(location.pathname == '/Home') ? (
-            <p className="text-xs flex p-1 bg-green-50 font-semibold text-green-700 flex-none">Task for: {taskData['project-title']}</p>
+            <IconText text={`Task for: ${taskData['project-title']}`} color="yellow" />
           ) : (
             null
           )}
-          <p className="text-xs flex p-1 text-blue-700 bg-blue-50 font-semibold flex-none">{taskData.status}</p>
-          <p className="text-xs flex p-1 bg-yellow-50 font-semibold text-yellow-700 flex-none">{taskData.deadline}</p>
+          <IconText text={taskData.status} color="blue" />
+          <IconText text={taskData.deadline} color="slate" />
         </span>
       </span>
 

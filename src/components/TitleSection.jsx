@@ -40,10 +40,15 @@ function HeadTitleSection({title = 'Title', className = '', nextTitle}) {
   )
 }
 
-function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', extraIcon, className= '', titleClassName = ""}) {
+function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', extraIcon, className= '', titleClassName = "", underTitle = ''}) {
   return ( 
     <section className={`flex w-full mb-4 justify-between z-0 ${className}`}>
-      <h2 className={`font-semibold w-full max-w-[80%] overflow-hidden overflow-ellipsis  ${titleClassName}`}>{title}</h2>
+      <section className='flex flex-col w-full'>
+        <h2 className={`font-semibold w-full max-w-[80%] overflow-hidden overflow-ellipsis  ${titleClassName}`}>{title}</h2>
+        {(underTitle) && (
+          <p className='text-[0.7rem] text-gray-800 font-semibold'>{underTitle}</p>
+        )}
+      </section>
       <span className='flex gap-2'>
         <IconAction dataFeather={`${dataFeather}`} iconOnClick={iconOnClick}/>
         {extraIcon}

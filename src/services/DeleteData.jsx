@@ -33,7 +33,7 @@ const deleteData = async ({id, collectionName, reloadComponent}) => {
 
     if(subNoteSnap, subTaskSnap) {
       const taskDelete = subTaskSnap.docs.map(task => deleteDoc(task.ref));
-      const noteDelete = subNoteSnap.docs.map(notes => deleteData(note.ref));
+      const noteDelete = subNoteSnap.docs.map(note => deleteData(note.ref));
 
       try {
         await Promise.all([...taskDelete, ...noteDelete])

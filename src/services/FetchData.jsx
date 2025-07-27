@@ -146,10 +146,11 @@ const useFetchNoteData = ( refreshKey, customWhere ) => {
   return{ noteData, loading }
 }
 
-const useFetchActiveProjectData = ( refreshKey ) => {
+const useFetchActiveProjectData = ( projectId, refreshKey ) => {
   const [projectData, setProjectData] = useState({});
   const [loading, setLoading] = useState(true);
-  const id = localStorage.getItem('activeProjectId')
+  const localProjectId = localStorage.getItem('activeProjectId')
+  const id = localProjectId || projectId;
 
 
   useEffect(() => {
@@ -189,7 +190,7 @@ const useFetchActiveProjectData = ( refreshKey ) => {
     }
   
     return () => unsubscribe();
-  }, [id, projectData, loading, refreshKey]);
+  }, [id, projectData, refreshKey]);
 
 
   return { projectData, loading}

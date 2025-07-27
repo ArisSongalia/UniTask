@@ -5,7 +5,7 @@ export default function ModalOverlay({ children, onClick }){
       onClick={onClick}
       >
 
-      <div onClick={(e) => e.stopPropagation()} className="cursor-default">
+      <div onClick={(e) => e.stopPropagation()} className="flex cursor-default w-full items-center justify-center">
         {children}
       </div>
     </div>
