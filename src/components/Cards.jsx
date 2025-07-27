@@ -210,8 +210,9 @@ function NoteCard({
           </p>
         </section>
 
-        <div className="w-full text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
+        <div className="flex w-full gap-1 text-xs text-gray-600 font-semibold pt-2 max-w-full overflow-x-scroll">
           <p className='p-1 bg-green-50 w-fit text-green-800'>{noteData.owner}</p>
+          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>{noteData['project-title']}</p>
           <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
         </div>
       </div>

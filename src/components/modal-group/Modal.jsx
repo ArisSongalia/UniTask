@@ -178,18 +178,18 @@ function CreateProject({ closeModal, projectData }) {
   );
 }
 
-function CreateNote({ closeModal, projectId }) {
+function CreateNote({ closeModal, projectData}) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ message: "", color: "" });
   const dateRef = useRef('');
+  const activeProjectId = localStorage.getItem('activeProjectId');
 
   const [form, setForm] = useState({
     title: "",
     message: "",
     file: "",
     date: "",
-    projectId: projectId,
   });
 
   const handleChange = (e) => {
@@ -204,6 +204,7 @@ function CreateNote({ closeModal, projectId }) {
 
   const handleCreateUserNote = async (e) => {
     e.preventDefault();
+
     try {
       const docRef = await addDoc(collection(db, "notes"), {
         title: form.title,
@@ -211,7 +212,8 @@ function CreateNote({ closeModal, projectId }) {
         date: form.date,
         owner: user.displayName,
         ownerUid: user.uid,
-        ['project-id']: projectId || null,
+        'project-id': projectData[0]?.id ?? null,
+        'project-title': projectData[0]?.title ?? null,
       }); 
 
       await updateDoc(docRef, { id: docRef.id });
@@ -663,6 +665,7 @@ function NoteFocus({ closeModal, noteData}) {
         </section>
         <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
           <p className='p-1 bg-green-50 w-fit text-green-800'>By {noteData.owner}</p>
+          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>In Project: {noteData['project-title']}</p>
           <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>{noteData.date}</p>
         </span>
       </section>

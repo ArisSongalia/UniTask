@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {IconTitleSection} from './TitleSection';
 import { CreateNote } from './modal-group/Modal';
-import { useFetchNoteData } from '../services/FetchData';
+import { useFetchNoteData, useFetchProjectData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
 import { BarLoader } from 'react-spinners';
@@ -18,12 +18,13 @@ function NoteSection({className = ''}) {
 
   const customWhere = where("project-id", "==", activeProjectId);
   const { noteData, loading } = useFetchNoteData(key, customWhere)
+  const { projectData } = useFetchProjectData(key, activeProjectId);
 
   
   return (
     <div id='note-div' className={'flex flex-col p-4 bg-white rounded-lg overflow-y-hidden h-full shadow-sm'}>
       <IconTitleSection title='Notes' dataFeather='plus' iconOnClick={togglePopUp} />
-      {showPopUp && <CreateNote closeModal={togglePopUp} projectId={activeProjectId}/>}
+      {showPopUp && <CreateNote closeModal={togglePopUp} projectData={projectData}/>}
 
       <section className={`grid grid-cols-2 gap-1 ${className}`}>
         {loading ? (
