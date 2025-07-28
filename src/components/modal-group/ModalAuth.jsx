@@ -3,7 +3,7 @@ import { auth, googleProvider, facebookProvider, db} from '../../config/firebase
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { IconTitleSection, HeadTitleSection } from '../TitleSection';
-import Button from '../Button';
+import Button, { ButtonIcon } from '../Button';
 import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
 import { useNavigate } from 'react-router-dom';
@@ -126,8 +126,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-1'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='px-8 py-3 text-white bg-red-700' text='Google' />
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='px-8 py-3 text-white bg-blue-700' text='Facebook' />
+            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1 bg-red-700' text='Google' />
+            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1 bg-blue-700' text='Facebook' />
           </section>
         </section>
       </div>
@@ -265,8 +265,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-1 h-full w-full items-center justify-center'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='px-8 py-3 text-white bg-red-700' text='Google' />
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='px-8 py-3 text-white bg-blue-700' text='Facebook' />
+            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1 bg-red-700' text='Google' />
+            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1 bg-blue-700' text='Facebook' />
           </section>
         </section>
       </div>
