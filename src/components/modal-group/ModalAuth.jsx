@@ -7,6 +7,7 @@ import Button from '../Button';
 import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
 import { useNavigate } from 'react-router-dom';
+import bgMain from '../../assets/bg-main.jpg';
 
 
 function SignUp() {
@@ -75,7 +76,7 @@ const handleSignInWithFacebook = async () => {
 
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-900'>
+    <div className='fixed inset-0 flex items-center bg-cover justify-center z-50 ' style={{ backgroundImage: `url(${bgMain})` }}>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <HeadTitleSection title='UniTask Register' className=''/>
         <form
@@ -124,9 +125,9 @@ const handleSignInWithFacebook = async () => {
 
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.25rem] px-4 text-white bg-red-600' text='Google'/>
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.25rem] px-4 text-white bg-blue-600' text='Facebook'/>
+          <section className='flex gap-1'>
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='px-8 py-3 text-white bg-red-700' text='Google' />
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='px-8 py-3 text-white bg-blue-700' text='Facebook' />
           </section>
         </section>
       </div>
@@ -215,7 +216,7 @@ const handleSignInWithFacebook = async () => {
 };
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50 bg-green-900'>
+    <div className='fixed inset-0 flex items-center bg-cover justify-center z-50 ' style={{ backgroundImage: `url(${bgMain})` }}>
       <div id='main' className='flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg'>
         <HeadTitleSection title='UniTask Login' />
         <form
@@ -263,9 +264,9 @@ const handleSignInWithFacebook = async () => {
         
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <section className='flex gap-2'>
-            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='h-[2.25rem] px-4 text-white bg-red-600' text='Google' />
-            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='h-[2.25rem] px-4 text-white bg-blue-600' text='Facebook' />
+          <section className='flex gap-1 h-full w-full items-center justify-center'>
+            <IconAction dataFeather='mail' iconOnClick={handleSignInWithGoogle} className='px-8 py-3 text-white bg-red-700' text='Google' />
+            <IconAction dataFeather='facebook' iconOnClick={handleSignInWithFacebook} className='px-8 py-3 text-white bg-blue-700' text='Facebook' />
           </section>
         </section>
       </div>

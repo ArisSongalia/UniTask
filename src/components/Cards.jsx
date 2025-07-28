@@ -107,15 +107,15 @@ function AlertCard({text = 'text', className = ''}) {
 function CreateCard({ title = "Title", description = "Description", onClick, color = 'green', className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-${color}-50 rounded-md overflow-hidden text-${color}-900 hover:cursor-pointer hover:border-opacity-50
-      flex-grow justify-between border-2 gap-4 border-${color}-800 border-opacity-30 hover:bg-${color}-100 p-4  h-[14rem] min-w-[9rem] ${className}`}
+      className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
+      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 font-semibold h-[14rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
           <span className='self-start flex flex-col gap-1 justify-between w-full'>
             <span className="flex gap-4 mb-2 justify-between items-center">
               <h2 className='font-bold text-sm'>{title}</h2>
-              <Icon dataFeather='plus' className={`text-${color}-800`}/>
+              <Icon dataFeather='plus' className={`text-green-800`}/>
             </span>
             <p className='text-sm'>{description}</p>
           </span>
