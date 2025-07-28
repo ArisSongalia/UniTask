@@ -126,8 +126,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-1'>
-            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1 bg-red-700' text='Google' />
-            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1 bg-blue-700' text='Facebook' />
+            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1' text='Google' />
+            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1' text='Facebook' />
           </section>
         </section>
       </div>
@@ -265,8 +265,8 @@ const handleSignInWithFacebook = async () => {
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
           <section className='flex gap-1 h-full w-full items-center justify-center'>
-            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1 bg-red-700' text='Google' />
-            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1 bg-blue-700' text='Facebook' />
+            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1' text='Google' />
+            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1' text='Facebook' />
           </section>
         </section>
       </div>
