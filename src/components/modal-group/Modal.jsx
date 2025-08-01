@@ -11,7 +11,7 @@ import { AlertCard } from '../Cards';
 import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
 import { TaskCard } from '../Cards';
-import { handleSignOut } from './ModalAuth';
+import { HandleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
@@ -718,6 +718,8 @@ function UserProfile({ closeModal, user={} }) {
       [section]: !prev[section],
     }))
   };
+
+  const { handleSignOut } = HandleSignOut();
 
   return (
     <ModalOverlay onClick={closeModal}>

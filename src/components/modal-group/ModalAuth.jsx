@@ -125,10 +125,7 @@ const handleSignInWithFacebook = async () => {
 
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <section className='flex gap-1'>
-            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1' text='Google' />
-            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1' text='Facebook' />
-          </section>
+          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} handleSignInWithFacebook={handleSignInWithFacebook} />
         </section>
       </div>
       {showCreateUsername && (
@@ -264,10 +261,7 @@ const handleSignInWithFacebook = async () => {
         
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <section className='flex gap-1 h-full w-full items-center justify-center'>
-            <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='text-white px-6 py-1' text='Google' />
-            <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='text-white px-6 py-1' text='Facebook' />
-          </section>
+          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} handleSignInWithFacebook={handleSignInWithFacebook} />
         </section>
       </div>
       {showCreateUsername && (
@@ -279,6 +273,15 @@ const handleSignInWithFacebook = async () => {
       )}
     </div>
   );
+}
+
+function SignInOptions({handleSignInWithGoogle, handleSignInWithFacebook}) {
+  return (
+    <section className='flex gap-1 h-full w-full items-center justify-center'>
+      <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='border  border-red-800' text='Google' />
+      <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='border border-blue-800' text='Facebook' />
+    </section>
+  )
 }
 
 function CreateUsername({ email, additionalData, closeModal, user }) {
@@ -355,26 +358,22 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
   );
 }
 
+function HandleSignOut() {
+  const navigate = useNavigate();
+  
+  const handleSignOut = async () => {
+    try {
+      const email = auth.currentUser?.email; 
+      signOut(auth);
+      alert('Logged Out: ' + email);
+      navigate('/Sign-In')
+    } catch (error) {
+      alert("Error Signing out: " + error.message);
+    }
+  };
 
-const handleSignOut = async () => {
-  try {
-    const email = auth.currentUser?.email; 
-    signOut(auth);
-    alert('Logged Out: ' + email);
-    window.location.reload();
-  } catch (error) {
-    alert("Error Signing out: " + error.message);
-  }
-};
-
-function NoAccountPage({}) {
-  return (
-    <section className='flex-col max-w-screen-2xl h-[90vh] rounded-xl p-4 gap-4 bg-green-800 text-white'>
-      <h1 className='text-4xl font-bold'>The Best Way to Complete Tasks With Everyone, UNITASK</h1>
-      <p>Login/Signup to start collaborating</p>
-    </section>
-  )
+  return { handleSignOut }
 }
 
 
-export {SignIn, SignUp, CreateUsername, handleSignOut, NoAccountPage};
+export {SignIn, SignUp, CreateUsername, HandleSignOut};
