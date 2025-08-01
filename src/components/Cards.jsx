@@ -51,8 +51,8 @@ function SummaryCard({
 
 
   return (
-  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4
-                       p-4 justify-between text-white h-auto shadow-sm ${className}`}>
+  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md
+                       p-4 justify-between text-white h-auto ${className}`}>
       <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
         <p className='font-semibold text-sm'>Hi <UseFetchUserName />, Here's your tasks📋</p>

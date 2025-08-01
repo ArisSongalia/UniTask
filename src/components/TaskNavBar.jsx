@@ -16,16 +16,16 @@ function TaskNavBar() {
     addMembers: false,
     socialSection: false,
     taskSideBar: false,
-  })
+  });
 
   const toggleVisbility = (section) => {
     setVisbility((prev) => ({
       ...prev,
       [section]: !prev[section],
     }))
-  }
+  };
 
-  const { projectData, loading } = useFetchActiveProjectData(key)
+  const { projectData, loading } = useFetchActiveProjectData(key);
 
   return (
     <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>

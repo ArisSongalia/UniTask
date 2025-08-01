@@ -6,7 +6,7 @@ import { IconTitleSection } from './TitleSection';
 
 function HomeSideBar({className = '', closeModal = () => {} }) {
   return (
-    <div id="header" className={`flex w-full lg:w-[35rem] h-full flex-col bg-gray-100 ${className}`}>
+    <div id="header" className={`flex w-full lg:w-[35rem] h-full gap-2 flex-col bg-gray-100 ${className}`}>
     <IconTitleSection 
       title='Data' 
       dataFeather='x' 

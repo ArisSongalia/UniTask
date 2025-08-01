@@ -25,7 +25,7 @@ function AssignedTasks({}) {
   const { taskData, loading } = useFetchTaskData(customWhere, key);
 
   return (
-    <div className="flex flex-col bg-white p-4 rounded-md w-full h-[calc(100vh-3.5rem)] shadow-sm overflow-y-auto">
+    <div className="flex flex-col bg-white p-4 rounded-md w-full h-[calc(100vh-3.5rem)] shadow-md overflow-y-auto">
       <DisplayTitleSection
         title="Assigned Tasks"
         displayCount={taskData.length}

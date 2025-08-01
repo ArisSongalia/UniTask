@@ -22,7 +22,7 @@ function NoteSection({className = ''}) {
 
   
   return (
-    <div id='note-div' className={'flex flex-col p-4 bg-white rounded-lg overflow-y-hidden h-full shadow-sm'}>
+    <div id='note-div' className={'flex flex-col p-4 bg-white rounded-lg overflow-y-hidden h-full shadow-md'}>
       <IconTitleSection title='Notes' dataFeather='plus' iconOnClick={togglePopUp} />
       {showPopUp && <CreateNote closeModal={togglePopUp} projectData={projectData}/>}
 

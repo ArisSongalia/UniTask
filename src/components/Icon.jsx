@@ -11,8 +11,8 @@ function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', st
   return (
     <section 
       className={`flex rounded-full  gap-2 items-center justify-center text-green-900
-        w-fit h-fit cursor-pointer p-[4px] shrink-0 bg-white border-none
-        hover:bg-green-700 hover:text-white
+        w-fit h-fit cursor-pointer shrink-0 bg-white border-none
+        hover:bg-green-700 hover:text-white p-[6px]
         active:bg-green-700 focus:bg-green-50 focus:outline-none
         ${className}`}
       style={{ touchAction: 'manipulation' }}

@@ -29,19 +29,17 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
 
   return (
       <div
-        className={`flex flex-col absolute z-50 top-0 right-0 gap-0 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
+        className={`flex flex-col absolute z-50 top-0 right-0 gap-1 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title={taskData?.title || projectData?.title || noteData?.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
         <ButtonIcon 
           text="Move Status" 
           dataFeather="flag" 
-          className='border-none bg-white'
           onClick={handleMoveStatus} 
         />
         <ButtonIcon 
           text="Edit" 
-          className='border-none bg-white'
           dataFeather="edit"
           onClick={handleShowUpdateInfo}
         />
@@ -59,7 +57,6 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
         <ButtonIcon 
           text="Delete" 
           dataFeather="trash"
-          className='border-none bg-white'
           onClick={handleDelete} 
          />
       </div>

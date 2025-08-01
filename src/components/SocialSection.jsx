@@ -61,7 +61,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
   return (
     <div
-      className={`flex z-50 absolute top-20 shadow-md right-0 flex-col p-4 rounded-md w-full max-w-[40rem] h-[35rem] overflow-hidden bg-white ${className}`}
+      className={`flex z-50 absolute top-[3.7rem] shadow-md right-0 flex-col p-4 rounded-md w-full max-w-[40rem] h-[35rem] overflow-hidden bg-white ${className}`}
     >
       <IconTitleSection
         title="Socials"
