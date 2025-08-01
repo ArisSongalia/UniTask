@@ -107,7 +107,7 @@ function AlertCard({text = 'text', className = ''}) {
 function CreateCard({ title = "Title", description = "Description", onClick, color = 'green', className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-900 hover:cursor-pointer hover:border-opacity-50
+      className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-700 hover:cursor-pointer hover:border-opacity-50
       flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 font-semibold h-[14rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
@@ -193,7 +193,7 @@ function NoteCard({
     }
   }
 
-  const [visibilitity, dispatch] = useReducer(reducer, initialVisibilityState);
+  const [visibility, dispatch] = useReducer(reducer, initialVisibilityState);
 
   return (
       <div
@@ -205,7 +205,7 @@ function NoteCard({
           hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
           p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
-      {visibilitity.noteFocus && 
+      {visibility.noteFocus && 
         <NoteFocus closeModal={() => dispatch({ type: 'NOTE_FOCUS' })} noteData={noteData} 
       />}
         <section className="flex-grow w-full">
@@ -216,7 +216,7 @@ function NoteCard({
               iconOnClick={() => dispatch({ type: 'TOGGLE_POPUP'})}
               underTitle={noteData.date}
             />
-            {visibilitity.popUp &&
+            {visibility.popUp &&
               <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} collectionName='notes'/>
             }
           </div>
@@ -318,7 +318,7 @@ function TaskCard({taskData, className}) {
   const navigate = useNavigate();
   const projectId = taskData['project-id'];
   const { setProjectID } = useProjectContext();
-  const [visibilitity, setVisbility] = useState({
+  const [visibility, setVisbility] = useState({
     popUp: false,
     taskFocus: false,
   })
@@ -345,14 +345,14 @@ function TaskCard({taskData, className}) {
     }))
   }
 
-  if(!taskData) return <span className='text-sm bg-red-50 p-1 w-fit text-red-800'>Cannot load task</span>
+  if(!taskData) return <span className='text-sm bg-red-50 p-1 w-fit text-red-700'>Cannot load task info</span>
 
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
         w-full justify-between border p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
       onClick={() => {
-        if(location.pathname ==='/Project') {
+        if(location.pathname ==='/Home/Project') {
           toggleVisbility('taskFocus')
         } else if(location.pathname === '/Home') {
           if(taskData?.['project-id']) {
@@ -362,7 +362,7 @@ function TaskCard({taskData, className}) {
         }
       }}
     >
-    {visibilitity.taskFocus && 
+    {visibility.taskFocus && 
       <TaskFocus closeModal={() => toggleVisbility('taskFocus')} taskData={taskData}/>
     }
 
@@ -370,7 +370,7 @@ function TaskCard({taskData, className}) {
 
         <section className="relative">
           <IconTitleSection title={taskData.title} underTitle={taskData.deadline} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} />
-          {visibilitity.popUp &&
+          {visibility.popUp &&
             <Popup
               taskData={taskData}
               closeModal={() => toggleVisbility('popUp')}
@@ -380,7 +380,7 @@ function TaskCard({taskData, className}) {
         </section>
       </span>
 
-      <IconText color='green' text={taskData.description} />
+      <IconText color='green' border text={taskData.description} />
       
       <section className="flex gap-1 items-center justify-between mt-2">
         <section className='flex flex-wrap gap-1'>

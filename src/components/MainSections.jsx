@@ -77,7 +77,6 @@ function MainNotesSection() {
         <CreateCard  
           onClick={togglePopUp} 
           title='Create Note' 
-          color='yellow'
           description='Write a personal note. These notes won’t be linked to any project.'
         />
         {showPopUp && <CreateNote closeModal={togglePopUp} />}

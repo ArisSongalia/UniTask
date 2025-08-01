@@ -29,10 +29,10 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
 
   return (
       <div
-        className={`flex flex-col absolute z-50 top-0 right-0 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
+        className={`flex flex-col absolute z-50 top-0 right-0 p-4 bg-white border rounded-md w-[12rem] h-auto cursor-default shadow-md${className}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title={taskData?.title || projectData?.title || noteData?.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
+        <IconTitleSection title={taskData?.title || projectData?.title || noteData?.title} iconOnClick={closeModal} dataFeather="x" />
         <ButtonIcon 
           text="Move Status" 
           dataFeather="flag" 

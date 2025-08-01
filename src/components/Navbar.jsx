@@ -50,18 +50,18 @@ function Navbar() {
           <IconAction dataFeather='message-square' iconOnClick={() => toggleVisibility('socialSection')} />
           {visibilitity.socialSection && <SocialSection closeModal={() => toggleVisibility('socialSection')} />}
 
-          {user ? (
-            <IconUser user={user} className='h-7 w-7'/>    
-          ) :
-            null
-          }
-
           <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={() => toggleVisibility('sideBar')} />
           {visibilitity.sideBar && 
           <HomeSideBar 
             closeModal={() => toggleVisibility('sideBar')}
             className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
           />}
+
+          {user ? (
+            <IconUser user={user} className='h-7 w-7'/>    
+          ) :
+            null
+          }
         </span>
       </div>
     </section>
