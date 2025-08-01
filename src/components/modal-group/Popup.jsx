@@ -1,11 +1,11 @@
 
-import { IconTitleSection } from './TitleSection';
-import deleteData from '../services/DeleteData';
-import { useReloadContext } from '../context/ReloadContext';
-import Button, { ButtonIcon } from './Button';
-import { useMoveStatus } from '../services/useMoveStatus';
+import { IconTitleSection } from '../TitleSection';
+import deleteData from '../../services/DeleteData';
+import { useReloadContext } from '../../context/ReloadContext';
+import Button, { ButtonIcon } from '../Button';
+import { useMoveStatus } from '../../services/useMoveStatus';
 import { useState } from 'react';
-import { CreateNote, CreateProject, CreateTask } from './modal-group/Modal';
+import { CreateNote, CreateProject, CreateTask } from './Modal';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -29,7 +29,7 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
 
   return (
       <div
-        className={`flex flex-col absolute z-50 top-0 right-0 gap-1 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
+        className={`flex flex-col absolute z-50 top-0 right-0 p-4 bg-white border rounded-md w-[10rem] h-auto cursor-default shadow-md${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title={taskData?.title || projectData?.title || noteData?.title} iconOnClick={closeModal} className="items-center" dataFeather="x" />
@@ -37,11 +37,13 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
           text="Move Status" 
           dataFeather="flag" 
           onClick={handleMoveStatus} 
+          className='bg-white'
         />
         <ButtonIcon 
           text="Edit" 
           dataFeather="edit"
           onClick={handleShowUpdateInfo}
+          className='bg-white'
         />
         {showUpdateInfo && (
           taskData? (
@@ -58,6 +60,7 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
           text="Delete" 
           dataFeather="trash"
           onClick={handleDelete} 
+          className='bg-white'
          />
       </div>
   );

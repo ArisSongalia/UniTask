@@ -56,7 +56,7 @@ function ProgressBoard() {
   return (
     <div className="flex flex-col bg-white rounded-md overflow-hidden h-full shadow-md w-full flex-grow-0">
       <section className='title-section flex p-4 justify-between'>
-        <h2 className='font-semibold max-w-[80%]'>Progress Board</h2>
+        <h2 className='font-bold text-lg text-green-700'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
           <IconAction dataFeather='check-square' iconOnClick={() => toggleVisibility('completedTab')} />

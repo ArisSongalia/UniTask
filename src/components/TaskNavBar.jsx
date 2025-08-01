@@ -28,26 +28,27 @@ function TaskNavBar() {
   const { projectData, loading } = useFetchActiveProjectData(key);
 
   return (
-    <div className='bg-white flex z-50 items-center justify-center sticky top-0 w-full h-fit shadow-sm'>
-      <div className='flex max-w-screen-2xl w-full p-2 justify-between items-center sticky top-0'>
+    <div className='bg-white flex z-50 items-center p-4 justify-center sticky top-0 w-full h-fit shadow-sm'>
+      <div className='flex max-w-screen-2xl w-full justify-between items-center sticky top-0'>
         <span className='flex gap-2 items-center'>
-          <Link to='/Home'>
             <IconAction 
               dataFeather='arrow-left' 
               className='h-[2.5rem] w-[2.5rem] border-none justify-center' 
               style={{ width: '1.5rem', height: '1.5rem', strokeWidth: '3' }}
-              iconOnClick={() => localStorage.removeItem('activeProjectId')}
+              iconOnClick={() => {
+                localStorage.removeItem('activeProjectId'),
+                window.history.back()
+              }}
             />
-          </Link>
           {loading ? (
             <BarLoader color='#228B22' size={10} />
           ) : (
-            <span className='flex flex-col'>
-              <h1 className='text-lg font-bold mb-1 text-green-700'>{projectData.title}</h1>
+            <span className='flex flex-col text-gray-600'>
+              <h1 className='text-lg font-bold mb-1 '>{projectData.title}</h1>
               <span className='flex gap-1'>
-                <p className="text-xs text-gray-600 font-semibold">{projectData.type}</p>
+                <p className="text-xs font-semibold">{projectData.type}</p>
                 <span className="h-4 border-l border-gray-400"></span>
-                <p className="text-xs text-gray-600 font-semibold">{projectData.date}</p>
+                <p className="text-xs font-semibold">{projectData.date}</p>
               </span>
             </span>
           )}

@@ -3,7 +3,7 @@ import Button from './Button'
 import Icon, {IconText} from './Icon'
 import { IconAction } from './Icon';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Popup from './Popup';
+import Popup from './modal-group/Popup';
 import { useProjectContext } from '../context/ProjectContext';
 import { where } from 'firebase/firestore';
 import { useReloadContext } from '../context/ReloadContext';
