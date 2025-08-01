@@ -708,18 +708,41 @@ function NoteFocus({ closeModal, noteData}) {
 }
 
 function UserProfile({ closeModal, user={} }) {
+  const [visibility, setVisbility] = useState({
+    addTeamMates: false,
+  });
+
+  const toggleVisbility = (section) => {
+    setVisbility((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }))
+  };
+
   return (
     <ModalOverlay onClick={closeModal}>
-      <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
+      <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className=''/>
         <span className='flex p-2 gap-4 items-center'>
-          <img src={user.photoURL} alt="" className='h-12 w-12 rounded-full'/>
-          <span className='flex flex-col'>
-            <p className='font-bold'>{user.username}</p>
+          <img src={user.photoURL} alt="" className='h-full w-auto rounded-full'/>
+          <span className='flex flex-col h-'>
+            <p className='font-bold'>{user.displayName}</p>
             <p className=''>{user.email}</p>
+            <p className='text-gray-600 text-xs mt-2'>UID: {user.uid}</p>
           </span>
         </span>
-        <p className='text-gray-600 text-xs mt-2'>UID: {user.uid}</p>
+    
+
+        <div id="connections" className='mt-2'>
+          <IconTitleSection dataFeather='user-plus' title='Teammates' iconOnClick={() => toggleVisbility('addTeamMates')} />
+          {visibility.addTeamMates && <AddTeamMates closeModal={() =>toggleVisbility('addTeamMates')} /> }
+
+          <section>
+
+          </section>
+
+        </div>
+
 
         <Button
           onClick={handleSignOut}
@@ -730,6 +753,33 @@ function UserProfile({ closeModal, user={} }) {
       </div>
     </ModalOverlay>
   );
+}
+
+function AddTeamMates({closeModal}) {
+  return(
+    <ModalOverlay>
+      <div className='flex z-20 max-w-[30rem] w-full h-auto min-h-[20rem] p-4 flex-col bg-white rounded-md justify-between'>
+        <IconTitleSection title='Add Team Mates' dataFeather='x' iconOnClick={closeModal} />
+          <label htmlFor="search" className='flex h-10 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center'>
+            <input
+              className="border border-gray-300 rounded-sm p-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
+              placeholder='Enter username or user ID'
+            />
+            <IconAction
+              dataFeather="search"
+              text='Search'
+              className='rounded-sm h-full'
+            />
+          </label>
+
+          <div id='search-result' className='h-full w-full bg-slate-50 flex-grow my-2'>
+
+          </div>
+
+          <Button text='Confirm Add Users' className=''/>
+      </div>
+    </ModalOverlay>
+  )
 }
 
 function CompletedTab({ closeModal, taskData={}, loading}) {
@@ -927,5 +977,5 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, PendingTasks}
+export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, PendingTasks, AddTeamMates}
  

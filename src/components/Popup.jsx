@@ -1,11 +1,11 @@
 
-import { IconTitleSection } from '../TitleSection';
-import deleteData from '../../services/DeleteData';
-import { useReloadContext } from '../../context/ReloadContext';
-import Button, { ButtonIcon } from '../Button';
-import { useMoveStatus } from '../../services/useMoveStatus';
+import { IconTitleSection } from './TitleSection';
+import deleteData from '../services/DeleteData';
+import { useReloadContext } from '../context/ReloadContext';
+import Button, { ButtonIcon } from './Button';
+import { useMoveStatus } from '../services/useMoveStatus';
 import { useState } from 'react';
-import { CreateNote, CreateProject, CreateTask } from './Modal';
+import { CreateNote, CreateProject, CreateTask } from './modal-group/Modal';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
