@@ -363,7 +363,11 @@ function TaskCard({taskData, className}) {
       }}
     >
     {visibility.taskFocus && 
-      <TaskFocus closeModal={() => toggleVisbility('taskFocus')} taskData={taskData}/>
+      <TaskFocus 
+        closeModal={() => toggleVisbility('taskFocus')} 
+        collectionName='tasks' 
+        taskData={taskData}
+      />
     }
 
       <span className='flex flex-col'>

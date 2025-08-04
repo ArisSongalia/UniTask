@@ -17,6 +17,7 @@ import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
+import { connectStorageEmulator } from 'firebase/storage';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -822,13 +823,14 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
 
 
   const handleMoveStatus = async () => {
-    await moveStatus({ name: collectionName, id: taskData.id, team: taskData.team })
+    await moveStatus({ name: collectionName, id: taskData?.id, team: taskData?.team });
+    closeModal();
   };
 
-  const handleDeleteData = async () => {
-    await deleteData(taskData.id, collectionName, reloadComponent)
-  };
-
+  const handleDelete = async () => {
+    await deleteData({ id: taskData?.id, collectionName: collectionName, reloadComponent: reloadComponent });
+  }
+  
   const handleShowCreateTask = () => {
     setShowCreateTask(!showCreateTask);
   };
@@ -860,7 +862,7 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
             </section>
               
             <section className='flex gap-1 items-center'>
-              <IconAction dataFeather='trash' iconOnClick={handleDeleteData}/>
+              <IconAction dataFeather='trash' iconOnClick={handleDelete}/>
               <IconAction dataFeather='edit' iconOnClick={handleShowCreateTask}/>
               {showCreateTask && <CreateTask taskData={taskData} closeModal={handleShowCreateTask}/>}
               <Button text='Move Status' onClick={handleMoveStatus} />

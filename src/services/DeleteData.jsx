@@ -3,11 +3,12 @@ import { db } from '../config/firebase';
 
 
 const deleteData = async ({id, collectionName, reloadComponent}) => {
+  console.log(id, collectionName)
   try {
 
     if (!id) {
-      alert("Document not found!");
-      console.error("Document not found!");
+      alert("Cannot delete data!");
+      console.error("No ID received!");
       return;
     }
 
@@ -31,7 +32,7 @@ const deleteData = async ({id, collectionName, reloadComponent}) => {
     const subNotesQ = query(subNoteRef, where('project-id', '==', id));
     const subNoteSnap = await getDocs(subNotesQ);
 
-    if(subNoteSnap, subTaskSnap) {
+    if(!subNoteSnap.empty || !subTaskSnap.empty) {
       const taskDelete = subTaskSnap.docs.map(task => deleteDoc(task.ref));
       const noteDelete = subNoteSnap.docs.map(note => deleteData(note.ref));
 
