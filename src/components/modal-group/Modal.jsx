@@ -875,7 +875,7 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
   )
 }
 
-function PendingTasks({ closeModal, taskData, projectData, noteData }) {
+function Summary({ closeModal, taskData, projectData, noteData }) {
   const [activeSection, setActiveSection] = useState('Assigned Tasks')
   const titles = [
     {
@@ -902,24 +902,21 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
   ]
 
   const columns = useMemo(() => [
+
     {
-      header: 'Status',
-      key: 'status',
-      meta: {
-        className: 'text-green-700'
-      } 
+      header: 'Title',
+      accessorFn: row => row.title || row['project-title'] || 'N/A'
     },
     {
-      header: 'Name',
-      key: 'title',
-      meta: {
-        className: 'text-blue-700'
-      }
+      header: 'Description',
+        accessorFn: row => {
+          const { title, team, file, ...rest } = row;
+          return Object.entries(rest)
+            .map(([key, value]) => `${key}: ${value ?? 'N/A'}`)
+            .join('\n');
+        },
     }
-
   ], []);
-
-  
 
   const table = useReactTable({
     data: activeSection === 'Assigned Tasks'
@@ -933,23 +930,25 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
     getCoreRowModel: getCoreRowModel(),
   })
 
+  
+
   return (
     <ModalOverlay>
       <div
-        className='flex flex-col max-h-[95vh] max-w-[60rem] w-full h-full bg-white p-4 rounded-md overflow-x-auto'
+        className='flex flex-col max-h-[80vh] max-w-[60rem] w-full h-full min-h-[30rem] bg-white p-4 rounded-md overflow-x-auto'
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title='Pending Tasks' dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection title='Task Summary' dataFeather='x' iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
-        <table className='w-full h-full bg-white'>
+        <table className='w-full h-full bg-white text-slate-800'>
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
                   <th 
                     key={header.id} 
-                    className={`border px-2 py-1 text-xs font-semibold text-left ${header.column.columnDef.meta?.className ?? ''}`}
+                    className={`border px-2 py-1 text-xs font-semibold text-left w-[5rem]`}
 
                   >
                     {header.isPlaceholder
@@ -967,7 +966,7 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
             {table.getRowModel().rows.map(row => (
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className='border px-2 py-1'>
+                  <td key={cell.id} className='border px-2 py-1 text-sm whitespace-pre-wrap'>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -981,5 +980,5 @@ function PendingTasks({ closeModal, taskData, projectData, noteData }) {
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, PendingTasks, AddTeamMates}
+export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, Summary, AddTeamMates}
  

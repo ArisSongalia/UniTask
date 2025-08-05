@@ -13,10 +13,9 @@ import MainCanvas from './modal-group/MainCanvas';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
-import { NoteFocus, PendingTasks, TaskFocus } from "./modal-group/Modal";
+import { NoteFocus, Summary, TaskFocus } from "./modal-group/Modal";
 import { BarLoader } from 'react-spinners';
 import { IconTitleSection } from './TitleSection';
-import flags from 'react-phone-number-input/flags';
 
 
 function SummaryCard({
@@ -28,11 +27,11 @@ function SummaryCard({
   const user = useAuth();
   const { key } = useReloadContext()
   const [customWhere, setCustomWhere] = useState(null);
-  const [showPendingTasks, setShowPendingTasks] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
 
   
-  const handleShowPendingTasks = () => {
-    setShowPendingTasks(!showPendingTasks);
+  const handleShowSummary = () => {
+    setShowSummary(!showSummary);
   }
 
   useEffect(() => {
@@ -70,10 +69,10 @@ function SummaryCard({
           <BarLoader color='white' className='self-center'/>
         )}
 
-      <Button text='Check Pending' onClick={handleShowPendingTasks} />
-      {showPendingTasks && 
-      <PendingTasks 
-        closeModal={handleShowPendingTasks} 
+      <Button text='Check Summary' onClick={handleShowSummary} />
+      {showSummary && 
+      <Summary 
+        closeModal={handleShowSummary} 
         taskData={taskData} 
         projectData={projectData}
         noteData={noteData}
