@@ -141,7 +141,7 @@ function CreateProject({ closeModal, projectData }) {
 
           {!projectData ? (
             <label className="flex flex-col text-gray-600">
-              Task Type
+              Project Type
               <div className="flex items-center space-x-4 mt-2">
                 <label className="flex items-center space-x-2 hover:cursor-pointer">
                   <input
@@ -444,6 +444,23 @@ function CreateTask({ closeModal, taskData}) {
               onChange={handleChange}
               required
             />
+          </label>
+
+          <label htmlFor="status" className="flex flex-col text-gray-600">
+            Status
+            <select 
+              id='status' 
+              name='status' 
+              value={form['status']} 
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-md px-4 pr-10 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              required
+            >
+              <option value="To-do">To-do</option>
+              <option value="In-progress">In-progress</option>
+              <option value="To-review">To-review</option>
+              <option value="Finished">Finished</option>
+            </select>
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
@@ -911,7 +928,8 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
       header: 'Description',
         accessorFn: row => {
           const { title, team, file, ...rest } = row;
-          return Object.entries(rest)
+          const { ['team-uids']: _, ...filteredRest } = rest;
+          return Object.entries(filteredRest)
             .map(([key, value]) => `${key}: ${value ?? 'N/A'}`)
             .join('\n');
         },
@@ -935,7 +953,7 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
   return (
     <ModalOverlay>
       <div
-        className='flex flex-col max-h-[80vh] max-w-[60rem] w-full h-full min-h-[30rem] bg-white p-4 rounded-md overflow-x-auto'
+        className='flex flex-col max-h-[vh] max-w-[60rem] w-full h-full min-h-[30rem] bg-white p-4 rounded-md overflow-x-auto'
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title='Task Summary' dataFeather='x' iconOnClick={closeModal} />
