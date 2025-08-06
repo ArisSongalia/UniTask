@@ -1,6 +1,8 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import dotenv from 'dotenv';
-dotenv.config;
+import fs from 'fs';
+dotenv.config();
+
 
 const uri = "mongodb+srv://arissongaliamcpe:Relente%23@uni-task.thupthf.mongodb.net/?retryWrites=true&w=majority&appName=uni-task";
 const client = new MongoClient(uri, {
@@ -10,6 +12,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+const db = client.db('uni-task');
 
 let isConnected = false;
 
@@ -51,4 +54,23 @@ async function createCollection({collectionName}) {
     }
 };
 
-export { client, connectMongo, isMongoConnected, createCollection }
+async function uploadRawImage({ filename, filedata, collectionName }){
+  const currentCollection = collectionName ?? 'files';
+  await createCollection({ collectionName: currentCollection });
+  const collection = db.collection(currentCollection);
+
+  if(!fs.existsSync(filedata)) {
+    console.error('File data not found', filedata);
+    return;
+  }
+
+  const imageBuffer = fs.readFileSync(filedata);
+
+  await collection.insertOne({
+    filename: filename ?? 'untitled',
+    date: new Date(),
+    filedata: imageBuffer,
+  })
+}
+
+export { client, connectMongo, isMongoConnected, createCollection, uploadRawImage }

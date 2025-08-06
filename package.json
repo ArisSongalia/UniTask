@@ -17,6 +17,7 @@
     "express": "^5.1.0",
     "feather-icons": "^4.29.2",
     "firebase": "^11.0.2",
+    "fs": "^0.0.1-security",
     "mongodb": "^6.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
