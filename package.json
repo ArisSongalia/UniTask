@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "esbuild": "^0.25.0",
+    "express": "^5.1.0",
     "feather-icons": "^4.29.2",
     "firebase": "^11.0.2",
+    "mongodb": "^6.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-phone-input-2": "^2.15.1",

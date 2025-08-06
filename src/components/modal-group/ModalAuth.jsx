@@ -55,25 +55,6 @@ const handleSignInWithGoogle = async () => {
   }
 };
 
-const handleSignInWithFacebook = async () => {
-  try {
-    const userCredintial = await signInWithPopup(auth, facebookProvider);
-
-    const user = userCredintial.user;
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    const userData = userDoc.data();
-
-    if (!userData?.username) {
-      setShowCreateUsername(true);
-    } else {
-      setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/Home');
-    }
-  } catch (error) {
-    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
-  }
-};
-
 
   return (
     <div className='fixed inset-0 flex items-center bg-cover justify-center z-50 ' style={{ backgroundImage: `url(${bgMain})` }}>
@@ -125,7 +106,7 @@ const handleSignInWithFacebook = async () => {
 
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} handleSignInWithFacebook={handleSignInWithFacebook} />
+          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} />
         </section>
       </div>
       {showCreateUsername && (
@@ -193,24 +174,6 @@ const handleSignInWithGoogle = async () => {
   }
 };
 
-const handleSignInWithFacebook = async () => {
-  try {
-    const userCredintial = await signInWithPopup(auth, facebookProvider);
-
-    const user = userCredintial.user;
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    const userData = userDoc.data();
-
-    if (!userData?.username) {
-      setShowCreateUsername(true);
-    } else {
-      setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/Home');
-    }
-  } catch (error) {
-    setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
-  }
-};
 
   return (
     <div className='fixed inset-0 flex items-center bg-cover justify-center z-50 ' style={{ backgroundImage: `url(${bgMain})` }}>
@@ -261,7 +224,7 @@ const handleSignInWithFacebook = async () => {
         
         <section className="w-full flex flex-col gap-4 items-center">
           <p>Or sign up with</p>
-          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} handleSignInWithFacebook={handleSignInWithFacebook} />
+          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle}/>
         </section>
       </div>
       {showCreateUsername && (
@@ -278,8 +241,13 @@ const handleSignInWithFacebook = async () => {
 function SignInOptions({handleSignInWithGoogle, handleSignInWithFacebook}) {
   return (
     <section className='flex gap-1 h-full w-full items-center justify-center'>
-      <ButtonIcon dataFeather='mail' onClick={handleSignInWithGoogle} className='border  border-red-800' text='Google' />
-      <ButtonIcon dataFeather='facebook' onClick={handleSignInWithFacebook} className='border border-blue-800' text='Facebook' />
+      <ButtonIcon 
+        dataFeather='mail' 
+        onClick={handleSignInWithGoogle} 
+        className='border border-red-800 w-full justify-center hover:bg-red-700 bg-red-50 text-red-700' 
+        iconClassName='text-red-700' 
+        text='Google' 
+      />
     </section>
   )
 }

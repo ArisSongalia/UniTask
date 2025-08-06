@@ -6,13 +6,13 @@ function RecentTasks() {
   const [activeSection, setActiveSection] = useState('project');
   const titles = [
     {
-      label: 'Recent Tasks',
+      label: 'Pending Projects',
       onClick: () => setActiveSection('project'),
       isActive: activeSection === 'project',
       dataFeather: 'briefcase'
     },
     {
-      label: 'Notes',
+      label: 'Pinned Notes',
       onClick: () => setActiveSection('notes'),
       isActive: activeSection === 'notes',
       dataFeather: 'file-text'

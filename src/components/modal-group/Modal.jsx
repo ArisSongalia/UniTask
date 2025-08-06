@@ -910,10 +910,10 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
       key: 'title',
     },
     {
-      label: 'Action Notes',
+      label: 'Pinned Notes',
       onClick: () => setActiveSection('Action Notes'),
       isActive: activeSection === 'Action Notes',
-      dataFeather: 'paperclip',
+      dataFeather: 'file-text',
       key: 'title',
     }
   ]
@@ -953,13 +953,13 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
   return (
     <ModalOverlay>
       <div
-        className='flex flex-col max-h-[vh] max-w-[60rem] w-full h-full min-h-[30rem] bg-white p-4 rounded-md overflow-x-auto'
+        className='flex flex-col max-w-[60rem] w-full h-[75vh] bg-white p-4 rounded-md overflow-x-auto'
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection title='Task Summary' dataFeather='x' iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
-        <table className='w-full h-full bg-white text-slate-800'>
+        <table className='w-full bg-white text-slate-800'>
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
@@ -967,7 +967,6 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
                   <th 
                     key={header.id} 
                     className={`border px-2 py-1 text-xs font-semibold text-left w-[5rem]`}
-
                   >
                     {header.isPlaceholder
                       ? null

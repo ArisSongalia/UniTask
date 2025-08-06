@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Button from './Button'
+import { ButtonIcon } from './Button'
 import { IconAction } from './Icon'
 import icon from '../assets/unitask.svg'
 
@@ -62,13 +62,13 @@ function MultiTitleSection({ titles}) {
     <section className="flex w-full mb-4 justify-between items-center border-b-2  pb-2">
       <div className="flex gap-2 items-center">
         {titles.map((titleObj, index) => (
-          <Button
+          <ButtonIcon
             key={index}
             text={titleObj.label}
             onClick={titleObj.onClick}
             dataFeather={titleObj.dataFeather}
             className={`${
-              titleObj.isActive ? 'text-white bg-green-700' : 'bg-solid'
+              titleObj.isActive ? 'text-white bg-green-800' : 'bg-solid'
             }`}
             iconClassName={`${
               titleObj.isActive ? 'text-white' : 'bg-solid'

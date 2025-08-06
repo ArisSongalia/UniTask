@@ -8,12 +8,12 @@
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 6px; 
+  width: 8px; 
   height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #bbe4cb;
+  background-color: #86b99a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
