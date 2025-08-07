@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { IconAction, IconUser } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
-import { addDoc, collection, getDoc, updateDoc, doc,  } from 'firebase/firestore';
+import { addDoc, collection, getDoc, updateDoc, doc, setDoc,  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
@@ -213,8 +213,26 @@ function CreateNote({ closeModal, noteData, projectData}) {
 
     try {
       if (!noteData) {
-        const docRef = await addDoc(collection(db, "notes"), {
+        const noteRef = doc(collection(db, "notes"));
+        const noteRefId = noteRef.id;
+
+        if(form.file) {
+          const formData = new FormData();
+          formData.append('file', form.file);
+          formData.append('filename', form.file.name);
+          formData.append('parentId', noteRefId);
+
+          await fetch('http://localhost:5000/api/upload', {
+            method: "POST",
+            body: formData,
+          });
+        }
+
+        
+
+        await setDoc(noteRef, {
           title: form.title,
+          id: noteRefId,
           message: form.message,
           date: form.date,
           owner: user.displayName,
@@ -223,18 +241,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
           'project-id': projectData?.[0]?.id ?? null,
           'project-title': projectData?.[0]?.title ?? 'Personal',
         }); 
-
-        if(form.file) {
-          const formData = new FormData();
-          formData.append('file', form.file);
-          formData.append('filename', form.file.name)
-
-          await updateDoc(docRef, { id: docRef.id });
-          await fetch('http://localhost:5000/api/upload', {
-            method: "POST",
-            body: formData,
-          });
-        }
+        
       } else {
         const docRef = doc(db, 'notes', noteData.id);
         await updateDoc(docRef, {
