@@ -1,10 +1,11 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import path from 'path';
 dotenv.config();
 
 
-const uri = "mongodb+srv://arissongaliamcpe:Relente%23@uni-task.thupthf.mongodb.net/?retryWrites=true&w=majority&appName=uni-task";
+const uri = "mongodb+srv://arissongaliamcpe:Relente1@uni-task.thupthf.mongodb.net/?retryWrites=true&w=majority&appName=uni-task";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -54,17 +55,22 @@ async function createCollection({collectionName}) {
     }
 };
 
-async function uploadRawImage({ filename, filedata, collectionName }){
+async function uploadRawFile({ filename, filepath, collectionName }){
+  const ext = path.extname(filename).toLowerCase();
   const currentCollection = collectionName ?? 'files';
   await createCollection({ collectionName: currentCollection });
   const collection = db.collection(currentCollection);
 
-  if(!fs.existsSync(filedata)) {
-    console.error('File data not found', filedata);
+  if(!fs.existsSync(filepath)) {
+    console.error('File data not found', filepath);
     return;
   }
 
-  const imageBuffer = fs.readFileSync(filedata);
+  if(!['.jpg', 'png', '.gif', '.pdf'].includes(ext)){
+    console.warn('Unsupported file type detected', ext)
+  }
+
+  const imageBuffer = await fs.promises.readFile(filepath);
 
   await collection.insertOne({
     filename: filename ?? 'untitled',
@@ -73,4 +79,4 @@ async function uploadRawImage({ filename, filedata, collectionName }){
   })
 }
 
-export { client, connectMongo, isMongoConnected, createCollection, uploadRawImage }
+export { client, connectMongo, isMongoConnected, createCollection, uploadRawFile }

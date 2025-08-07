@@ -95,7 +95,7 @@ function CountCard({ count = '', title = '', onClick, className = ''}) {
 
 function AlertCard({text = 'text', className = ''}) {
   return (
-    <section className={`flex bg-yellow-50 border text-sm text-yellow-800 border-yellow-300 w-full cursor-pointer
+    <section className={`flex bg-yellow-50 border border-l-4 text-sm text-yellow-800 border-yellow-300 w-full cursor-pointer
                        p-1 items-center n h-auto shadow-sm hover:cursor-default ${className}`}>
       <Icon dataFeather='alert-circle' className='text-yellow-800'/>
       <p>{text}</p>
@@ -201,7 +201,7 @@ function NoteCard({
           dispatch({ type: 'NOTE_FOCUS' });
         }}
         className={`flex flex-col bg-white border border-yellow-300 rounded-md
-          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full overflow-hidden
+          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full
           p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
       {visibility.noteFocus && 
@@ -216,7 +216,7 @@ function NoteCard({
               underTitle={noteData.date}
             />
             {visibility.popUp &&
-              <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} collectionName='notes'/>
+              <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} className='' collectionName='notes'/>
             }
           </div>
           <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[7rem] overflow-y-scroll overflow-x-hidden">

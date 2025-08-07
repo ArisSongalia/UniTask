@@ -17,7 +17,6 @@ import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
-import { connectStorageEmulator } from 'firebase/storage';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -195,8 +194,13 @@ function CreateNote({ closeModal, noteData, projectData}) {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    const { name, value, type, files } = e.target;
+    if(type === 'file') {
+      const uploadedFile = files[0];
+      setForm((prev) => ({ ...prev, [name]: uploadedFile }));
+    } else {
+      setForm({ ...form, [name]: value });
+    }
 
     const today = new Date().toISOString().split('T')[0];
     if(dateRef.current) {
@@ -204,7 +208,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
     }
   };
 
-  const handleCreateUserNote = async (e) => {
+  const handleCreateNote = async (e) => {
     e.preventDefault();
 
     try {
@@ -220,7 +224,17 @@ function CreateNote({ closeModal, noteData, projectData}) {
           'project-title': projectData?.[0]?.title ?? 'Personal',
         }); 
 
-        await updateDoc(docRef, { id: docRef.id });
+        if(form.file) {
+          const formData = new FormData();
+          formData.append('file', form.file);
+          formData.append('filename', form.file.name)
+
+          await updateDoc(docRef, { id: docRef.id });
+          await fetch('http://localhost:5000/api/upload', {
+            method: "POST",
+            body: formData,
+          });
+        }
       } else {
         const docRef = doc(db, 'notes', noteData.id);
         await updateDoc(docRef, {
@@ -232,9 +246,8 @@ function CreateNote({ closeModal, noteData, projectData}) {
           status: noteData?.status ?? 'To-Review',
           'project-id': projectData?.[0]?.id ?? null,
           'project-title': projectData?.[0]?.title ?? 'Personal',
-        }); 
-      }
-
+        });
+      };
       reloadComponent();
       closeModal();
     } catch (error) {
@@ -249,7 +262,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
       <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection title={(!noteData) ? ('Create Note') : ('Update: ' + noteData.title)} dataFeather='x' iconOnClick={closeModal} />
 
-        <form onSubmit={handleCreateUserNote} className="flex flex-col space-y-4">
+        <form onSubmit={handleCreateNote} className="flex flex-col space-y-4">
           <label htmlFor="title" className="flex flex-col text-gray-600">
             Title
             <input
@@ -257,6 +270,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
               value={form.title}
               onChange={handleChange}
               name="title"
+              accept='.jpg, .png, .pdf, .gif'
               className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
@@ -271,6 +285,17 @@ function CreateNote({ closeModal, noteData, projectData}) {
               className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none h-[10rem]"
               required
             />
+          </label>
+
+          <label htmlFor="file" className='flex flex-col text-gray-600'>
+            Attach File
+            <input 
+              type="file" 
+              id='file' 
+              name='file'
+              className="mt-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              onChange={handleChange}
+             />
           </label>
 
           <label htmlFor="date" className="flex flex-col text-gray-600">
@@ -444,6 +469,16 @@ function CreateTask({ closeModal, taskData}) {
               onChange={handleChange}
               required
             />
+          </label>
+
+          <label htmlFor="file" className='flex flex-col text-gray-600'>
+            Attach File
+            <input 
+              type="file" 
+              id='file' 
+              name='file'
+              className="mt-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+             />
           </label>
 
           <label htmlFor="status" className="flex flex-col text-gray-600">

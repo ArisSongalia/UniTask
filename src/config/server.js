@@ -1,10 +1,13 @@
 import { connectMongo, client } from './mongoClient.js';
 import express from 'express'
 import cors from 'cors'
+import multer from 'multer';
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+const upload = multer({dest: 'uploads/' });
 
 connectMongo();
 
@@ -19,8 +22,32 @@ app.listen(5000, () => console.log('🚀 Server running on port 5000'));
 app.post('/api/data', async (req, res) => {
     try {
         const newItem = req.body;
-        const collection = client.db()
+        const collection = client.db('uni-task').collection('files');
+        await collection.insertOne(newItem)
+        res.status(201).json({ message: 'Item added succesfully' });
     } catch (error){
-
+      res.status(500).json( {error: error.message })
     }
 })
+
+import fs from 'fs';
+import path from 'path';
+
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+  try {
+    const filePath = req.file.path;
+    const fileBuffer = await fs.promises.readFile(filePath);
+    const collection = client.db('uni-task').collection('files');
+
+    await collection.insertOne({
+      filename: req.file.originalname,
+      date: new Date(),
+      filedata: fileBuffer,
+    });
+
+    res.status(200).send({ message: 'File uploaded and stored in MongoDB' });
+    await fs.promises.unlink(filePath);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
