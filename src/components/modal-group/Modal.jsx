@@ -219,7 +219,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
         if(form.file) {
           const formData = new FormData();
           formData.append('file', form.file);
-          formData.append('filename', form.file.name);
+          formData.append('filename', form.file.originalname);
           formData.append('parentId', noteRefId);
 
           await fetch('http://localhost:5000/api/upload', {
@@ -227,8 +227,6 @@ function CreateNote({ closeModal, noteData, projectData}) {
             body: formData,
           });
         }
-
-        
 
         await setDoc(noteRef, {
           title: form.title,

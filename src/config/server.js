@@ -1,55 +1,86 @@
-import { connectMongo, client } from './mongoClient.js';
 import express from 'express'
 import cors from 'cors'
 import multer from 'multer';
-import fs from 'fs';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-const upload = multer({ dest: 'uploads/' });
 
-connectMongo();
-
-app.get('/api/data', async (req, res) => {
-  const collection = client.db("yourDB").collection("yourCollection");
-  const data = await collection.find({}).toArray();
-  res.json(data);
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
 });
 
-app.listen(5000, () => console.log('🚀 Server running on port 5000'));
+if (!process.env.MONGODB_URI) {
+  throw new Error('Missing MONGODB_URI in environment');
+}
 
-app.post('/api/data', async (req, res) => {
-    try {
-        const newItem = req.body;
-        const collection = client.db('uni-task').collection('files');
-        await collection.insertOne(newItem)
-        res.status(201).json({ message: 'Item added succesfully' });
-    } catch (error){
-      res.status(500).json( {error: error.message })
-    }
+await mongoose.connect(process.env.MONGODB_URI, { dbName: 'uni-task' });
+
+
+const itemSchema = new mongoose.Schema({}, {
+  strict: false,
+  timestamps: true,
+});
+
+const Item = mongoose.model('Item', itemSchema);
+
+const fileSchema = new mongoose.Schema({
+  filename: { type: String, required: true },
+  contentType: { type: String },
+  date: { type: Date, default: Date.now },
+  filedata: { type: Buffer, required: true },
+  parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', index: true },
 })
 
-app.post('/api/upload', upload.single('file'), async (req, res) => {
+const File = mongoose.model('File', fileSchema);
+
+
+app.get('/api/data', async (req, res) => {
   try {
-    const filePath = req.file.path;
-    const fileBuffer = await fs.promises.readFile(filePath);
-    const collection = client.db('uni-task').collection('files');
-    const parentId = req.body.parentId;
+    const data = await Item.find({}).lean();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+});
 
-    await collection.insertOne({
-      filename: req.file.originalname,
-      date: new Date(),
-      filedata: fileBuffer,
-      parentId: parentId,
-    });
-
-    
-
-    res.status(200).send({ message: 'File uploaded and stored in MongoDB' });
-    await fs.promises.unlink(filePath);
+app.post('/api/data', async (req, res) => {
+  try{
+    const doc = await Item.create(req.body);
+    res.status(201).json({ message: 'Item added succesfully', id: doc._id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+  try{
+    if(!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Unsupported file type' });
+    }
+
+    await File.create({
+      filename: req.file.originalname,
+      contentType: req.file.mimetype,
+      date: new Date(),
+      filedata: req.file.buffer,
+      parentId: req.body.parentId,
+    })
+
+    res.status(200).json({ message: 'File uploaded succesfully'});
+
+  } catch (error){
+    res.status(500).json({ error: error.message });
+  }
+})
+
+app.listen(5000, () => console.log('Server running on port 5000'))
