@@ -146,8 +146,8 @@ function ProjectCard({projectData}) {
   return (
     
     <div
-      className="flex flex-col bg-white rounded-md shadow-md hover:border-opacity-100 cursor-pointer hover:bg-green-50
-      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-3 h-[12rem] min-w-[9rem]"
+      className="flex flex-col bg-white rounded-md shadow-md cursor-pointer hover:bg-green-50
+      flex-grow justify-between border gap-2 border-green-600 p-3 h-[12rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >
       <section className="flex flex-col items-start w-full">

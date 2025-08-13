@@ -25,6 +25,7 @@ function MainProjectSection() {
         title='Projects' 
         dataFeather='filter' 
         extraIcon={<ReloadIcon />} 
+        titleClassName='text-base'
         className='sticky top-0 bg-white pb-2'
       />  
       
@@ -71,7 +72,7 @@ function MainNotesSection() {
         title='Notes' 
         dataFeather='filter'
         extraIcon={<ReloadIcon />}
-        className='sticky top-0 bg-white pb-2'
+        titleClassName='text-base'
       />  
       <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard  
