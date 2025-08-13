@@ -10,6 +10,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -63,23 +64,54 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   try{
     if(!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'image/gif'];
     if (!allowedTypes.includes(req.file.mimetype)) {
       return res.status(400).json({ error: 'Unsupported file type' });
     }
 
-    await File.create({
+    const parentId = typeof req.body.parentId === 'string' ? req.body.parentId : undefined;
+    if (parentId && !mongoose.Types.ObjectId.isValid(parentId)){
+      return res.status(400).json({ error: 'Invalid parent ID'})
+    };
+
+    const savedFile = await File.create({
       filename: req.file.originalname,
       contentType: req.file.mimetype,
       date: new Date(),
       filedata: req.file.buffer,
-      parentId: req.body.parentId,
-    })
+      parentId,
+    });
 
-    res.status(200).json({ message: 'File uploaded succesfully'});
+    return res.status(200).json({ message: 'File uploaded successfully', fileId: savedFile._id });
 
   } catch (error){
-    res.status(500).json({ error: error.message });
+    console.error('Upload error: ', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/files/:parentId', async (req, res) => {
+  try{
+    const file = await File.find({ parentId: req.params.parentId }).lean();
+    if (!file) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    return res.json(file)
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
+});
+
+app.get('/api/files/images/:id', async (req, res) => {
+  try {
+    const file = await File.findById(req.params.id);
+    if (!file) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.set('Content-type', file.contentType);
+    return res.send(file.filedata)
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
   }
 })
 

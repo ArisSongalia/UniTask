@@ -55,8 +55,8 @@ function ProgressBoard() {
 
   return (
     <div className="flex flex-col bg-white rounded-md overflow-hidden h-full shadow-md w-full flex-grow-0">
-      <section className='title-section flex p-4 justify-between'>
-        <h2 className='font-bold text-lg text-green-700'>Progress Board</h2>
+      <section className='title-section flex p-4 justify-between text-gray-700'>
+        <h2 className='font-bold text-lg'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
           <IconAction dataFeather='check-square' iconOnClick={() => toggleVisibility('completedTab')} />
@@ -87,7 +87,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toDoTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} statusColor={'yellow'}/>
               ))
             )}
           </section>
@@ -105,7 +105,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               inProgressTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} statusColor='green' />
               ))
             )}
           </section>
@@ -124,7 +124,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toReviewTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} />
+                <TaskCard key={taskData.id} taskData={taskData} statusColor='violet'/>
               ))
             )}
           </section>

@@ -43,8 +43,8 @@ function TaskNavBar() {
           {loading ? (
             <BarLoader color='#228B22' size={10} />
           ) : (
-            <span className='flex flex-col text-gray-700'>
-              <h1 className='text-lg font-bold mb-1 '>{projectData.title}</h1>
+            <span className='flex flex-col text-gray-800'>
+              <h1 className='text-lg font-bold mb-1 text-green-800'>{projectData.title}</h1>
               <span className='flex gap-1'>
                 <p className="text-xs font-semibold">{projectData.type}</p>
                 <span className="h-4 border-l border-gray-400"></span>

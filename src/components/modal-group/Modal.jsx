@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { IconAction, IconUser } from '../Icon';
+import { IconAction, IconText, IconUser } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc, setDoc,  } from 'firebase/firestore';
@@ -183,7 +183,7 @@ function CreateProject({ closeModal, projectData }) {
 function CreateNote({ closeModal, noteData, projectData}) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
-  const [message, setMessage] = useState({ message: "", color: "" });
+  const [message, setMessage] = useState({ text: "", color: "" });
   const dateRef = useRef('');
 
   const [form, setForm] = useState({
@@ -215,17 +215,23 @@ function CreateNote({ closeModal, noteData, projectData}) {
       if (!noteData) {
         const noteRef = doc(collection(db, "notes"));
         const noteRefId = noteRef.id;
+        let uploadedFileId = null;
 
         if(form.file) {
-          const formData = new FormData();
-          formData.append('file', form.file);
-          formData.append('filename', form.file.originalname);
-          formData.append('parentId', noteRefId);
+          try{
+            const formData = new FormData();
+            formData.append('file', form.file);
 
-          await fetch('http://localhost:5000/api/upload', {
-            method: "POST",
-            body: formData,
-          });
+            const response = await fetch('http://localhost:5000/api/upload', {
+              method: "POST",
+              body: formData,
+            });
+
+            const result = await response.json();
+            uploadedFileId = result.fileId;
+          } catch (error) {
+            console.error(error.message);
+          }
         }
 
         await setDoc(noteRef, {
@@ -238,6 +244,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
           status: noteData?.status ?? 'To-Review',
           'project-id': projectData?.[0]?.id ?? null,
           'project-title': projectData?.[0]?.title ?? 'Personal',
+          fileId: uploadedFileId ?? null,
         }); 
         
       } else {
@@ -275,7 +282,6 @@ function CreateNote({ closeModal, noteData, projectData}) {
               value={form.title}
               onChange={handleChange}
               name="title"
-              accept='.jpg, .png, .pdf, .gif'
               className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               required
             />
@@ -298,6 +304,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
               type="file" 
               id='file' 
               name='file'
+              accept=".jpg, .jpeg, .png, .pdf, .gif"
               className="mt-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
               onChange={handleChange}
              />
@@ -719,6 +726,13 @@ function NoteFocus({ closeModal, noteData}) {
     setProjectID(noteData?.['project-id'])
   }
 
+  useEffect(() => {
+    fetch('http://localhost:5000/api/data')
+      .then(res => res.json())
+      .then(data => setItems(data))
+      .catch(err => console.error(err))
+  }, [])
+
   return (
     <ModalOverlay onClick={closeModal}>
       <section
@@ -727,23 +741,13 @@ function NoteFocus({ closeModal, noteData}) {
       >
         <section>
           <span className="flex flex-col justify-between w-full gap-2">
-            <span className="flex justify-between items-center">
-              <h2 id="note-card-main" className="font-bold text-lg mb-2 hover:cursor-pointer">
-                {noteData.title}
-              </h2>
-              <span className="flex gap-2">
-                {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
-                <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
-                <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
-                <IconAction dataFeather="x" iconOnClick={closeModal} />
-              </span>
-            </span>
+            <IconTitleSection title={noteData.title} iconOnClick={closeModal} dataFeather='x'/>
   
-            <p id="note-card-text" className="text-gray-800 font-normal my-2 hover:cursor-pointer w-full break-words">
+            <p id="note-card-text" className="text-slate-800 font-semibold my-2 hover:cursor-pointer w-full break-words">
               {noteData.message}
               {noteData.file && (
                 <span className="block mt-2 text-gray-500 text-xs">
-                  Attached File: {noteData.file}
+                  Attached File: <img src={`http://localhost:5000/api/files/image/${noteData.fileId}`} />
                 </span>
               )}
               { (noteData['project-id' && location.pathname == '/Home/Project']) ? (
@@ -754,11 +758,18 @@ function NoteFocus({ closeModal, noteData}) {
             </p>
           </span>
         </section>
-        <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
-          <p className='p-1 bg-green-50 w-fit text-green-800'>By: {noteData.owner}</p>
-          <p className='p-1 bg-blue-50 w-fit  text-blue-800'>In Project: {noteData['project-title']}</p>
-          <p className='p-1 bg-yellow-50 w-fit  text-yellow-800'>Deadline: {noteData.date}</p>
-        </span>
+        <section className="flex justify-between">
+          <span className="w-full flex overflow-hidden text-xs text-gray-600 gap-1 font-semibold pt-2">
+            <IconText text={noteData.owner} />
+            <IconText text={noteData['project-title']} />
+            <IconText text={noteData.status} />
+          </span>
+          <span className="flex gap-2">
+            {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
+            <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
+            <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
+          </span>
+        </section>
       </section>
     </ModalOverlay>
   );
@@ -896,26 +907,22 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
   return (
     <ModalOverlay onClick={closeModal}>
       <div className='flex flex-col h-[30rem] w-[40rem] max-h-full max-w-full bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x'/>
+        <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x' underTitle={taskData.deadline}/>
         <div className='flex flex-col justify-between h-full w-full'>
-          <div className="flex flex-col">
-            <TitleSection title='Description' buttonText='Move Status' buttonVisible={false}/>
-            <p
-              id='description'
-              className='text-sm'>
-              {taskData.description}
-            </p>
-          </div>
+          <p className='font-semibold text-slate-800'>{taskData.description}</p>
 
           <div className='flex w-full justify-between border-t-2 pt-2'>
-            <section id="user" className='flex p-1 gap-1 bg-slate-100 rounded-full w-fit h-fit'>
+            <section id="user" className='flex gap-1 w-fit h-fit items-center'>
               {!taskData.team || taskData.team.length > 0 ?(
                 taskData.team.map((member) => (
-                  <IconUser key={member.uid} user={member} className='h-6 w-6'/>
+                  <div className='flex p-1 rounded-full bg-slate-100'>
+                    <IconUser key={member.uid} user={member} className='h-6 w-6'/>
+                  </div>
                 ))
               ) : (
                 <span className='bg-red-50 text-red-800 px-1 text-xs'>No members assigned</span>
               )}
+              <IconText text={taskData.status} />
             </section>
               
             <section className='flex gap-1 items-center'>

@@ -107,7 +107,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, col
   return (
     <div
       className={`flex flex-col bg-green-50 rounded-md overflow-hidden text-green-700 hover:cursor-pointer hover:border-opacity-50
-      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 font-semibold h-[14rem] min-w-[9rem] ${className}`}
+      flex-grow justify-between border-2 gap-4 border-green-800 border-opacity-30 hover:bg-green-100 p-4 font-semibold h-[12rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
@@ -147,7 +147,7 @@ function ProjectCard({projectData}) {
     
     <div
       className="flex flex-col bg-white rounded-md shadow-md hover:border-opacity-100 cursor-pointer hover:bg-green-50
-      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-3 h-[14rem] min-w-[9rem]"
+      flex-grow justify-between border gap-2 border-green-700 border-opacity-50 p-3 h-[12rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >
       <section className="flex flex-col items-start w-full">
@@ -155,17 +155,15 @@ function ProjectCard({projectData}) {
             <IconTitleSection title={projectData.title} dataFeather='more-vertical' iconOnClick={togglePopUp} underTitle={projectData.date}/>
             {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' />}
           </section>
-
-          <span className="flex flex-wrap gap-1">
-            <IconText text={projectData.type} color="slate" className="" />
-            <IconText text={projectData.status} color="blue" className="" />
-          </span>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
         <IconText text={projectData.description} color='green' border />
       </section>
-
+      <span className="flex flex-wrap gap-1">
+        <IconText text={projectData.type} color="slate" className="" />
+        <IconText text={projectData.status} color="blue" className="" />
+      </span>
     </div>
   );
 }
@@ -173,8 +171,10 @@ function ProjectCard({projectData}) {
 function NoteCard({
   className = "",
   noteData,
-  file
+  file,
 }) {
+
+
 
   const initialVisibilityState = {
     popUp: false,
@@ -220,7 +220,7 @@ function NoteCard({
             }
           </div>
           <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[7rem] overflow-y-scroll overflow-x-hidden">
-            <IconText text={noteData.message} color='yellow' border/>
+            <IconText text={noteData.message} border/>
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
                 Attached File: {file}
@@ -230,9 +230,9 @@ function NoteCard({
         </section>
 
         <div className="flex flex-wrap w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
-          <IconText text={noteData.owner} color="green" />
-          <IconText text={noteData['project-title']} color="blue" />
-          <IconText text={noteData.status} color="slate" />
+          <IconText text={noteData.owner} />
+          <IconText text={noteData['project-title']} />
+          <IconText text={noteData.status} />
         </div>
       </div>
 
@@ -312,7 +312,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   );
 }
 
-function TaskCard({taskData, className}) {
+function TaskCard({taskData, className, statusColor = ''}) {
   const location = useLocation();
   const navigate = useNavigate();
   const projectId = taskData['project-id'];
@@ -383,15 +383,15 @@ function TaskCard({taskData, className}) {
         </section>
       </span>
 
-      <IconText color='green' border text={taskData.description} />
+      <IconText border text={taskData.description} />
       
       <section className="flex gap-1 items-center justify-between mt-2">
         <section className='flex flex-wrap gap-1'>
-          <IconText text={taskData.status} color="blue" />
+          <IconText text={taskData.status} />
           
           <span className='flex text-xs font-semibold text-gray-600 flex-wrap'>
             {(location.pathname == '/Home') ? (
-              <IconText text={`Task for: ${taskData['project-title']}`} color="slate" />
+              <IconText text={`Task for: ${taskData['project-title']}`} />
             ) : (
               null
             )}
