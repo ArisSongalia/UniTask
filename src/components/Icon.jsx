@@ -76,8 +76,8 @@ function IconUser({ user={}, className=''}) {
 
 function IconText({ text = '', className = '', border=false }) {
   const baseColor = border ? 
-  'flex flex-none text-xs h-fit bg-green-50 p-1 w-fit rounded-sm text-slate-800 font-semibold border border-green-600' 
-  : 'flex flex-none text-xs h-fit bg-slate-100 p-1 w-fit rounded-sm text-slate-800 font-semibold';
+  'flex flex-none text-xs h-fit bg-green-50 p-1 w-fit rounded-sm text-slate-800 font-semibold border border-green-500 rounded-sm' 
+  : 'flex flex-none text-xs h-fit bg-slate-100 p-1 w-fit rounded-sm text-slate-800 font-semibold rounded-sm';
 
   return(
     <span className={`${baseColor} ${className}`}>

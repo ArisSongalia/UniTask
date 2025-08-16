@@ -75,7 +75,7 @@ function ProgressBoard() {
         className="flex gap-2 h-full w-full bg-2 px-4 rounded-md overflow-x-auto"
       >
         {/* To-do Column */}
-        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] w-full rounded-md p-2 overflow-y-auto">
+        <div className="flex flex-col h-full border border-dotted border-gray-500 bg-gray-50 min-w-[16rem] w-full rounded-md p-2 overflow-y-auto">
           <DisplayTitleSection
             title="To-do"
             className="text-sm"
@@ -94,7 +94,7 @@ function ProgressBoard() {
         </div>
 
         {/* In-progress Column */}
-        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
+        <div className="flex flex-col h-full border border-dotted border-green-600 bg-green-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
           <DisplayTitleSection
             title="In-progress"
             className="text-sm"
@@ -112,7 +112,7 @@ function ProgressBoard() {
         </div>
 
         {/* To-review Column */}
-        <div className="flex flex-col h-full bg-slate-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
+        <div className="flex flex-col h-full border border-dotted border-blue-600 bg-blue-50 min-w-[16rem] rounded-md p-2 overflow-y-auto w-full">
           <DisplayTitleSection
             title="To-review"
             className="text-sm"

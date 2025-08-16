@@ -27,7 +27,8 @@ function AssignedTasks({}) {
   return (
     <div className="flex flex-col bg-white p-4 rounded-md w-full h-[calc(100vh-3.5rem)] shadow-md overflow-y-auto">
       <DisplayTitleSection
-        title="Assigned Tasks"
+        title="In-progress Tasks"
+        className="text-sm"
         displayCount={taskData.length}
       />
       <section className="flex flex-col gap-2 w-full h-full pr-2 overflow-y-auto">

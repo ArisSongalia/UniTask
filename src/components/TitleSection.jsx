@@ -68,7 +68,7 @@ function MultiTitleSection({ titles}) {
             onClick={titleObj.onClick}
             dataFeather={titleObj.dataFeather}
             className={`${
-              titleObj.isActive ? 'text-white bg-green-800' : 'bg-solid'
+              titleObj.isActive ? 'text-white bg-green-700' : 'bg-solid'
             }`}
             iconClassName={`${
               titleObj.isActive ? 'text-white' : 'bg-solid'
@@ -81,13 +81,14 @@ function MultiTitleSection({ titles}) {
 }
 
 
-function DisplayTitleSection({title = 'Title', displayCount = '0', className = '', displayClassName = ''}) {
+function DisplayTitleSection({title = 'Title', displayCount = '0', className = '', countClassName = ''}) {
+  
   return ( 
-    <section className='flex w-full mb-4 gap-1'>
-        <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
-          <h2>{title}</h2>
+    <section className={`flex p-1 text-white w-fit mb-2 gap-2 bg-green-700 justify-between rounded-lg ${className}`}>
+        <span className='flex gap-2 h-full items-center font-semibold text-xs ml-1'>
+          <h2 className=''>{title}</h2>
         </span>
-        <span className={`flex items-center font-semibold h-6 w-6 justify-center rounded-full bg-green-50 text-green-900 text-sm rounded-full' ${displayClassName}`}>
+        <span className={`flex items-center font-semibold h-5 w-5 justify-center rounded-md bg-white text-green-800 text-sm ${countClassName}`}>
           <h2>{displayCount}</h2>
         </span>
     </section>

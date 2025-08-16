@@ -200,7 +200,7 @@ function NoteCard({
           e.stopPropagation();
           dispatch({ type: 'NOTE_FOCUS' });
         }}
-        className={`flex flex-col bg-white border border-yellow-300 rounded-md
+        className={`flex flex-col bg-white border border-yellow-500 rounded-md
           hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full
           p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
       >
