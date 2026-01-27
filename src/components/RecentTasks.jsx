@@ -12,7 +12,7 @@ function RecentTasks() {
       dataFeather: 'briefcase'
     },
     {
-      label: 'Pinned Notes',
+      label: 'Action Notes',
       onClick: () => setActiveSection('notes'),
       isActive: activeSection === 'notes',
       dataFeather: 'file-text'

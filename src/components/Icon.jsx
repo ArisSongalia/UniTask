@@ -1,91 +1,126 @@
-import React, { useEffect, useState } from 'react';
-import feather from 'feather-icons';
-import { UserProfile } from './modal-group/Modal';
-import defaultUserIcon from '../assets/default-icon.png'
- 
-function IconAction({ className = '', dataFeather = 'edit-2', actionText= '', style = {}, iconOnClick, text = ""}) {
-  useEffect(() => {
-    feather.replace();
-  }, [dataFeather]);
+import React, { useState } from "react";
+import * as FeatherIcons from "react-feather";
+import { UserProfile } from "./modal-group/Modal";
+import defaultUserIcon from "../assets/default-icon.png";
 
+/* ---------------- ICON CORE ---------------- */
+
+function FeatherIcon({ name, className = "", size = 16, style = {} }) {
+  const IconComponent =
+    FeatherIcons[
+      name
+        .split("-")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join("")
+    ];
+
+  if (!IconComponent) return null;
+
+  return <IconComponent className={className} size={size} style={style} />;
+}
+
+/* ---------------- ICON ACTION ---------------- */
+
+function IconAction({
+  className = "",
+  dataFeather = "edit-2",
+  actionText = "",
+  style = {},
+  iconOnClick,
+  text = "",
+}) {
   return (
-    <section 
-      className={`flex rounded-full  gap-2 items-center justify-center text-green-900
-        w-fit h-fit cursor-pointer shrink-0 bg-green-50 border-none
+    <section
+      className={`flex rounded-full gap-2 items-center justify-center
+        w-fit h-fit cursor-pointer shrink-0 bg-green-50 text-green-900
         hover:bg-green-700 hover:text-white p-[6px]
-        active:bg-green-700 focus:bg-green-50 focus:outline-none
-        ${className}`}
-      style={{ touchAction: 'manipulation' }}
-      aria-hidden="true" 
+        active:bg-green-700 focus:outline-none ${className}`}
       aria-label={actionText}
       onClick={(e) => {
-        e.stopPropagation(),
-        iconOnClick()
+        e.stopPropagation();
+        iconOnClick?.();
       }}
     >
-      <i 
-        data-feather={dataFeather} 
-        style={{ width: '1rem', height: '1rem', strokeWidth: '2,5', ...style }}
-        aria-hidden="true"
-      ></i>
+      <FeatherIcon
+        name={dataFeather}
+        className="group-hover:text-white"
+        size={16}
+        style={style}
+      />
 
-      {text? (
-        <span className='text-xs font-semibold pr-1'>{text}</span>
-      ) : (
-        null
+      {text && (
+        <span className="text-xs font-semibold pr-1">
+          {text}
+        </span>
       )}
     </section>
   );
 }
 
-function Icon({ className = '', dataFeather = 'edit-2', actionText= '', style = {} }) {
-  useEffect(() => {
-    feather.replace();
-  }, []);
+/* ---------------- ICON ---------------- */
 
+function Icon({
+  className = "",
+  dataFeather = "edit-2",
+  actionText = "",
+  style = {},
+}) {
   return (
-    <span 
-      className={`p-2 flex items-center justify-center text-green-900 w-8 h-8 ${className}`} 
-      aria-hidden="true" 
+    <span
+      className={`p-2 flex items-center justify-center text-green-900 w-8 h-8 ${className}`}
       aria-label={actionText}
     >
-      <i 
-        data-feather={dataFeather} 
-        style={{ width: '1rem', height: '1rem', strokeWidth: '2.5', ...style }}
-        aria-hidden="true"
-      ></i>
+      <FeatherIcon
+        name={dataFeather}
+        size={16}
+        style={style}
+      />
     </span>
   );
 }
 
-function IconUser({ user={}, className=''}) {
+/* ---------------- ICON USER ---------------- */
+
+function IconUser({ user = {}, className = "" }) {
   const [showUserProfile, setShowUserProfile] = useState(false);
 
-  const handleShowUserProfile = () => {
-    setShowUserProfile(!showUserProfile);
-  };
+  return (
+    <div
+      className={`hover:cursor-pointer border rounded-full h-7 w-7
+        hover:border-green-500 ${className}`}
+      onClick={() => setShowUserProfile(prev => !prev)}
+    >
+      <img
+        src={user.photoURL || defaultUserIcon}
+        alt="User"
+        className="h-full w-full rounded-full"
+      />
+
+      {showUserProfile && (
+        <UserProfile
+          user={user}
+          closeModal={() => setShowUserProfile(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ---------------- ICON TEXT ---------------- */
+
+function IconText({ text = "", className = "", border = false }) {
+  const baseClass = border
+    ? "text-xs bg-green-50 p-1 w-fit font-semibold border border-green-500 text-slate-800"
+    : "text-xs bg-slate-100 p-1 w-fit font-semibold text-slate-800";
 
   return (
-    <div className={`hover:cursor-pointer border rounded-full h-7 w-7 hover:border-green-500  ${className}`}>
-        <img src={user.photoURL} alt={defaultUserIcon} className='h-full w-full rounded-full' onClick={handleShowUserProfile}/>
-        {showUserProfile && <UserProfile user={user} closeModal={handleShowUserProfile}/>}
-    </div>
-
-  )
-}
-
-function IconText({ text = '', className = '', border=false }) {
-  const baseColor = border ? 
-  'flex flex-none text-xs h-fit bg-green-50 p-1 w-fit rounded-sm text-slate-800 font-semibold border border-green-500 rounded-sm' 
-  : 'flex flex-none text-xs h-fit bg-slate-100 p-1 w-fit rounded-sm text-slate-800 font-semibold rounded-sm';
-
-  return(
-    <span className={`${baseColor} ${className}`}>
+    <span className={`${baseClass} rounded-sm ${className}`}>
       {text}
     </span>
-  )
+  );
 }
+
+/* ---------------- EXPORTS ---------------- */
 
 export default Icon;
 export { IconAction, IconUser, IconText };
-

@@ -6,6 +6,7 @@ import Button, { ButtonIcon } from '../Button';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useState } from 'react';
 import { CreateNote, CreateProject, CreateTask } from './Modal';
+import Icon from '../Icon';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -66,4 +67,67 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
   );
 }
 
+function FilterPopup({ closeModal }) {
+  const [sortState, setSortState] = useState({
+    name: null,
+    date: null,
+    progress: null,
+  });
+
+  const handleChangeIcon = (key) => {
+    setSortState(prev => {
+      const current = prev[key];
+      let next =
+        current === null ? "asc" :
+        current === "asc" ? "desc" :
+        null;
+
+      return {
+        name: null,
+        date: null,
+        progress: null,
+        [key]: next,
+      };
+    });
+  };
+
+  const getIcon = (value) =>
+    value === "asc" ? "arrow-up" :
+    value === "desc" ? "arrow-down" :
+    "minus";
+
+  const getClass = (value) =>
+    value === "asc" ? "bg-green-200" :
+    value === "desc" ? "bg-blue-200" :
+    "bg-gray-100";
+
+  return (
+    <div
+      className="bg-white p-4 flex flex-col absolute z-50 top-0 right-0 shadow-md"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <IconTitleSection
+        title="Filter"
+        iconOnClick={closeModal}
+        dataFeather="x"
+      />
+
+      <div className="flex flex-col flex-1 gap-1">
+        {["name", "date", "progress"].map(key => (
+          <ButtonIcon
+            key={key}
+            text={key.charAt(0).toUpperCase() + key.slice(1)}
+            dataFeather={getIcon(sortState[key])}
+            className={getClass(sortState[key])}
+            onClick={() => handleChangeIcon(key)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 export default Popup;
+
+export { FilterPopup };

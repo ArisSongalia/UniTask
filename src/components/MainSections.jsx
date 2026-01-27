@@ -7,27 +7,38 @@ import { BarLoader } from 'react-spinners';
 import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from '../context/ReloadContext';
 import { NoteCard } from './Cards';
+import { FilterPopup } from './modal-group/Popup';
 
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
+  const [showFilter, setShowFilter] = useState(false); 
   const { key } = useReloadContext();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   };
 
+  const toggleShowFilter = () => {
+    setShowFilter(!showFilter);
+  }
+
+
   const { projectData, loading } = useFetchProjectData(key)
 
   return (
     <div className="flex flex-col w-full h-full">
-      <IconTitleSection 
-        title='Projects' 
-        dataFeather='filter' 
-        extraIcon={<ReloadIcon />} 
-        titleClassName='text-base'
-        className='sticky top-0 bg-white pb-2'
-      />  
+      <div className="relative w-full">
+        <IconTitleSection
+          title='Projects'
+          dataFeather='filter'
+          iconOnClick={toggleShowFilter}
+          extraIcon={<ReloadIcon />}
+          titleClassName='text-base'
+          className='sticky top-0 bg-white pb-2'
+        />
+        {showFilter && <FilterPopup closeModal={toggleShowFilter} /> }
+      </div>
       
       <section id='project-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 

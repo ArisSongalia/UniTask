@@ -765,7 +765,7 @@ function NoteFocus({ closeModal, noteData}) {
             <IconText text={noteData.status} />
           </span>
           <span className="flex gap-2">
-            {showPopUp && <CreateNote closeModal={closeModal} title={title} message={main} />}
+            {showPopUp && <CreateNote closeModal={closeModal} noteData={noteData}/>}
             <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
             <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
           </span>
