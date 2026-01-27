@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../config/firebase';
-import { collection, doc, getDoc, getDocs, where, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, where, query, orderBy } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 
@@ -49,32 +49,46 @@ function UseFetchUserName() {
 }
 
 
-const useFetchProjectData = ( refreshKey ) => { 
+const useFetchProjectData = (
+  refreshKey,
+  orderValue = "",
+  orderPos = "asc"
+) => {
   const [projectData, setProjectData] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchProjectData = async (user) => {
       try {
-        if (user) {
-          const projectRef = collection(db, 'projects');
-          const q = query(projectRef, where("owner", "==", user.uid))
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            const data = querySnapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data(),
-            }))
-            setProjectData(data);
-          }  else {
-            setProjectData([]);
-          }
-        } else {
-          alert("No Logged-In User: Please Log-in");
+        if (!user) return;
+
+        const projectRef = collection(db, "projects");
+
+        // ✅ base query
+        let q = query(
+          projectRef,
+          where("owner", "==", user.uid)
+        );
+
+        // ✅ only add orderBy if orderValue exists
+        if (orderValue) {
+          q = query(
+            projectRef,
+            where("owner", "==", user.uid),
+            orderBy(orderValue, orderPos)
+          );
         }
+
+        const querySnapshot = await getDocs(q);
+
+        const data = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setProjectData(data);
       } catch (error) {
         console.error("Error Fetching Project Data:", error);
-        alert("Error Fetching Project Data");
       } finally {
         setLoading(false);
       }
@@ -90,10 +104,11 @@ const useFetchProjectData = ( refreshKey ) => {
     });
 
     return () => unsubscribe();
-  }, [setProjectData, setLoading, refreshKey]);
+  }, [orderValue, orderPos, refreshKey]);
 
-  return {projectData, loading};
-}
+  return { projectData, loading };
+};
+
 
 const useFetchNoteData = ( refreshKey, customWhere ) => {
   const [noteData, setNoteData] = useState([]);

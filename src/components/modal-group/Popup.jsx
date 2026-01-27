@@ -6,7 +6,7 @@ import Button, { ButtonIcon } from '../Button';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useState } from 'react';
 import { CreateNote, CreateProject, CreateTask } from './Modal';
-import Icon from '../Icon';
+import { useSort } from '../../context/SortContext';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -68,26 +68,13 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
 }
 
 function FilterPopup({ closeModal }) {
-  const [sortState, setSortState] = useState({
-    name: null,
-    date: null,
-    progress: null,
-  });
+  const { sortState, setSortState} = useSort();
 
   const handleChangeIcon = (key) => {
     setSortState(prev => {
       const current = prev[key];
-      let next =
-        current === null ? "asc" :
-        current === "asc" ? "desc" :
-        null;
-
-      return {
-        name: null,
-        date: null,
-        progress: null,
-        [key]: next,
-      };
+      const next = current === null ? "asc" : current === "asc" ? "desc" : null;
+      return { title: null, date: null, progress: null, [key]: next };
     });
   };
 
@@ -97,8 +84,8 @@ function FilterPopup({ closeModal }) {
     "minus";
 
   const getClass = (value) =>
-    value === "asc" ? "bg-green-200" :
-    value === "desc" ? "bg-blue-200" :
+    value === "asc" ? "bg-green-200 hover:bg-blue-700" :
+    value === "desc" ? "bg-blue-200 hover:bg-gray-700" :
     "bg-gray-100";
 
   return (
@@ -107,13 +94,13 @@ function FilterPopup({ closeModal }) {
       onClick={(e) => e.stopPropagation()}
     >
       <IconTitleSection
-        title="Filter"
+        title="Order By"
         iconOnClick={closeModal}
         dataFeather="x"
       />
 
       <div className="flex flex-col flex-1 gap-1">
-        {["name", "date", "progress"].map(key => (
+        {["title", "date", "progress"].map(key => (
           <ButtonIcon
             key={key}
             text={key.charAt(0).toUpperCase() + key.slice(1)}

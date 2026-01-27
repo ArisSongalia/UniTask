@@ -8,12 +8,18 @@ import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from '../context/ReloadContext';
 import { NoteCard } from './Cards';
 import { FilterPopup } from './modal-group/Popup';
+import { useSort } from '../context/SortContext';
 
 
 function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showFilter, setShowFilter] = useState(false); 
   const { key } = useReloadContext();
+  const { sortState } = useSort();
+
+  const activeSort = Object.entries(sortState).find(([key, value]) => value);
+  const orderValue = activeSort ? activeSort[0] : null;
+  const orderPos = activeSort ? activeSort[1] : "asc";
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
@@ -24,7 +30,7 @@ function MainProjectSection() {
   }
 
 
-  const { projectData, loading } = useFetchProjectData(key)
+  const { projectData, loading } = useFetchProjectData(key, orderValue, orderPos)
 
   return (
     <div className="flex flex-col w-full h-full">
