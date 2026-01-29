@@ -15,7 +15,7 @@ import { HandleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
 
 
@@ -332,24 +332,27 @@ function CreateNote({ closeModal, noteData, projectData}) {
 }
 
 
-function CreateTask({ closeModal, taskData}) {
+function CreateTask({ closeModal, taskData }) {
   const { key, reloadComponent } = useReloadContext();
   const [message, setMessage] = useState({ text: '', color: '' });
-  const dateRef = useRef();
-  const adjustedDateTimeRef = useRef('');
-  const projectId = localStorage.getItem('activeProjectId');
-  const { projectData, loading } = useFetchActiveProjectData(key)
-  
+  const { projectId } = useParams();
+  const { projectData, loading } = useFetchActiveProjectData(key);
 
   const [form, setForm] = useState({
-    'title': taskData?.title || '',
-    'description': taskData?.description || '',
-    'deadline': taskData?.deadline || '',
-    'status': taskData?.status || 'To-do',
-    'file': taskData?.file || '',
-    'team': taskData?.team || [...new Set([])],
+    title: taskData?.title || '',
+    description: taskData?.description || '',
+    deadline: taskData?.deadline || '',
+    status: taskData?.status || 'To-do',
+    file: taskData?.file || '',
+    team: taskData?.team || [],
     'team-uids': taskData?.['team-uids'] || [],
   });
+
+  const minDateTime = useMemo(() => {
+    const today = new Date();
+    today.setHours(today.getHours() + 1);
+    return today.toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
+  }, []);
 
   useEffect(() => {
     if (auth.currentUser && projectData?.type === 'Solo') {
@@ -365,142 +368,119 @@ function CreateTask({ closeModal, taskData}) {
       }));
     }
   }, [auth.currentUser, projectData?.type]);
-  
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-
-    const today = new Date();
-    today.setHours(today.getHours() + 1)
-    const adjustedDateTime = today.toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
-    adjustedDateTimeRef.current = [adjustedDateTime];
-
-    if (dateRef.current) {
-      dateRef.current.setAttribute('min', adjustedDateTime);
-      console.log(adjustedDateTime)
-    }
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
 
-    if(projectData.type === "Shared"){
-      if (!form['team'] || form['team'].length === 0) {
-        setMessage({ text: 'Please select task members', color: 'red' });
-        return;
-      }
-    } 
+    if (projectData?.type === "Shared" && (!form.team || form.team.length === 0)) {
+      setMessage({ text: 'Please select task members', color: 'red' });
+      return;
+    }
 
     try {
-      if(taskData?.id) {
-        const taskRef = doc(db, 'tasks', taskData.id);
-        await updateDoc(taskRef, {
-          'title': form['title'],
-          'description': form['description'],
-          'deadline': adjustedDateTimeRef.current,
-          'status': form['status'],
-          'file': form['file'],
-          'project-id': projectId,
-          'project-title': projectData.title,
-          'team': form['team'],
-          'team-uids': form['team-uid'],
-        });
+      const payload = {
+        title: form.title,
+        description: form.description,
+        deadline: form.deadline,
+        status: form.status,
+        file: form.file,
+        'project-id': projectId,
+        'project-title': projectData?.title || '', 
+        team: form.team,
+        'team-uids': form['team-uids'], 
+      };
 
+      if (taskData?.id) {
+        const taskRef = doc(db, 'tasks', taskData.id);
+        await updateDoc(taskRef, payload);
       } else {
-        await addDoc(collection(db, 'tasks'), {
-          'title': form['title'],
-          'description': form['description'],
-          'deadline': adjustedDateTimeRef.current,
-          'status': form['status'],
-          'file': form['file'],
-          'project-id': projectId,
-          'project-title': projectData.title,
-          'team': form['team'],
-          'team-uids': form['team-uid'],
-        });
+        await addDoc(collection(db, 'tasks'), payload);
       }
 
+      setMessage({ text: 'Successfully Saved Task', color: 'green' });
+      setTimeout(() => {
+        reloadComponent();
+        closeModal();
+      }, 800);
+
     } catch (error) {
-      setMessage({ text: `Error Creating Task: ${error.message}`, color: 'red' });
-    } finally {
-      setMessage({ text: 'Succefully Created Task', color: 'green'});
-      reloadComponent();
-      closeModal();
+      console.error(error);
+      setMessage({ text: `Error: ${error.message}`, color: 'red' });
     }
   };
 
   const handleStateChange = (data) => {
     setForm((prevForm) => {
       let updatedTeam;
-
       if (data.isActive) {
-        updatedTeam = [...prevForm['team'], {
+        updatedTeam = [...prevForm.team, {
           uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL
         }];
       } else {
-        updatedTeam = prevForm['team'].filter((member) => member.uid !== data.uid)
-      };
+        updatedTeam = prevForm.team.filter((member) => member.uid !== data.uid);
+      }
 
       return {
         ...prevForm,
-        'team': updatedTeam,
-        'team-uid': updatedTeam.map(member => member.uid)
+        team: updatedTeam,
+        'team-uids': updatedTeam.map(member => member.uid)
       };
     });
   };
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-full max-w-[35rem] max-h-[40rem] h-auto p-4 shadow-lg overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={taskData ? ('Update Task') : ('Create Task')} dataFeather='x' iconOnClick={closeModal} className='' />
+      <section 
+        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] max-h-[90vh] p-4 shadow-lg overflow-y-auto" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <IconTitleSection 
+          title={taskData ? 'Update Task' : 'Create Task'} 
+          dataFeather='x' 
+          iconOnClick={closeModal} 
+        />
 
-        <form action="" className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
-          <AlertCard text='Note: Deadline should atleast be 1 hour.' title='' className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'/>
-          <label htmlFor="title" className="flex flex-col text-gray-600">
+        <form className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
+          <AlertCard 
+            text='Note: Deadline should at least be 1 hour from now.' 
+            className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'
+          />
+          
+          <label className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
-              id="title"
               name="title"
-              value={form['title']}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              value={form.title}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500"
               onChange={handleChange}
               required
             />
           </label>
 
-          <label htmlFor="description" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Description
-            <input
-              type="text"
-              id="description"
+            <textarea
               name="description"
-              value={form['description']}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              value={form.description}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500"
               onChange={handleChange}
               required
             />
           </label>
 
-          <label htmlFor="file" className='flex flex-col text-gray-600'>
-            Attach File
-            <input 
-              type="file" 
-              id='file' 
-              name='file'
-              className="mt-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-             />
-          </label>
-
-          <label htmlFor="status" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Status
             <select 
-              id='status' 
               name='status' 
-              value={form['status']} 
+              value={form.status} 
               onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 pr-10 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2"
               required
             >
               <option value="To-do">To-do</option>
@@ -510,63 +490,51 @@ function CreateTask({ closeModal, taskData}) {
             </select>
           </label>
 
-          <label htmlFor="date" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Date-time
             <input
               type="datetime-local"
-              id="date"
-              ref={dateRef}
               name="deadline"
-              value={form['deadline']}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              min={minDateTime} // Using the memoized min date
+              value={form.deadline}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2"
               onChange={handleChange}
+              required
             />
           </label>
 
-          {projectData.type === 'Shared' ? (
-            <label className="flex flex-col gap-2 text-gray-600">
-              Select Team Members
-              <section className='flex flex-col gap-2 p-4 rounded-md bg-slate-50'>
-                <p className=' font-semibold text-sm'>Available Members</p>
-
-                <section className="grid grid-cols-2 gap-1">
-                  {loading ? (
-                    <BarLoader color='green' />
-                  ) : projectData['team'] && (
-                    projectData['team'].map((member) => (
-                      <UserCard
+          {projectData?.type === 'Shared' && (
+            <div className="flex flex-col gap-2 text-gray-600">
+              <p className="font-semibold">Select Team Members</p>
+              <section className="grid grid-cols-2 gap-2 p-4 rounded-md bg-slate-50">
+                {loading ? (
+                  <BarLoader color='green' />
+                ) : (
+                  projectData.team?.map((member) => (
+                    <UserCard
                       key={member.uid}
                       user={member}
                       onStateChange={handleStateChange}
                       isActive={form.team.some(t => t.uid === member.uid)}
                     />
-                  )))}
-                </section>
+                  ))
+                )}
               </section>
+              <input
+                className="mt-1 border border-gray-300 rounded-md px-4 py-2 bg-gray-100 italic"
+                readOnly
+                value={form.team.map(m => m.username).join(', ') || "No members selected"}
+              />
+            </div>
+          )}
 
-              <div className='flex flex-col'>
-                <p className=''>Selected team members will appear here</p>
-                <input
-                  className="mt-1 border border-gray-300 rounded-md px-4 py-2 pointer-events-none focus:outline-none focus:ring-0 user-select-none"
-                  placeholder='Please select atleast one task contributor'
-                  readOnly
-                  value={
-                    form['team'].length > 0
-                      ? form['team'].map((member) => member.username).join(', ')
-                      : ""
-                  }
-                />
-              </div>
-
-
-            </label>
-            ) 
-            : (null)
-          }
-
-          <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text={taskData ? 'Update Task' : 'Create Task'} className="py-3">
-          </Button>
+          {message.text && (
+            <p className="text-center font-medium" style={{ color: message.color }}>
+              {message.text}
+            </p>
+          )}
+          
+          <Button type="submit" text={taskData ? 'Update Task' : 'Create Task'} className="py-3" />
         </form>
       </section>
     </ModalOverlay>

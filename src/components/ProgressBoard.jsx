@@ -10,6 +10,7 @@ import { where } from 'firebase/firestore'
 import { IconAction } from './Icon'
 import { CompletedTab } from './modal-group/Modal'
 import { ButtonIcon } from './Button'
+import { useParams } from 'react-router-dom'
 
 function ProgressBoard() {
   const [visibilitity, setVisbility] = useState({
@@ -17,7 +18,11 @@ function ProgressBoard() {
     createTask: false,
   })
   const { key } = useReloadContext();
-  const activeProjectId = localStorage.getItem('activeProjectId');
+  const { projectId } = useParams();
+
+  if (!projectId) {
+    return <BarLoader>Loading...  </BarLoader>
+  }
 
   const toggleVisibility = (section) => {
     setVisbility(prev => ({
@@ -28,30 +33,30 @@ function ProgressBoard() {
 
   const whereToDo = useMemo(() => [
     where("status", "==", "To-do"),
-    where("project-id", "==", activeProjectId)
-  ], [activeProjectId]);
+    where("project-id", "==", projectId)
+  ], [projectId]);
   
   const whereActive = useMemo(() => [
     where("status", "==", "In-progress"),
-    where("project-id", "==", activeProjectId)
-  ], [activeProjectId]);
+    where("project-id", "==", projectId)
+  ], [projectId]);
   
   const whereToReview = useMemo(() => [
     where("status", "==", "To-Review"),
-    where("project-id", "==", activeProjectId)
-  ], [activeProjectId]);
+    where("project-id", "==", projectId)
+  ], [projectId]);
 
   const whereFinished = useMemo(() => [
     where("status", "==", "Finished"),
-    where("project-id", "==", activeProjectId)
-  ], [activeProjectId]);
+    where("project-id", "==", projectId)
+  ], [projectId]);
 
   const { taskData: toDoTasks, loading: loadingToDo } = useFetchTaskData(whereToDo, key);
   const { taskData: inProgressTasks, loading: loadingInProgress } = useFetchTaskData(whereActive, key);
   const { taskData: toReviewTasks, loading: loadingToReview } = useFetchTaskData(whereToReview, key);
   const { taskData: finishedTasks, loading: loadingFinished } = useFetchTaskData(whereFinished, key);
 
-  console.log("Active Project ID:", activeProjectId);
+  console.log("Active Project ID:", projectId);
 
   return (
     <div className="flex flex-col bg-white rounded-md overflow-hidden h-full shadow-md w-full flex-grow-0">

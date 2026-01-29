@@ -124,7 +124,6 @@ function CreateCard({ title = "Title", description = "Description", onClick, col
 }
 
 function ProjectCard({projectData}) {
-  const { setProjectID } = useProjectContext();
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
@@ -133,14 +132,12 @@ function ProjectCard({projectData}) {
   };
 
   const handleHeaderToProject = () => {
-    if (projectData.id) {
-      setProjectID(projectData.id);
-      localStorage.setItem('activeProjectId', projectData.id);
-    } else {
-      console.error("Error: Project does not exist");
+    if (!projectData.id) {
+      console.error("Error: Project Id missing");
+      return;
     };
 
-    navigate('./Project')
+    navigate(`/projects/${projectData.id}`)
   };
 
   return (
@@ -219,14 +216,14 @@ function NoteCard({
               <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} className='' collectionName='notes'/>
             }
           </div>
-          <p id="note-card-text" className="text-gray-800 my-2 text-sm max-h-[7rem] overflow-y-scroll overflow-x-hidden">
+          <div id="note-card-text" className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
             <IconText text={noteData.message} border/>
             {file && (
               <span className="block mt-2 text-gray-500 text-xs">
                 Attached File: {file}
               </span>
             )}
-          </p>
+          </div>
         </section>
 
         <div className="flex flex-wrap w-full gap-1 text-xs text-gray-600 font-semibold pt-1 max-w-full overflow-x-scroll">
@@ -349,7 +346,7 @@ function TaskCard({taskData, className, statusColor = ''}) {
   return (
     <div 
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
-        w-full justify-between border p-2 hover:cursor-pointer hover:bg-green-50 ${className}`}
+        w-full justify-between border p-2 hover:cursor-pointer hover:shadow-lg ${className}`}
       onClick={() => {
         if(location.pathname ==='/Home/Project') {
           toggleVisbility('taskFocus')

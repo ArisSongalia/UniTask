@@ -34,17 +34,15 @@ function MainProjectSection() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="relative w-full">
-        <IconTitleSection
-          title='Projects'
-          dataFeather='filter'
-          iconOnClick={toggleShowFilter}
-          extraIcon={<ReloadIcon />}
-          titleClassName='text-base'
-          className='sticky top-0 bg-white pb-2'
-        />
-        {showFilter && <FilterPopup closeModal={toggleShowFilter} /> }
-      </div>
+      <IconTitleSection
+        title='Projects'
+        dataFeather='filter'
+        iconOnClick={toggleShowFilter}
+        extraIcon={<ReloadIcon />}
+        titleClassName='text-base'
+        className='sticky top-0 bg-white'
+      />
+      {showFilter && <FilterPopup closeModal={toggleShowFilter} /> }
       
       <section id='project-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 
@@ -84,12 +82,13 @@ function MainNotesSection() {
 
 
   return (
-    <div className='w-full h-fit'>
+    <div className='flex flex-col w-full h-full'>
       <IconTitleSection 
         title='Notes' 
         dataFeather='filter'
         extraIcon={<ReloadIcon />}
         titleClassName='text-base'
+        className='sticky top-0 bg-white'
       />  
       <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard  

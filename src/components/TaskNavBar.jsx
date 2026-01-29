@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IconAction, IconUser } from './Icon';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BounceLoader, BarLoader } from 'react-spinners';
 import { AddMembers } from './modal-group/Modal';
@@ -10,8 +10,8 @@ import TaskSideBar from './TaskSideBar';
 
 
 function TaskNavBar() {
+  const { projectId } = useParams();
   const { key } = useReloadContext();
-
   const [visibility, setVisbility] =  useState({
     addMembers: false,
     socialSection: false,
@@ -25,7 +25,7 @@ function TaskNavBar() {
     }))
   };
 
-  const { projectData, loading } = useFetchActiveProjectData(key);
+  const { projectData, loading } = useFetchActiveProjectData(projectId, key);
 
   return (
     <div className='bg-white flex z-50 items-center py-2 px-4 justify-center sticky top-0 w-full h-fit shadow-sm'>

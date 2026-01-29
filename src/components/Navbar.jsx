@@ -6,6 +6,7 @@ import { auth } from '../config/firebase';
 import { IconUser, IconAction } from './Icon';
 import HomeSideBar from './HomeSideBar';
 import SocialSection from './SocialSection';
+import SearchBar from './SearchBar';
 
 
 function Navbar() {
@@ -45,6 +46,8 @@ function Navbar() {
         
           UniTask
         </Link>
+
+        <SearchBar />
 
         <span className="flex w-fit gap-2 items-center">
           <IconAction dataFeather='message-square' iconOnClick={() => toggleVisibility('socialSection')} />

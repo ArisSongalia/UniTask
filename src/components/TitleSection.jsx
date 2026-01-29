@@ -84,11 +84,11 @@ function MultiTitleSection({ titles}) {
 function DisplayTitleSection({title = 'Title', displayCount = '0', className = '', countClassName = ''}) {
   
   return ( 
-    <section className={`flex p-1 text-white w-fit mb-2 gap-2 bg-green-700 justify-between rounded-lg ${className}`}>
+    <section className={`flex p-1 text-white w-fit mb-2 gap-2 bg-green-700 justify-between rounded-full ${className}`}>
         <span className='flex gap-2 h-full items-center font-semibold text-xs ml-1'>
           <h2 className=''>{title}</h2>
         </span>
-        <span className={`flex items-center font-semibold h-5 w-5 justify-center rounded-md bg-white text-green-800 text-sm ${countClassName}`}>
+        <span className={`flex items-center font-semibold h-5 w-5 justify-center rounded-full bg-white text-green-800 text-sm ${countClassName}`}>
           <h2>{displayCount}</h2>
         </span>
     </section>

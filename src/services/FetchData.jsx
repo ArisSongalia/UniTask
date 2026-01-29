@@ -64,13 +64,11 @@ const useFetchProjectData = (
 
         const projectRef = collection(db, "projects");
 
-        // ✅ base query
         let q = query(
           projectRef,
           where("owner", "==", user.uid)
         );
 
-        // ✅ only add orderBy if orderValue exists
         if (orderValue) {
           q = query(
             projectRef,
@@ -164,8 +162,7 @@ const useFetchNoteData = ( refreshKey, customWhere ) => {
 const useFetchActiveProjectData = ( projectId, refreshKey ) => {
   const [projectData, setProjectData] = useState({});
   const [loading, setLoading] = useState(true);
-  const localProjectId = localStorage.getItem('activeProjectId')
-  const id = localProjectId || projectId;
+  const id = projectId;
 
 
   useEffect(() => {
