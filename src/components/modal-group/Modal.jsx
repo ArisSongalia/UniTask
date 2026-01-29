@@ -6,7 +6,7 @@ import { addDoc, collection, getDoc, updateDoc, doc, setDoc,  } from 'firebase/f
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
-import { NoteCard, ProjectCard, UserCard } from '../Cards';
+import { UserCard } from '../Cards';
 import { AlertCard } from '../Cards';
 import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '../../services/FetchData';
 import { BarLoader } from 'react-spinners';
@@ -17,13 +17,14 @@ import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
+import syncToSearch from '../../services/SyncToSearch';
 
 
 function CreateProject({ closeModal, projectData }) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ text: "", color: "" });
-  const dateRef = useRef('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     title: projectData?.title || "",
@@ -34,146 +35,156 @@ function CreateProject({ closeModal, projectData }) {
     status: projectData?.status || "On-going"
   });
 
+
   useEffect(() => {
-    if (auth.currentUser) {
-      setForm((prev) => ({
+    if (user && !projectData) {
+      const initialMember = {
+        uid: user.uid,
+        username: user.displayName || 'You',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+      };
+      setForm(prev => ({
         ...prev,
-        team: [{
-          uid: auth.currentUser.uid,
-          username: auth.currentUser.displayName || 'You',
-          email: auth.currentUser.email || '',
-          photoURL: auth.currentUser.photoURL || '',
-        }],
-        'team-uid': [auth.currentUser.uid],
+        team: [initialMember],
+        'team-uid': [user.uid]
       }));
     }
-  }, [auth.currentUser]);
+  }, [user, projectData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-
-    const today = new Date().toISOString().split('T')[0];
-    if(dateRef.current) {
-      dateRef.current.setAttribute('min', today);
-    };
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    
+    setIsSaving(true);
+    setMessage({ text: "Saving...", color: "blue" });
+
     try {
-      if(projectData) {
+      const payload = {
+        ...form,
+        searchTitle: form.title.toLowerCase(),
+        owner: projectData ? projectData.owner : user.uid,
+        updatedAt: new Date(),
+      };
+
+      let finalId = projectData?.id;
+
+      if (projectData) {
         const projectRef = doc(db, 'projects', projectData.id);
-        await updateDoc(projectRef, {
-          title: form.title,
-          description: form.description,
-          date: form.date,
-          type: form.type,
-          status: form.status,
-        })
+        await updateDoc(projectRef, payload);
       } else {
-        await addDoc(collection(db, 'projects'), {
-          title: form.title,
-          description: form.description,
-          date: form.date,
-          type: form.type,
-          owner: user.uid,
-          status: form.status,
-          team: form.team,
-        });
+        const docRef = await addDoc(collection(db, 'projects'), payload);
+        finalId = docRef.id;
       }
+
+      await syncToSearch('project', finalId, payload);
+
+      setMessage({ text: 'Project Successfully Saved!', color: 'green' });
+      
+      setTimeout(() => {
+        reloadComponent();
+        closeModal();
+      }, 800);
+
     } catch (error) {
-      setMessage({ text: `Error Creating Project: ${error.message}`, color: "red" });
-    } finally {
-      setMessage({ text: 'Succefully Created Task', color: 'green'});
-      reloadComponent();
-      closeModal();
-    };
+      console.error(error);
+      setIsSaving(false);
+      setMessage({ text: `Error: ${error.message}`, color: "red" });
+    }
   };
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-full m-0 max-w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={!projectData ? ('Create Project') : ('Update Project')} iconOnClick={closeModal} dataFeather='x' />
+      <section 
+        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <IconTitleSection 
+          title={!projectData ? 'Create Project' : 'Update Project'} 
+          iconOnClick={closeModal} 
+          dataFeather='x' 
+        />
 
-        <form className="flex flex-col space-y-4">
-          <label htmlFor="project-title" className="flex flex-col text-gray-600">
+        <form className="flex flex-col space-y-4" onSubmit={handleCreateProject}>
+          {/* Title */}
+          <label className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
-              onChange={handleChange}
-              value={form.title}
               name='title'
-              id="project-title"
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              value={form.title}
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
               required
             />
           </label>
 
-          <label htmlFor="project-description" className="flex flex-col text-gray-600">
+          {/* Description */}
+          <label className="flex flex-col text-gray-600">
             Description
             <input
-              onChange={handleChange}
-              value={form.description}
               type="text"
               name='description'
-              id="project-description"
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              value={form.description}
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
               required
             />
           </label>
 
-          <label htmlFor="date" className="flex flex-col text-gray-600">
+          {/* Date */}
+          <label className="flex flex-col text-gray-600">
             Target Date
             <input
-              ref={dateRef}
-              onChange={handleChange}
-              value={form.date}
               type="date"
               name="date"
-              id="date"
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              min={new Date().toISOString().split('T')[0]} // Directly setting min here
+              value={form.date}
+              onChange={handleChange}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 hover:cursor-pointer"
               required
             />
           </label>
 
+          {/* Project Type Selection */}
           {!projectData ? (
-            <label className="flex flex-col text-gray-600">
-              Project Type
+            <div className="flex flex-col text-gray-600">
+              <span className="text-sm">Project Type</span>
               <div className="flex items-center space-x-4 mt-2">
-                <label className="flex items-center space-x-2 hover:cursor-pointer">
-                  <input
-                    onChange={handleChange}
-                    type="radio"
-                    id="solo"
-                    value="Solo"
-                    name='type'
-                    checked={form.type === "Solo"}
-                    className="hover:cursor-pointer"
-                    required
-                  />
-                  <span>Solo</span>
-                </label>
-
-                <label className="flex items-center space-x-2 hover:cursor-pointer">
-                  <input
-                    onChange={handleChange}
-                    value="Shared"
-                    checked={form.type === "Shared"}
-                    type="radio"
-                    id="shared"
-                    name='type'
-                    className=" hover:cursor-pointer"
-                    required
-                  />
-                  <span>Shared</span>
-                </label>
+                {['Solo', 'Shared'].map((mode) => (
+                  <label key={mode} className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name='type'
+                      value={mode}
+                      checked={form.type === mode}
+                      onChange={handleChange}
+                      required
+                    />
+                    <span>{mode}</span>
+                  </label>
+                ))}
               </div>
-            </label>
-          ) : ( <AlertCard text='Changing project type is not allowed when editing'/> )}
-          <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text={projectData? 'Update Project' : 'Create Project'} className="py-3" dataFeather='plus' onClick={handleCreateProject}/>
+            </div>
+          ) : (
+            <AlertCard text='Project type cannot be changed after creation' />
+          )}
+
+          {message.text && (
+            <p className="text-center font-medium" style={{ color: message.color }}>
+              {message.text}
+            </p>
+          )}
+
+          <Button 
+            type="submit" 
+            disabled={isSaving}
+            text={projectData ? 'Update Project' : 'Create Project'} 
+            className="py-3" 
+          />
         </form>
       </section>
     </ModalOverlay>
@@ -336,7 +347,7 @@ function CreateTask({ closeModal, taskData }) {
   const { key, reloadComponent } = useReloadContext();
   const [message, setMessage] = useState({ text: '', color: '' });
   const { projectId } = useParams();
-  const { projectData, loading } = useFetchActiveProjectData(key);
+  const { projectData, loading } = useFetchActiveProjectData(projectId, key);
 
   const [form, setForm] = useState({
     title: taskData?.title || '',
@@ -384,6 +395,7 @@ function CreateTask({ closeModal, taskData }) {
 
     try {
       const payload = {
+        searchTitle: form.title.toLowerCase(),
         title: form.title,
         description: form.description,
         deadline: form.deadline,
@@ -395,12 +407,23 @@ function CreateTask({ closeModal, taskData }) {
         'team-uids': form['team-uids'], 
       };
 
+      let savedId = taskData?.id;
+
       if (taskData?.id) {
         const taskRef = doc(db, 'tasks', taskData.id);
         await updateDoc(taskRef, payload);
       } else {
-        await addDoc(collection(db, 'tasks'), payload);
-      }
+        const docRef = await addDoc(collection(db, 'tasks'), payload);
+        savedId = docRef.id;
+      };
+
+      await syncToSearch('task', savedId, {
+        title: payload.title,
+        searchTitle: payload.searchTitle,
+        description: payload.description,
+        'project-id': payload['project-id'],
+        'project-title': payload['project-title']
+      });
 
       setMessage({ text: 'Successfully Saved Task', color: 'green' });
       setTimeout(() => {

@@ -143,7 +143,7 @@ function ProjectCard({projectData}) {
   return (
     
     <div
-      className="flex flex-col bg-white rounded-md shadow-md cursor-pointer hover:bg-green-50
+      className="flex flex-col bg-white rounded-md cursor-pointer hover:bg-green-50
       flex-grow justify-between border gap-2 border-green-600 p-3 h-[12rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >

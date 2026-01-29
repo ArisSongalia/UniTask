@@ -6,19 +6,20 @@ import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
 import { BarLoader } from 'react-spinners';
 import { NoteCard } from './Cards';
+import { useParams } from 'react-router-dom';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);
   const { key } = useReloadContext();
-  const activeProjectId = localStorage.getItem('activeProjectId');
+  const { projectId } = useParams();
 
   const togglePopUp = () => {
     setShowPopUp(!showPopUp);
   }
 
-  const customWhere = where("project-id", "==", activeProjectId);
+  const customWhere = where("project-id", "==", projectId);
   const { noteData, loading } = useFetchNoteData(key, customWhere)
-  const { projectData } = useFetchProjectData(key, activeProjectId);
+  const { projectData } = useFetchProjectData(key, projectId);
 
   
   return (
