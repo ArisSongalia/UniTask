@@ -3,8 +3,8 @@ import { doc, deleteDoc, setDoc } from "firebase/firestore";
 
 
 const createSearchPath = (type, id, data) => {
-  if (type == 'task') return `/projects${data['project-id']}/tasks/${id}`;
-  if (type == 'project') return `/projects/${id}`;
+  if (type == 'task') return `/project/${data['project-id']}/tasks/${id}`;
+  if (type == 'project') return `/project/${id}`;
   if (type == 'user') return `/profile/${id}`;
 
   return '/';
@@ -23,7 +23,7 @@ const syncToSearch = async (type, id, data, isDelete = false) => {
     description: data.description,
     category: type,
     path: createSearchPath(type, id, data),
-    owner: data.uid || data['team-uids'] || [],
+    owner: data.owner,
     updatedAt: new Date(),
   };
 

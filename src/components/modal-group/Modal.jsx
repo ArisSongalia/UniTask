@@ -70,6 +70,14 @@ function CreateProject({ closeModal, projectData }) {
         updatedAt: new Date(),
       };
 
+      const searchData = {
+        title: payload.title,
+        searchTitle: payload.searchTitle,
+        description: payload.description,
+        category: 'project',
+        owner: payload.owner,
+      };
+
       let finalId = projectData?.id;
 
       if (projectData) {
@@ -80,7 +88,7 @@ function CreateProject({ closeModal, projectData }) {
         finalId = docRef.id;
       }
 
-      await syncToSearch('project', finalId, payload);
+      await syncToSearch('project', finalId, searchData);
 
       setMessage({ text: 'Project Successfully Saved!', color: 'green' });
       
@@ -421,6 +429,7 @@ function CreateTask({ closeModal, taskData }) {
         title: payload.title,
         searchTitle: payload.searchTitle,
         description: payload.description,
+        owner: payload['team-uids'],  
         'project-id': payload['project-id'],
         'project-title': payload['project-title']
       });

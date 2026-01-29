@@ -8,6 +8,7 @@ import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
 import { useNavigate } from 'react-router-dom';
 import bgMain from '../../assets/bg-main.jpg';
+import syncToSearch from '../../services/SyncToSearch';
 
 
 function SignUp() {
@@ -274,19 +275,30 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
     }
 
     try {
-      await setDoc(doc(db, 'users', user.uid), {
-        email: auth.currentUser?.email || email, 
+      const userUid = user.uid;
+      const userEmail = auth.currentUser?.email || email;
+
+      const payload = {
+        email: userEmail,
         username: username,
-        photoURL: user.photoURL,
-        uid: user.uid,
+        photoURL: user.photoUrl || '',
+        uid: userUid,
         ...additionalData,
+      };
+
+      await setDoc(doc(db, 'users', user.uid), payload);
+      await syncToSearch('users', user.uid, {
+        title: username,
+        searchTitle: username.toLowerCase(),
+        description: userEmail,
+        category: 'users',
       });
 
       alert('Username saved successfully!');
       Navigate('/Home');
     } catch (error) {
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
-    }
+    };
   };
 
   return (
