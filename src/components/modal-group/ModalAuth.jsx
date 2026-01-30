@@ -291,7 +291,6 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
         title: username,
         searchTitle: username.toLowerCase(),
         description: userEmail,
-        category: 'users',
       });
 
       alert('Username saved successfully!');

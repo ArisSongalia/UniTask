@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {IconTitleSection} from './TitleSection';
 import { CreateNote } from './modal-group/Modal';
-import { useFetchNoteData, useFetchProjectData } from '../services/FetchData';
+import { useFetchActiveProjectData, useFetchNoteData, useFetchProjectData } from '../services/FetchData';
 import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
 import { BarLoader } from 'react-spinners';
@@ -17,9 +17,10 @@ function NoteSection({className = ''}) {
     setShowPopUp(!showPopUp);
   }
 
+  const { projectData } = useFetchActiveProjectData(projectId, key)
   const customWhere = where("project-id", "==", projectId);
   const { noteData, loading } = useFetchNoteData(key, customWhere)
-  const { projectData } = useFetchProjectData(key, projectId);
+
 
   
   return (

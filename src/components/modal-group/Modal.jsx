@@ -74,7 +74,6 @@ function CreateProject({ closeModal, projectData }) {
         title: payload.title,
         searchTitle: payload.searchTitle,
         description: payload.description,
-        category: 'project',
         owner: payload.owner,
       };
 
@@ -88,7 +87,7 @@ function CreateProject({ closeModal, projectData }) {
         finalId = docRef.id;
       }
 
-      await syncToSearch('project', finalId, searchData);
+      await syncToSearch('projects', finalId, searchData);
 
       setMessage({ text: 'Project Successfully Saved!', color: 'green' });
       
@@ -199,151 +198,140 @@ function CreateProject({ closeModal, projectData }) {
   );
 }
 
-function CreateNote({ closeModal, noteData, projectData}) {
+function CreateNote({ closeModal, noteData, projectData }) {
   const { reloadComponent } = useReloadContext();
   const user = auth.currentUser;
   const [message, setMessage] = useState({ text: "", color: "" });
-  const dateRef = useRef('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
-    title: noteData?.title ?? "",
-    message: noteData?.message ?? "",
-    file: "",
-    date: noteData?.date ?? "",
+    title: noteData?.title || "",
+    message: noteData?.message || "",
+    date: noteData?.date || "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if(type === 'file') {
-      const uploadedFile = files[0];
-      setForm((prev) => ({ ...prev, [name]: uploadedFile }));
-    } else {
-      setForm({ ...form, [name]: value });
-    }
 
-    const today = new Date().toISOString().split('T')[0];
-    if(dateRef.current) {
-      dateRef.current.setAttribute('min', today);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateNote = async (e) => {
     e.preventDefault();
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    setMessage({ text: "Saving...", color: "blue" });
 
     try {
-      if (!noteData) {
-        const noteRef = doc(collection(db, "notes"));
-        const noteRefId = noteRef.id;
-        let uploadedFileId = null;
+      const projId = projectData?.id || null;
+      const projTitle = projectData?.title || 'Personal';
 
-        if(form.file) {
-          try{
-            const formData = new FormData();
-            formData.append('file', form.file);
-
-            const response = await fetch('http://localhost:5000/api/upload', {
-              method: "POST",
-              body: formData,
-            });
-
-            const result = await response.json();
-            uploadedFileId = result.fileId;
-          } catch (error) {
-            console.error(error.message);
-          }
-        }
-
-        await setDoc(noteRef, {
-          title: form.title,
-          id: noteRefId,
-          message: form.message,
-          date: form.date,
-          owner: user.displayName,
-          ownerUid: user.uid,
-          status: noteData?.status ?? 'To-Review',
-          'project-id': projectData?.[0]?.id ?? null,
-          'project-title': projectData?.[0]?.title ?? 'Personal',
-          fileId: uploadedFileId ?? null,
-        }); 
-        
-      } else {
-        const docRef = doc(db, 'notes', noteData.id);
-        await updateDoc(docRef, {
-          title: form.title,
-          message: form.message,
-          date: form.date,
-          owner: user.displayName,
-          ownerUid: user.uid,
-          status: noteData?.status ?? 'To-Review',
-          'project-id': projectData?.[0]?.id ?? null,
-          'project-title': projectData?.[0]?.title ?? 'Personal',
-        });
+      const payload = {
+        title: form.title,
+        message: form.message,
+        date: form.date,
+        owner: user.displayName || "Anonymous",
+        ownerUid: user.uid,
+        status: noteData?.status || 'To-Review',
+        'project-id': projId,
+        'project-title': projTitle,
+        searchTitle: form.title.toLowerCase(),
+        updatedAt: new Date()
       };
-      reloadComponent();
-      closeModal();
+
+      let finalId = noteData?.id;
+
+      if (noteData?.id) {
+        await updateDoc(doc(db, 'notes', noteData.id), payload);
+      } else {
+        const docRef = await addDoc(collection(db, 'notes'), payload);
+        finalId = docRef.id;
+      }
+
+      await syncToSearch('note', finalId, {
+        title: payload.title,
+        description: payload.message,
+        searchTitle: payload.searchTitle,
+        category: 'note',
+        'project-title': projTitle
+      }, user.uid);
+
+      setMessage({ text: 'Note Saved Successfully!', color: 'green' });
+      
+      setTimeout(() => {
+        reloadComponent();
+        closeModal();
+      }, 800);
+
     } catch (error) {
-      console.error("Error creating note:", error);
-      setMessage({ text: "Failed to create note: " + error.message, color: "red" });
+      console.error("Error saving note:", error);
+      setMessage({ text: "Failed: " + error.message, color: "red" });
+      setIsSaving(false);
     }
   };
 
-
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={(!noteData) ? ('Create Note') : ('Update: ' + noteData.title)} dataFeather='x' iconOnClick={closeModal} />
+      <section 
+        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <IconTitleSection 
+          title={!noteData ? 'Create Note' : `Update: ${noteData.title}`} 
+          dataFeather='x' 
+          iconOnClick={closeModal} 
+        />
 
         <form onSubmit={handleCreateNote} className="flex flex-col space-y-4">
-          <label htmlFor="title" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Title
             <input
               type="text"
+              name="title"
               value={form.title}
               onChange={handleChange}
-              name="title"
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
               required
             />
           </label>
 
-          <label htmlFor="message" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Message
             <textarea
               name="message"
               value={form.message}
               onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none h-[10rem]"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none h-[10rem] resize-none"
               required
             />
           </label>
 
-          <label htmlFor="file" className='flex flex-col text-gray-600'>
-            Attach File
-            <input 
-              type="file" 
-              id='file' 
-              name='file'
-              accept=".jpg, .jpeg, .png, .pdf, .gif"
-              className="mt-1 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-              onChange={handleChange}
-             />
-          </label>
-
-          <label htmlFor="date" className="flex flex-col text-gray-600">
+          <label className="flex flex-col text-gray-600">
             Target Date
             <input
-              ref={dateRef}
               type="date"
               name="date"
+              min={new Date().toISOString().split('T')[0]}
               value={form.date}
               onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 hover:cursor-pointer"
               required
             />
           </label>
 
-          <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text={(!noteData) ? ('Create Note') : ('Update Note')} className="py-3" dataFeather='plus'/>
+          {message.text && (
+            <p className="text-center text-sm font-medium" style={{ color: message.color }}>
+              {message.text}
+            </p>
+          )}
+          
+          <Button 
+            type="submit" 
+            disabled={isSaving}
+            text={noteData ? 'Update Note' : 'Create Note'} 
+            className="py-3" 
+          />
         </form>
       </section>
     </ModalOverlay>
@@ -354,6 +342,7 @@ function CreateNote({ closeModal, noteData, projectData}) {
 function CreateTask({ closeModal, taskData }) {
   const { key, reloadComponent } = useReloadContext();
   const [message, setMessage] = useState({ text: '', color: '' });
+  const [isSaving, setIsSaving] = useState(false);
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
 
@@ -362,7 +351,6 @@ function CreateTask({ closeModal, taskData }) {
     description: taskData?.description || '',
     deadline: taskData?.deadline || '',
     status: taskData?.status || 'To-do',
-    file: taskData?.file || '',
     team: taskData?.team || [],
     'team-uids': taskData?.['team-uids'] || [],
   });
@@ -373,16 +361,18 @@ function CreateTask({ closeModal, taskData }) {
     return today.toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
   }, []);
 
+
   useEffect(() => {
-    if (auth.currentUser && projectData?.type === 'Solo') {
+    if (auth.currentUser && projectData?.type === 'Solo' && form.team.length === 0) {
+      const self = {
+        uid: auth.currentUser.uid,
+        username: auth.currentUser.displayName || 'You',
+        email: auth.currentUser.email || '',
+        photoURL: auth.currentUser.photoURL || '',
+      };
       setForm((prev) => ({
         ...prev,
-        team: [{
-          uid: auth.currentUser.uid,
-          username: auth.currentUser.displayName || 'You',
-          email: auth.currentUser.email || '',
-          photoURL: auth.currentUser.photoURL || '',
-        }],
+        team: [self],
         'team-uids': [auth.currentUser.uid],
       }));
     }
@@ -395,46 +385,49 @@ function CreateTask({ closeModal, taskData }) {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
+    if (isSaving) return;
 
-    if (projectData?.type === "Shared" && (!form.team || form.team.length === 0)) {
+    if (projectData?.type === "Shared" && form.team.length === 0) {
       setMessage({ text: 'Please select task members', color: 'red' });
       return;
     }
 
+    setIsSaving(true);
+    setMessage({ text: 'Saving task...', color: 'blue' });
+
     try {
       const payload = {
-        searchTitle: form.title.toLowerCase(),
         title: form.title,
         description: form.description,
         deadline: form.deadline,
         status: form.status,
-        file: form.file,
         'project-id': projectId,
-        'project-title': projectData?.title || '', 
+        'project-title': projectData?.title || 'Personal', 
         team: form.team,
-        'team-uids': form['team-uids'], 
+        'team-uids': form['team-uids'],
+        searchTitle: form.title.toLowerCase(),
+        updatedAt: new Date(),
       };
 
       let savedId = taskData?.id;
 
       if (taskData?.id) {
-        const taskRef = doc(db, 'tasks', taskData.id);
-        await updateDoc(taskRef, payload);
+        await updateDoc(doc(db, 'tasks', taskData.id), payload);
       } else {
         const docRef = await addDoc(collection(db, 'tasks'), payload);
         savedId = docRef.id;
-      };
+      }
 
       await syncToSearch('task', savedId, {
         title: payload.title,
         searchTitle: payload.searchTitle,
         description: payload.description,
-        owner: payload['team-uids'],  
-        'project-id': payload['project-id'],
-        'project-title': payload['project-title']
-      });
+        'project-id': projectId,
+        'project-title': payload['project-title'],
+      }, payload['team-uids']);
 
       setMessage({ text: 'Successfully Saved Task', color: 'green' });
+      
       setTimeout(() => {
         reloadComponent();
         closeModal();
@@ -443,19 +436,15 @@ function CreateTask({ closeModal, taskData }) {
     } catch (error) {
       console.error(error);
       setMessage({ text: `Error: ${error.message}`, color: 'red' });
+      setIsSaving(false);
     }
   };
 
   const handleStateChange = (data) => {
     setForm((prevForm) => {
-      let updatedTeam;
-      if (data.isActive) {
-        updatedTeam = [...prevForm.team, {
-          uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL
-        }];
-      } else {
-        updatedTeam = prevForm.team.filter((member) => member.uid !== data.uid);
-      }
+      const updatedTeam = data.isActive 
+        ? [...prevForm.team, { uid: data.uid, username: data.username, email: data.email, photoURL: data.photoURL }]
+        : prevForm.team.filter((member) => member.uid !== data.uid);
 
       return {
         ...prevForm,
@@ -489,7 +478,7 @@ function CreateTask({ closeModal, taskData }) {
               type="text"
               name="title"
               value={form.title}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
               onChange={handleChange}
               required
             />
@@ -500,45 +489,47 @@ function CreateTask({ closeModal, taskData }) {
             <textarea
               name="description"
               value={form.description}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500"
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
               onChange={handleChange}
               required
             />
           </label>
 
-          <label className="flex flex-col text-gray-600">
-            Status
-            <select 
-              name='status' 
-              value={form.status} 
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2"
-              required
-            >
-              <option value="To-do">To-do</option>
-              <option value="In-progress">In-progress</option>
-              <option value="To-review">To-review</option>
-              <option value="Finished">Finished</option>
-            </select>
-          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <label className="flex flex-col text-gray-600">
+              Status
+              <select 
+                name='status' 
+                value={form.status} 
+                onChange={handleChange}
+                className="mt-1 border border-gray-300 rounded-md px-4 py-2 outline-none"
+                required
+              >
+                <option value="To-do">To-do</option>
+                <option value="In-progress">In-progress</option>
+                <option value="To-review">To-review</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </label>
 
-          <label className="flex flex-col text-gray-600">
-            Date-time
-            <input
-              type="datetime-local"
-              name="deadline"
-              min={minDateTime} // Using the memoized min date
-              value={form.deadline}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2"
-              onChange={handleChange}
-              required
-            />
-          </label>
+            <label className="flex flex-col text-gray-600">
+              Deadline
+              <input
+                type="datetime-local"
+                name="deadline"
+                min={minDateTime}
+                value={form.deadline}
+                className="mt-1 border border-gray-300 rounded-md px-4 py-2 outline-none"
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
 
           {projectData?.type === 'Shared' && (
             <div className="flex flex-col gap-2 text-gray-600">
-              <p className="font-semibold">Select Team Members</p>
-              <section className="grid grid-cols-2 gap-2 p-4 rounded-md bg-slate-50">
+              <p className="font-semibold">Assign Team Members</p>
+              <section className="grid grid-cols-2 gap-2 p-4 rounded-md bg-slate-50 max-h-48 overflow-y-auto">
                 {loading ? (
                   <BarLoader color='green' />
                 ) : (
@@ -552,21 +543,24 @@ function CreateTask({ closeModal, taskData }) {
                   ))
                 )}
               </section>
-              <input
-                className="mt-1 border border-gray-300 rounded-md px-4 py-2 bg-gray-100 italic"
-                readOnly
-                value={form.team.map(m => m.username).join(', ') || "No members selected"}
-              />
+              <p className="text-xs italic text-gray-500">
+                Selected: {form.team.map(m => m.username).join(', ') || "None"}
+              </p>
             </div>
           )}
 
           {message.text && (
-            <p className="text-center font-medium" style={{ color: message.color }}>
+            <p className="text-center font-medium text-sm" style={{ color: message.color }}>
               {message.text}
             </p>
           )}
           
-          <Button type="submit" text={taskData ? 'Update Task' : 'Create Task'} className="py-3" />
+          <Button 
+            type="submit" 
+            disabled={isSaving}
+            text={isSaving ? 'Saving...' : (taskData ? 'Update Task' : 'Create Task')} 
+            className="py-3" 
+          />
         </form>
       </section>
     </ModalOverlay>

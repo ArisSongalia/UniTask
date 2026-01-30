@@ -177,7 +177,7 @@ const useFetchActiveProjectData = ( projectId, refreshKey ) => {
         const projectDoc = await getDoc(projectRef);
   
         if (projectDoc.exists()) {
-          setProjectData(projectDoc.data());
+          setProjectData({ id: projectDoc.id, ...projectDoc.data() });
         } else {
           throw new Error('Project not found');
         }

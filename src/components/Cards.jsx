@@ -197,9 +197,8 @@ function NoteCard({
           e.stopPropagation();
           dispatch({ type: 'NOTE_FOCUS' });
         }}
-        className={`flex flex-col bg-white border border-yellow-500 rounded-md
-          hover:cursor-pointer shadow-sm hover:bg-yellow-50 h-full
-          p-2 justify-between max-h-[14rem] min-w-[9rem] ${className}`}
+        className={`flex flex-col bg-white rounded-md cursor-pointer hover:bg-yellow-50
+      flex-grow justify-between border gap-2 border-yellow-600 p-3 h-[12rem] min-w-[9rem]${className}`}
       >
       {visibility.noteFocus && 
         <NoteFocus closeModal={() => dispatch({ type: 'NOTE_FOCUS' })} noteData={noteData} 
@@ -388,7 +387,7 @@ function TaskCard({taskData, className, statusColor = ''}) {
           
           <span className='flex text-xs font-semibold text-gray-600 flex-wrap'>
             {(location.pathname == '/Home') ? (
-              <IconText text={`Task for: ${taskData['project-title']}`} />
+              <IconText text={`Task In: ${taskData['project-title']}`} />
             ) : (
               null
             )}
