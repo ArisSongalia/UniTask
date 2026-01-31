@@ -2,6 +2,7 @@ import { collection, limit, query, where, getDocs } from "firebase/firestore";
 import Icon, {IconAction} from "./Icon";
 import { db } from "../config/firebase";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 function SearchBar({ onResultClick }) {
@@ -10,6 +11,7 @@ function SearchBar({ onResultClick }) {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [isResultOpen, setIsResultOpen] = useState(false)
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchTerm.length < 2) {
@@ -83,6 +85,7 @@ return (
                 setResults([]);
                 setHasSearched(false);
                 setIsResultOpen(false);  
+                navigate(item.path)
               }}
               className="px-4 py-3 hover:bg-green-50 cursor-pointer border-b last:border-none flex justify-between items-center transition-colors"
             >
@@ -98,7 +101,9 @@ return (
             </li>
           ))
         ) : hasSearched && !isSearching ? (
-          <li className="px-4 py-6 text-center">
+          <li 
+            className="px-4 py-6 text-center"
+          >
             <p className="text-sm text-gray-500">No results found for "{searchTerm}"</p>
             <p className="text-xs text-gray-400 mt-1">Try a different keyword</p>
           </li>

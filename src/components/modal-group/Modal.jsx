@@ -248,13 +248,7 @@ function CreateNote({ closeModal, noteData, projectData }) {
         finalId = docRef.id;
       }
 
-      await syncToSearch('note', finalId, {
-        title: payload.title,
-        description: payload.message,
-        searchTitle: payload.searchTitle,
-        category: 'note',
-        'project-title': projTitle
-      }, user.uid);
+      await syncToSearch('note', finalId, payload);
 
       setMessage({ text: 'Note Saved Successfully!', color: 'green' });
       

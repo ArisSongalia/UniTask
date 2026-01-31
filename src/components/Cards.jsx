@@ -10,7 +10,6 @@ import { useReloadContext } from '../context/ReloadContext';
 import { useFetchTaskData, useFetchNoteData, useFetchProjectData, UseFetchUserName } from '../services/FetchData';
 import { IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './hooks/useAuth';
 import { NoteFocus, Summary, TaskFocus } from "./modal-group/Modal";
@@ -137,7 +136,7 @@ function ProjectCard({projectData}) {
       return;
     };
 
-    navigate(`/projects/${projectData.id}`)
+    navigate(`/project/${projectData.id}`)
   };
 
   return (

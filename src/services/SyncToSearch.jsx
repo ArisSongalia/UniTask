@@ -2,9 +2,9 @@ import { db } from "../config/firebase";
 import { doc, deleteDoc, setDoc } from "firebase/firestore";
 
 const createSearchPath = (type, id, data) => {
-  if (type === 'task') return `/project/${data['project-id']}/tasks/${id}`;
+  if (type === 'task') return `/project/${data['project-id']}`;
   if (type === 'project') return `/project/${id}`;
-  if (type === 'note') return `/project/${data['project-id']}/notes`; 
+  if (type === 'note') return `/project/${data['project-id']}`; 
   if (type === 'user') return `/profile/${id}`;
 
   return '/';
