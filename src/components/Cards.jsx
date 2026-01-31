@@ -310,27 +310,10 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
 function TaskCard({taskData, className, statusColor = ''}) {
   const location = useLocation();
   const navigate = useNavigate();
-  const projectId = taskData['project-id'];
-  const { setProjectID } = useProjectContext();
   const [visibility, setVisbility] = useState({
     popUp: false,
     taskFocus: false,
-  })
-  
-  const handleSetActiveProject = async () => {
-    if (taskData['project-id']) {
-      setProjectID(taskData['project-id']);
-      localStorage.setItem('activeProjectId', taskData['project-id']);
-    } else {
-      console.error("Error: Project does not exist");
-    }
-  };
-
-
-  const triggerFileInput = () => {
-    const fileInput = document.getElementById('file-input');
-    if (fileInput) fileInput.click();
-  };
+  });
 
   const toggleVisbility = (section) => {
     setVisbility((prev) => ({
@@ -346,13 +329,10 @@ function TaskCard({taskData, className, statusColor = ''}) {
       className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
         w-full justify-between border p-2 hover:cursor-pointer hover:shadow-lg ${className}`}
       onClick={() => {
-        if(location.pathname ==='/Home/Project') {
+        if (location.pathname === '/Home') {
+            navigate(`/Project/${taskData['project-id']}`);
+        } else {
           toggleVisbility('taskFocus')
-        } else if(location.pathname === '/Home') {
-          if(taskData?.['project-id']) {
-            handleSetActiveProject();
-            navigate('/Home/Project');
-          }
         }
       }}
     >

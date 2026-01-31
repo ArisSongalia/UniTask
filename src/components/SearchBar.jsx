@@ -92,7 +92,7 @@ return (
               <div className="flex flex-col overflow-hidden">
                 <p className="font-medium text-gray-800 text-sm truncate">{item.title}</p>
                 <p className="text-xs text-gray-500 truncate italic">
-                  {item.description || "No description"}
+                  {item.description}
                 </p>
               </div>
               <span className="text-[10px] font-bold uppercase px-2 py-1 bg-gray-100 rounded text-gray-500 ml-2">

@@ -59,6 +59,8 @@ function CreateProject({ closeModal, projectData }) {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
+
+    if (isSaving) return;
     setIsSaving(true);
     setMessage({ text: "Saving...", color: "blue" });
 
@@ -67,13 +69,6 @@ function CreateProject({ closeModal, projectData }) {
         ...form,
         owner: projectData ? projectData.owner : user.uid,
         updatedAt: new Date(),
-      };
-
-      const searchData = {
-        title: payload.title,
-        searchTitle: payload.searchTitle,
-        description: payload.description,
-        owner: payload.owner,
       };
 
       let finalId = projectData?.id;
