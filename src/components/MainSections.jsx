@@ -27,22 +27,23 @@ function MainProjectSection() {
 
   const toggleShowFilter = () => {
     setShowFilter(!showFilter);
-  }
-
+  };
 
   const { projectData, loading } = useFetchProjectData(key, orderValue, orderPos)
 
   return (
     <div className="flex flex-col w-full h-full">
-      <IconTitleSection
-        title='Projects'
-        dataFeather='filter'
-        iconOnClick={toggleShowFilter}
-        extraIcon={<ReloadIcon />}
-        titleClassName='text-base'
-        className='sticky top-0 bg-white'
-      />
-      {showFilter && <FilterPopup closeModal={toggleShowFilter} /> }
+      <div className="relative">
+        <IconTitleSection
+          title='Projects'
+          dataFeather='filter'
+          iconOnClick={toggleShowFilter}
+          extraIcon={<ReloadIcon />}
+          titleClassName='text-base'
+          className='sticky top-0 bg-white'
+        />
+        {showFilter && <FilterPopup closeModal={toggleShowFilter} /> }
+      </div>
       
       <section id='project-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
         <CreateCard 
@@ -73,41 +74,45 @@ function MainProjectSection() {
 function MainNotesSection() {
   const [showPopUp, setShowPopUp] = useState(false); 
   const { key } = useReloadContext();
+  const [showFilter, setShowFilter] = useState(false);
 
-  const togglePopUp = () => {
-    setShowPopUp(!showPopUp); 
-  };
+  const togglePopUp = () => setShowPopUp(!showPopUp); 
+  const toggleShowFilter = () => setShowFilter(!showFilter);
 
-  const { noteData, loading }  = useFetchNoteData(key)
-
+  const { noteData, loading } = useFetchNoteData(key);
 
   return (
-    <div className='flex flex-col w-full h-full'>
-      <IconTitleSection 
-        title='Notes' 
+    <div className="relative w-full h-full">
+      <IconTitleSection
+        title='Notes'
         dataFeather='filter'
         extraIcon={<ReloadIcon />}
         titleClassName='text-base'
-        className='sticky top-0 bg-white'
-      />  
-      <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 flex-grow-0 gap-2">
+        className='sticky top-0 bg-white z-10'
+        iconOnClick={toggleShowFilter} 
+      />
+
+      {showFilter && (<FilterPopup closeModal={toggleShowFilter} /> )}
+    
+      {/* Cards Grid */}
+      <section id='note-container' className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 mt-4">
         <CreateCard  
           onClick={togglePopUp} 
           title='Create Note' 
-          description='Write a personal note. These notes won’t be linked to any project.'
+          description='Write a personal note.'
         />
+        
         {showPopUp && <CreateNote closeModal={togglePopUp} />}
 
         {loading ? (
-          <span><BarLoader color='#228B22' size={20} /></span>
+            <BarLoader color='#228B22' size={20} />
         ) : (
-          noteData.length > 0 &&
-            noteData.map((note, index) => (
-              <NoteCard
-                key={`${note.id}-${index}`}
-                noteData={note}
-              />
-            ))
+          noteData?.map((note, index) => (
+            <NoteCard
+              key={`${note.id}-${index}`}
+              noteData={note}
+            />
+          ))
         )}
       </section>
     </div>

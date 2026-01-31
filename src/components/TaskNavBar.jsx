@@ -28,7 +28,7 @@ function TaskNavBar() {
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
 
   return (
-    <div className='bg-white flex z-50 items-center py-2 px-4 justify-center sticky top-0 w-full h-fit shadow-sm'>
+    <div className='bg-white flex z-40 items-center py-2 px-4 justify-center sticky top-0 w-full h-fit shadow-sm'>
       <div className='flex max-w-screen-2xl w-full justify-between items-center sticky top-0'>
         <span className='flex gap-2 items-center'>
             <IconAction 

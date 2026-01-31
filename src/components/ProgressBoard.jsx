@@ -42,7 +42,7 @@ function ProgressBoard() {
   ], [projectId]);
   
   const whereToReview = useMemo(() => [
-    where("status", "==", "To-Review"),
+    where("status", "==", "To-review"),
     where("project-id", "==", projectId)
   ], [projectId]);
 
