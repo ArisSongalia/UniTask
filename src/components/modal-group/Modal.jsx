@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { IconAction, IconText, IconUser } from '../Icon';
+import Icon, { IconAction, IconText, IconUser } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { addDoc, collection, getDoc, updateDoc, doc, getDocs, limit, query, where  } from 'firebase/firestore';
@@ -18,7 +18,6 @@ import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-tabl
 import { useAsyncError, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
 import syncToSearch from '../../services/SyncToSearch';
-import { useFormState } from 'react-dom';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -779,7 +778,7 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
 
           <span className='flex flex-col min-w-0 w-full'>
             <p className='font-bold truncate text-gray-800'>
-              {user.displayName}
+              {user.username}
             </p>
             <p className='text-sm text-gray-600 truncate'>
               {user.email}
@@ -800,12 +799,14 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
         </div>
       )}
 
-      <Button
-        onClick={handleSignOut}
-        className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
-        text={forAdding ? "Add Teammate" : "Sign-Out"}
-        dataFeather='log-out'
-      />
+      {!forAdding && (
+        <Button
+          onClick={handleSignOut}
+          className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
+          text="Sign-Out"
+          dataFeather='log-out'
+        />
+      )}
     </div>
   )
 
@@ -830,8 +831,12 @@ function AddTeamMates({ closeModal }) {
   const [hasSearched, setHasSearched] = useState(false); 
   const [isResultOpen, setIsResultOpen] = useState(false); 
   const [profilePopUp, setProfilePopUp] = useState(false);
-  const teamName = "";
 
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    members: [],
+  });
 
   const handleProfilePopUp = () => {
     setProfilePopUp(!profilePopUp);
@@ -880,6 +885,10 @@ function AddTeamMates({ closeModal }) {
 
   }, [searchTerm, currentUserUid]); 
 
+  const handleAddMembers = () => {
+
+  };
+
   return (
     <ModalOverlay>
       <div className='relative flex flex-col bg-white p-6  rounded-md max-w-md w-full'>
@@ -892,6 +901,18 @@ function AddTeamMates({ closeModal }) {
               type="text" 
               placeholder='Input Team Name'
               className="border p-2 w-full"
+              value={form.name}
+            />
+          </label>
+
+          <label htmlFor="team-description">
+            Team Description
+            <textarea
+              type='text' 
+              placeholder='Enter team description'
+              className="border p-2 w-full"
+              rows={4}
+              value={form.description}
             />
           </label>
 
@@ -900,39 +921,63 @@ function AddTeamMates({ closeModal }) {
               value={searchTerm}
               onChange={(e) => setSearchterm(e.target.value)}
               onFocus={() => searchTerm.length >= 2 && setIsResultOpen(true)}
-              className="p-2 w-full active:"
-              placeholder='Enter username'
+              className="w-full pl-10 pr-4 py-2 border rounded-full focus:ring-2 focus:ring-green-500 outline-none bg-green-50 text-sm"
+              placeholder='Search members to add'
             />
             <span className="absolute left-2 top-1">
               <Icon dataFeather="search" className="text-gray-500"/>
             </span>
+            {isSearching ? (
+              <div className="absolute right-1.5 top-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-500"></div>
+              </div>
+            ) : (searchTerm.length > 0 && (
+              <div className="absolute right-1.5 top-1.5">
+                <IconAction dataFeather="x" iconOnClick={() => {
+                  setSearchterm("");
+                  setHasSearched(false);
+                  setResults(false);
+                  setIsResultOpen(false);
+                }}/>
+              </div>
+            ))}
           </div>
 
-          {isResultOpen && searchTerm.length >= 2 && (
-            <ul className='absolute z-50 w-full bg-white border shadow-lg'>
-              {isSearching ? (
-                <li className="p-4 text-gray-400">Searching...</li>
-              ) : results.length > 0 ? (
-                results.map((user) => (
-                  <li key={user.id} className="p-2 text-black hover:bg-green-50 cursor-pointer" onClick={handleProfilePopUp}>
-                    <p className='text-sm'>{user.username}</p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
-                    {profilePopUp && <UserProfile user={user} closeModal={handleProfilePopUp} forAdding={true} />}
-                  </li>
-                ))
-              ) : hasSearched ? (
-                <li className="p-4 text-gray-500">No results found</li>
-              ) : null}
-            </ul>
-          )}
+          <div className="relative">
+            <input
+              className='bg-green-50 min-h-8 w-full border border-green-300 rounded-sm p-2'
+              placeholder='Selected members will appear here'
+              value={form.members}
+              disabled
+            />
 
-          <input 
-            className='bg-green-50 min-h-8 w-full border border-green-300 rounded-sm p-2'
-            placeholder='Selected members will appear here'
-            disabled
-          />
+            {isResultOpen && searchTerm.length >= 2 && (
+              <ul className='absolute z-50 w-full bg-white border shadow-lg'>
+                {isSearching ? (
+                  <li className="p-4 text-gray-400">Searching...</li>
+                ) : results.length > 0 ? (
+                  results.map((user) => (
+                    <div className='flex items-center justify-between p-2 gap-2'>
+                      <li key={user.id} className="w-full divide-gray-300">
+                        <UserCard
+                          onClick={handleProfilePopUp}
+                          key={user.id}
+                          user={user}
+                          className='hover:bg-green-50 max-w-full w-full'
+                        />
+                        {profilePopUp && <UserProfile user={user} closeModal={handleProfilePopUp} forAdding={true} />}
+                      </li>
+                      <IconAction dataFeather='user-plus' text='Add' className='border border-green-300' />
+                    </div>
+                  ))
+                ) : hasSearched ? (
+                  <li className="p-4 text-gray-500">No results found</li>
+                ) : null}
+              </ul>
+            )}
+          </div>
 
-          <Button dataFeather='plus' text='Create Team' />
+          <Button dataFeather='plus' text='Create Team' onClick={handleAddMembers}/>
         </div>
       </div>
     </ModalOverlay>

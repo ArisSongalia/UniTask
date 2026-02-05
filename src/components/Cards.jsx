@@ -236,7 +236,7 @@ function NoteCard({
 }
 
 
-function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false }) {
+function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false, onClick={} }) {
   const [localActive, setLocalActive] = useState(isActive);
 
   useEffect(() => {
@@ -254,10 +254,10 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`}>
+    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`} onClick={onClick} >
       <span
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
-        onClick={toggleIsActive}
+        onClick={onClick ? onClick : toggleIsActive}
       >
         <img className="w-6 h-6 rounded-full" src={user?.photoURL?? null} alt="user-icon" />
         <span className="flex flex-col w-full">
