@@ -825,12 +825,15 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
 
 function AddTeamMates({ closeModal }) {
   const currentUserUid = auth.currentUser?.uid;
+
   const [searchTerm, setSearchterm] = useState("");
   const [results, setResults] = useState([]);    
   const [isSearching, setIsSearching] = useState(false); 
   const [hasSearched, setHasSearched] = useState(false); 
   const [isResultOpen, setIsResultOpen] = useState(false); 
+
   const [profilePopUp, setProfilePopUp] = useState(false);
+  const [message, setMessage] = useState({text: '', color: ''})
 
   const [form, setForm] = useState({
     name: "",
@@ -885,9 +888,49 @@ function AddTeamMates({ closeModal }) {
 
   }, [searchTerm, currentUserUid]); 
 
-  const handleAddMembers = () => {
+  const handleAddMembers = (user) => {
+    setForm(prevForm => {
+      if (prevForm.members.some(m => m.id === user.id)) {
+        setMessage({ text: `${user.username} already addeed`, color: 'orange'});
+        setSearchterm('');
+        setResults([]);
+        setIsResultOpen(false);
+        return prevForm;
+      };
 
+      return {
+        ...prevForm,
+        members: [...prevForm.members, user.uid]
+      }
+    });
+    setSearchterm('')
+    setResults([]);
+    setIsResultOpen(false);
+    setMessage({ text: `Added: ${user.username}`, color: 'green'});
   };
+
+  const handleChange = (e) => {
+    const {name, value } = e.target;
+    setForm(prev => ({...prev, [name]: value}));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await addDoc(collection(db, "teams"), {
+        ...form,
+        date: new Date(),
+        creator: currentUserUid,
+      })
+      setMessage({ text: 'Succesfully Created Team', color: 'green'});
+    } catch (error) {
+      setMessage({ text: `Error: ${error.message}`, color: 'red'});
+      console.error("Error Creating Team: ", error);
+    };
+
+    setTimeout(() => {
+      closeModal();
+    }, 800)
+  }
 
   return (
     <ModalOverlay>
@@ -899,9 +942,12 @@ function AddTeamMates({ closeModal }) {
             Team Name 
             <input
               type="text" 
+              name='name'
               placeholder='Input Team Name'
               className="border p-2 w-full"
               value={form.name}
+              onChange={handleChange}
+              required
             />
           </label>
 
@@ -909,10 +955,12 @@ function AddTeamMates({ closeModal }) {
             Team Description
             <textarea
               type='text' 
+              name='description'
               placeholder='Enter team description'
               className="border p-2 w-full"
               rows={4}
               value={form.description}
+              onChange={handleChange}
             />
           </label>
 
@@ -921,7 +969,7 @@ function AddTeamMates({ closeModal }) {
               value={searchTerm}
               onChange={(e) => setSearchterm(e.target.value)}
               onFocus={() => searchTerm.length >= 2 && setIsResultOpen(true)}
-              className="w-full pl-10 pr-4 py-2 border rounded-full focus:ring-2 focus:ring-green-500 outline-none bg-green-50 text-sm"
+              className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500 outline-none bg-green-50 text-sm"
               placeholder='Search members to add'
             />
             <span className="absolute left-2 top-1">
@@ -944,12 +992,9 @@ function AddTeamMates({ closeModal }) {
           </div>
 
           <div className="relative">
-            <input
-              className='bg-green-50 min-h-8 w-full border border-green-300 rounded-sm p-2'
-              placeholder='Selected members will appear here'
-              value={form.members}
-              disabled
-            />
+            <p className="text-xs italic text-gray-500">
+              Selected: {form.members.map(m => m.username).join(', ') || "None"}
+            </p>
 
             {isResultOpen && searchTerm.length >= 2 && (
               <ul className='absolute z-50 w-full bg-white border shadow-lg'>
@@ -957,18 +1002,20 @@ function AddTeamMates({ closeModal }) {
                   <li className="p-4 text-gray-400">Searching...</li>
                 ) : results.length > 0 ? (
                   results.map((user) => (
-                    <div className='flex items-center justify-between p-2 gap-2'>
-                      <li key={user.id} className="w-full divide-gray-300">
-                        <UserCard
-                          onClick={handleProfilePopUp}
-                          key={user.id}
-                          user={user}
-                          className='hover:bg-green-50 max-w-full w-full'
-                        />
-                        {profilePopUp && <UserProfile user={user} closeModal={handleProfilePopUp} forAdding={true} />}
-                      </li>
-                      <IconAction dataFeather='user-plus' text='Add' className='border border-green-300' />
-                    </div>
+                    <li key={user.id} className="flex items-center gap-2 p-2 w-full divide-gray-300">
+                      <UserCard
+                        onClick={handleProfilePopUp}
+                        key={user.id}
+                        user={user}
+                        className='hover:bg-green-50 max-w-full w-full'
+                      />
+                      {profilePopUp && <UserProfile user={user} closeModal={handleProfilePopUp} forAdding={true} />}
+                      <IconAction 
+                        dataFeather='user-plus' text='Add' 
+                        className='border border-green-300' 
+                        iconOnClick={() => handleAddMembers(user)}
+                      />
+                    </li>
                   ))
                 ) : hasSearched ? (
                   <li className="p-4 text-gray-500">No results found</li>
@@ -977,7 +1024,12 @@ function AddTeamMates({ closeModal }) {
             )}
           </div>
 
-          <Button dataFeather='plus' text='Create Team' onClick={handleAddMembers}/>
+          {message.text && (
+            <p className="text-center font-medium text-sm" style={{ color: message.color }}>
+              {message.text}
+            </p>
+          )}
+          <Button dataFeather='plus' text='Create Team' onClick={handleSubmit}/>
         </div>
       </div>
     </ModalOverlay>
