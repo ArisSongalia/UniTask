@@ -3,20 +3,20 @@ import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { IconUser, IconAction } from './Icon';
+import Icon, { IconUser, IconAction } from './Icon';
 import HomeSideBar from './HomeSideBar';
 import SocialSection from './SocialSection';
 import SearchBar from './SearchBar';
+import MenuBar from './MenuBar';
 
 
 function Navbar() {
   const [user, setUser] = useState(null);
   const location = useLocation();
-  const [showPopUp, setShowPopUp] = useState(false)
-
   const [visibilitity, setVisbility] = useState({
     socialSection: false,
     sideBar: false,
+    menuBar: false,
   })
 
   const toggleVisibility = (section) => {
@@ -60,11 +60,8 @@ function Navbar() {
             className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
           />}
 
-          {user ? (
-            <IconUser user={user} className='h-7 w-7'/>    
-          ) :
-            null
-          }
+          <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
+          {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
         </span>
       </div>
     </section>

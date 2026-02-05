@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { IconAction, IconText, IconUser } from '../Icon';
 import Button, { ButtonIcon } from '../Button';
 import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
-import { addDoc, collection, getDoc, updateDoc, doc, setDoc,  } from 'firebase/firestore';
+import { addDoc, collection, getDoc, updateDoc, doc, getDocs, limit, query, where  } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import deleteData from '../../services/DeleteData';
 import { useReloadContext } from '../../context/ReloadContext';
@@ -15,9 +15,10 @@ import { HandleSignOut } from './ModalAuth';
 import ModalOverlay from '../ModalOverlay';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useAsyncError, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
 import syncToSearch from '../../services/SyncToSearch';
+import { useFormState } from 'react-dom';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -670,7 +671,7 @@ function AddMembers({ closeModal }) {
               <BarLoader />
             ) : users.length > 0 && (
               users.map((user) => (
-                <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers}/>
+                <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers} />
               ))
             )}
           </span>
@@ -752,7 +753,7 @@ function NoteFocus({ closeModal, noteData}) {
   
 }
 
-function UserProfile({ closeModal, user={} }) {
+function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) {
   const [visibility, setVisbility] = useState({
     addTeamMates: false,
   });
@@ -766,67 +767,176 @@ function UserProfile({ closeModal, user={} }) {
 
   const { handleSignOut } = HandleSignOut();
 
-  return (
-    <ModalOverlay onClick={closeModal}>
-      <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-lg font-medium' onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='User Profile' dataFeather='x' iconOnClick={closeModal} className=''/>
-        <span className='flex p-2 gap-4 items-center'>
-          <img src={user.photoURL} alt="" className='h-full w-auto rounded-full'/>
-          <span className='flex flex-col h-'>
-            <p className='font-bold'>{user.displayName}</p>
-            <p className=''>{user.email}</p>
-            <p className='text-gray-600 text-xs mt-2'>UID: {user.uid}</p>
+  const profileContent = (
+    <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-md font-medium' onClick={(e) => e.stopPropagation()}>
+      <IconTitleSection title='User Profile' dataFeather={(overlay) ? 'x' : ''} iconOnClick={closeModal} className=''/>
+        <div className='flex p-2 gap-4 items-center w-full'>
+          <img 
+            src={user.photoURL} 
+            alt="" 
+            className='h-14 w-14 rounded-full object-cover flex-shrink-0 border'
+          />
+
+          <span className='flex flex-col min-w-0 w-full'>
+            <p className='font-bold truncate text-gray-800'>
+              {user.displayName}
+            </p>
+            <p className='text-sm text-gray-600 truncate'>
+              {user.email}
+            </p>
+            <p className='text-gray-500 text-[10px] mt-2 break-all leading-tight'>
+              <b className="text-gray-700">UID:</b> {user.uid}
+            </p>
           </span>
-        </span>
-    
-
-        <div id="connections" className='mt-2'>
-          <IconTitleSection dataFeather='user-plus' title='Teammates' iconOnClick={() => toggleVisbility('addTeamMates')} />
-          {visibility.addTeamMates && <AddTeamMates closeModal={() =>toggleVisbility('addTeamMates')} /> }
-
-          <section>
-
-          </section>
-
         </div>
 
 
-        <Button
-          onClick={handleSignOut}
-          className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
-          text="Sign-Out"
-          dataFeather='log-out'
-        />
-      </div>
-    </ModalOverlay>
-  );
+      {forAdding ? (
+        null
+      ) : (
+        <div id="connections" className='mt-2 bg-green-50 border border-green-300 rounded-md p-2'>
+          <IconTitleSection dataFeather='user-plus' title='Teammates' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={() => toggleVisbility('addTeamMates')} />
+          {visibility.addTeamMates && <AddTeamMates closeModal={() =>toggleVisbility('addTeamMates')} /> }
+        </div>
+      )}
+
+      <Button
+        onClick={handleSignOut}
+        className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
+        text={forAdding ? "Add Teammate" : "Sign-Out"}
+        dataFeather='log-out'
+      />
+    </div>
+  )
+
+    if (overlay) {
+      return (
+          <ModalOverlay onClick={closeModal}>
+            {profileContent}
+          </ModalOverlay>
+      );
+    }
+
+    return (
+      profileContent
+    )
 }
 
-function AddTeamMates({closeModal}) {
-  return(
+function AddTeamMates({ closeModal }) {
+  const currentUserUid = auth.currentUser?.uid;
+  const [searchTerm, setSearchterm] = useState("");
+  const [results, setResults] = useState([]);    
+  const [isSearching, setIsSearching] = useState(false); 
+  const [hasSearched, setHasSearched] = useState(false); 
+  const [isResultOpen, setIsResultOpen] = useState(false); 
+  const [profilePopUp, setProfilePopUp] = useState(false);
+  const teamName = "";
+
+
+  const handleProfilePopUp = () => {
+    setProfilePopUp(!profilePopUp);
+  };
+
+  useEffect(() => {
+    if (searchTerm.trim().length < 2) {
+      setResults([]);
+      setHasSearched(false);
+      setIsResultOpen(false);
+      return;
+    }
+
+    const delayBouncingFn = setTimeout(async () => {
+      setIsSearching(true);
+      setIsResultOpen(true);
+
+      try {
+        const q = query(
+          collection(db, "users"),
+          where("username", ">=", searchTerm.toLowerCase()),
+          where("username", "<=", searchTerm.toLowerCase() + "\uf8ff"),
+          limit(10) 
+        );
+
+        const querySnapshot = await getDocs(q);
+        
+        const searchItems = querySnapshot.docs
+          .map(doc => ({
+            id: doc.id, 
+            ...doc.data() 
+          }))
+
+          .filter(user => user.id !== currentUserUid);
+
+        setResults(searchItems);
+        setHasSearched(true);
+      } catch (error) {
+        console.error("Search Error: ", error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayBouncingFn);
+
+  }, [searchTerm, currentUserUid]); 
+
+  return (
     <ModalOverlay>
-      <div className='flex z-20 max-w-[30rem] w-full h-auto min-h-[20rem] p-4 flex-col bg-white rounded-md justify-between'>
-        <IconTitleSection title='Add Team Mates' dataFeather='x' iconOnClick={closeModal} />
-          <label htmlFor="search" className='flex h-10 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center'>
+      <div className='relative flex flex-col bg-white p-6  rounded-md max-w-md w-full'>
+        <IconTitleSection title='Create Team' iconOnClick={closeModal} dataFeather='x'/>
+        
+        <div className="flex flex-col gap-2 text-sm relative w-full">
+          <label htmlFor="team-name">
+            Team Name 
             <input
-              className="border border-gray-300 rounded-sm p-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
-              placeholder='Enter username or user ID'
-            />
-            <IconAction
-              dataFeather="search"
-              text='Search'
-              className='rounded-sm h-full'
+              type="text" 
+              placeholder='Input Team Name'
+              className="border p-2 w-full"
             />
           </label>
 
-          <div id='search-result' className='h-full w-full bg-slate-50 flex-grow my-2'>
-
+          <div className="relative">
+            <input
+              value={searchTerm}
+              onChange={(e) => setSearchterm(e.target.value)}
+              onFocus={() => searchTerm.length >= 2 && setIsResultOpen(true)}
+              className="p-2 w-full active:"
+              placeholder='Enter username'
+            />
+            <span className="absolute left-2 top-1">
+              <Icon dataFeather="search" className="text-gray-500"/>
+            </span>
           </div>
 
-          <Button text='Confirm Add Users' className=''/>
+          {isResultOpen && searchTerm.length >= 2 && (
+            <ul className='absolute z-50 w-full bg-white border shadow-lg'>
+              {isSearching ? (
+                <li className="p-4 text-gray-400">Searching...</li>
+              ) : results.length > 0 ? (
+                results.map((user) => (
+                  <li key={user.id} className="p-2 text-black hover:bg-green-50 cursor-pointer" onClick={handleProfilePopUp}>
+                    <p className='text-sm'>{user.username}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                    {profilePopUp && <UserProfile user={user} closeModal={handleProfilePopUp} forAdding={true} />}
+                  </li>
+                ))
+              ) : hasSearched ? (
+                <li className="p-4 text-gray-500">No results found</li>
+              ) : null}
+            </ul>
+          )}
+
+          <input 
+            className='bg-green-50 min-h-8 w-full border border-green-300 rounded-sm p-2'
+            placeholder='Selected members will appear here'
+            disabled
+          />
+
+          <Button dataFeather='plus' text='Create Team' />
+        </div>
       </div>
     </ModalOverlay>
-  )
+  );
 }
 
 function CompletedTab({ closeModal, taskData={}, loading}) {

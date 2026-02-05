@@ -5,8 +5,6 @@ const createSearchPath = (type, id, data) => {
   if (type === 'task') return `/project/${data['project-id']}`;
   if (type === 'project') return `/project/${id}`;
   if (type === 'note') return `/project/${data['project-id']}`; 
-  if (type === 'user') return `/profile/${id}`;
-
   return '/';
 };  
 

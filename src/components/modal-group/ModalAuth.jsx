@@ -4,11 +4,9 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, si
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { IconTitleSection, HeadTitleSection } from '../TitleSection';
 import Button, { ButtonIcon } from '../Button';
-import { IconAction } from '../Icon';
 import { AlertCard } from '../Cards';
 import { useNavigate } from 'react-router-dom';
 import bgMain from '../../assets/bg-main.jpg';
-import syncToSearch from '../../services/SyncToSearch';
 
 
 function SignUp() {
@@ -287,11 +285,6 @@ function CreateUsername({ email, additionalData, closeModal, user }) {
       };
 
       await setDoc(doc(db, 'users', user.uid), payload);
-      await syncToSearch('users', user.uid, {
-        title: username,
-        searchTitle: username.toLowerCase(),
-        description: userEmail,
-      });
 
       alert('Username saved successfully!');
       Navigate('/Home');

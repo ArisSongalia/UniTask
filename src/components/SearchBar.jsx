@@ -3,6 +3,7 @@ import Icon, {IconAction} from "./Icon";
 import { db } from "../config/firebase";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserProfile } from "./modal-group/Modal";
 
 
 function SearchBar({ onResultClick }) {
@@ -19,7 +20,7 @@ function SearchBar({ onResultClick }) {
       setHasSearched(false);
       setIsResultOpen(false);
       return;
-    }
+    };
 
     const delayBouncingFn = setTimeout(async () => {
       setIsSearching(true);
