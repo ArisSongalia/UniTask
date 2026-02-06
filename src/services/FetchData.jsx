@@ -398,7 +398,7 @@ const useFetchTeams = (userId, refreshKey) => {
    
     fetchTeams();
 
-  }, [refreshKey, userId])
+  }, [refreshKey, userId  ])
 
   return { teamsData, loading };
 }

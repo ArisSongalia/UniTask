@@ -19,6 +19,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useProjectContext } from '../../context/ProjectContext';
 import syncToSearch from '../../services/SyncToSearch';
 import { useFetchTeams } from '../../services/FetchData';
+import { Key } from 'react-feather';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -754,8 +755,11 @@ function NoteFocus({ closeModal, noteData}) {
 }
 
 function UserProfile({ closeModal, user={}, overlay = true}) {
+  const [reloadKey, setReloadKey] = useState(0);
+  const reload = () => setReloadKey(prev => prev + 1);
+
   const self = user.uid === auth.currentUser.uid;
-  const { key } = useReloadContext();
+  
   const [visibility, setVisbility] = useState({
     addTeamMates: false,
   });
@@ -768,7 +772,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
   };
 
   const { handleSignOut } = HandleSignOut();
-  const { teamsData, loading} = useFetchTeams(user.uid, key);
+  const { teamsData, loading} = useFetchTeams(user.uid, reloadKey);
   console.log(teamsData)
 
   const profileContent = (
@@ -796,31 +800,56 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
 
 
 
-      <div id="connections" className='mt-2 bg-green-50 border border-green-300 rounded-md p-2'>
+      <div id="connections" className='mt-2 border shadow-md rounded-md p-2'>
         <IconTitleSection dataFeather={self ? 'user-plus' : ''} title='Teams' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={self ? () => toggleVisbility('addTeamMates') : null} />
-        {visibility.addTeamMates && <AddTeamMates closeModal={() => toggleVisbility('addTeamMates')} /> }
+        {visibility.addTeamMates && <AddTeamMates closeModal={() => toggleVisbility('addTeamMates')} reload={reload}/> }
 
         {loading ? (
         <BarLoader />
         ) : teamsData.length === 0 ? (
           null
         ) : (
-          <div className="flex flex-col flex-wrap gap-2 mt-2">
-            <div className='flex gap-2'>
-              {teamsData.map((team) => (
-                <div key={team.id} className="flex flex-col gap-1">
-                  {team.creator === user.uid && <IconText className='text-[9px]' text='Creator'></IconText>}
-                  <div className="flex gap-1">
-                    {team.members?.map((member) => (
-                        <span key={member.id} className='bg-white flex rounded-full border w-fit border-green-300 p-1'>
-                          <IconUser user={member} />
-                        </span>
-                    ))}
-                  </div>
+        <div className="flex flex-col gap-2 mt-4 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+          {teamsData.map((team) => (
+            <div 
+              key={team.id} 
+              className="relative flex flex-col gap-2 p-3 rounded-lg border border-green-600 bg-white shadow-sm"
+            >
+              {/* Header: Name and Role Tag */}
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-800 truncate">
+                    {team.name}
+                  </h4>
+                  <p className="text-[11px] text-gray-500 line-clamp-1">
+                    {team.description || "No description provided."}
+                  </p>
                 </div>
-              ))}
+                
+                {team.creator === user.uid && (
+                  <span className="bg-green-100 text-green-700 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                    Owner
+                  </span>
+                )}
+              </div>
+
+              {/* Footer: Member Avatars */}
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex -space-x-2 overflow-hidden">
+                  {team.members?.map((member, idx) => (
+                    <div 
+                      key={member.id || idx} 
+                      className="inline-block h-7 w-7 rounded-full ring-2 ring-white bg-gray-50 overflow-hidden"
+                      title={member.username}
+                    >
+                      <IconUser user={member} className="h-full w-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
         )}
       </div>
 
@@ -850,7 +879,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
     )
 }
 
-function AddTeamMates({ closeModal }) {
+function AddTeamMates({ closeModal, reload }) {
   const currentUserUid = auth.currentUser?.uid;
   const [searchTerm, setSearchterm] = useState("");
   const [results, setResults] = useState([]);    
@@ -957,6 +986,7 @@ function AddTeamMates({ closeModal }) {
 
     setTimeout(() => {
       closeModal();
+      reload();
     }, 800)
   }
 
