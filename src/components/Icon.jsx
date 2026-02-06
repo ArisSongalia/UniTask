@@ -81,7 +81,7 @@ function Icon({
 
 /* ---------------- ICON USER ---------------- */
 
-function IconUser({ user = {}, className = "" }) {
+function IconUser({ user = {}, className = ""}) {
   const [showUserProfile, setShowUserProfile] = useState(false);
 
   return (
@@ -120,7 +120,6 @@ function IconText({ text = "", className = "", border = false }) {
   );
 }
 
-/* ---------------- EXPORTS ---------------- */
 
 export default Icon;
 export { IconAction, IconUser, IconText };

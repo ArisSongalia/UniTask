@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../config/firebase';
-import { collection, doc, getDoc, getDocs, where, query, orderBy } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, where, query, orderBy,or } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 
@@ -362,19 +362,24 @@ const useFetchMessageData = (activeUser, projectId) => {
   return { sentMessageData, receivedMessageData, loading };
 };
 
-const useFetchTeams = (refreshKey, customWhere) => {
+const useFetchTeams = (userId, refreshKey) => {
   const [teamsData, setTeamsData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchTeams = async (user) => {
+    const fetchTeams = async () => {
+      if(!userId) return ;
+      setLoading(true);
+      
       try {
         const teamsRef = collection(db, 'teams');
-        const queryConstrains = [where('creator', '==', user.uid)];
-        if(customWhere) {
-          queryConstrains.push(customWhere)
-        };
-        const q = query(teamsRef, ...queryConstrains)
+        const q = query(
+          teamsRef, 
+          or(
+            where('creator', '==', userId),
+            where('memberUids', 'array-contains', userId)
+          )
+        );
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -383,25 +388,17 @@ const useFetchTeams = (refreshKey, customWhere) => {
 
         setTeamsData(data);
       } catch (error) {
+        setTeamsData([]);
         console.error(error.message)
       } finally {
         setLoading(false);
       };
     };
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoading(true);
-        fetchTeams(user);
-      } else {
-        setTeamsData([]);
-        setLoading(false);
-      }
-    });
+   
+    fetchTeams();
 
-    return () => unsubscribe();
-
-  }, [refreshKey, customWhere])
+  }, [refreshKey, userId])
 
   return { teamsData, loading };
 }

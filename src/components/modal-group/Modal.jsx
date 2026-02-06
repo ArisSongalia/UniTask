@@ -753,7 +753,8 @@ function NoteFocus({ closeModal, noteData}) {
   
 }
 
-function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) {
+function UserProfile({ closeModal, user={}, overlay = true}) {
+  const self = user.uid === auth.currentUser.uid;
   const { key } = useReloadContext();
   const [visibility, setVisbility] = useState({
     addTeamMates: false,
@@ -767,7 +768,8 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
   };
 
   const { handleSignOut } = HandleSignOut();
-  const { teamsData, loading} = useFetchTeams(key);
+  const { teamsData, loading} = useFetchTeams(user.uid, key);
+  console.log(teamsData)
 
   const profileContent = (
     <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-md font-medium' onClick={(e) => e.stopPropagation()}>
@@ -793,43 +795,44 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
         </div>
 
 
-      {forAdding ? (
-        null
-      ) : (
-        <div id="connections" className='mt-2 bg-green-50 border border-green-300 rounded-md p-2'>
-          <IconTitleSection dataFeather='user-plus' title='Teammates' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={() => toggleVisbility('addTeamMates')} />
-          {visibility.addTeamMates && <AddTeamMates closeModal={() => toggleVisbility('addTeamMates')} /> }
 
-          {loading ? (
-          <BarLoader />
-          ) : teamsData.length === 0 ? (
-            <div className="text-center p-10 border-2 border-dashed rounded-lg">
-              <p className="text-gray-500">You haven't created any teams yet.</p>
-              <button className="mt-2 text-green-600 font-bold">Create your first team</button>
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-2 mt-2">
+      <div id="connections" className='mt-2 bg-green-50 border border-green-300 rounded-md p-2'>
+        <IconTitleSection dataFeather={self ? 'user-plus' : ''} title='Teams' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={self ? () => toggleVisbility('addTeamMates') : null} />
+        {visibility.addTeamMates && <AddTeamMates closeModal={() => toggleVisbility('addTeamMates')} /> }
+
+        {loading ? (
+        <BarLoader />
+        ) : teamsData.length === 0 ? (
+          null
+        ) : (
+          <div className="flex flex-col flex-wrap gap-2 mt-2">
+            <div className='flex gap-2'>
               {teamsData.map((team) => (
-                <div key={team.id} className="flex gap-1">
-                  {team.members?.map((member) => (
-                    <span key={member.id} className='bg-white flex rounded-full border border-green-300 p-1'>
-                      <IconUser user={member} />
-                    </span>
-                  ))}
+                <div key={team.id} className="flex flex-col gap-1">
+                  {team.creator === user.uid && <IconText className='text-[9px]' text='Creator'></IconText>}
+                  <div className="flex gap-1">
+                    {team.members?.map((member) => (
+                        <span key={member.id} className='bg-white flex rounded-full border w-fit border-green-300 p-1'>
+                          <IconUser user={member} />
+                        </span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
 
-      {!forAdding && (
+      {self ? (
         <Button
           onClick={handleSignOut}
           className="text-green-900 text-sm font-bold hover:cursor-pointer border-gray-400 hover:text-green-700 mt-4"
           text="Sign-Out"
           dataFeather='log-out'
         />
+      ) : (
+        null
       )}
     </div>
   )
@@ -849,7 +852,6 @@ function UserProfile({ closeModal, user={}, overlay = true, forAdding = false}) 
 
 function AddTeamMates({ closeModal }) {
   const currentUserUid = auth.currentUser?.uid;
-
   const [searchTerm, setSearchterm] = useState("");
   const [results, setResults] = useState([]);    
   const [isSearching, setIsSearching] = useState(false); 
@@ -863,6 +865,7 @@ function AddTeamMates({ closeModal }) {
     name: "",
     description: "",
     members: [],
+    memberUids: []
   });
 
   const handleProfilePopUp = () => {
@@ -924,7 +927,8 @@ function AddTeamMates({ closeModal }) {
 
       return {
         ...prevForm,
-        members: [...prevForm.members, user]
+        members: [...prevForm.members, user],
+        memberUids: [...prevForm.memberUids, user.uid]
       }
     });
     setSearchterm('')
