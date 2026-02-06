@@ -362,7 +362,50 @@ const useFetchMessageData = (activeUser, projectId) => {
   return { sentMessageData, receivedMessageData, loading };
 };
 
+const useFetchTeams = (refreshKey, customWhere) => {
+  const [teamsData, setTeamsData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTeams = async (user) => {
+      try {
+        const teamsRef = collection(db, 'teams');
+        const queryConstrains = [where('creator', '==', user.uid)];
+        if(customWhere) {
+          queryConstrains.push(customWhere)
+        };
+        const q = query(teamsRef, ...queryConstrains)
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setTeamsData(data);
+      } catch (error) {
+        console.error(error.message)
+      } finally {
+        setLoading(false);
+      };
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoading(true);
+        fetchTeams(user);
+      } else {
+        setTeamsData([]);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+
+  }, [refreshKey, customWhere])
+
+  return { teamsData, loading };
+}
 
 
-export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData, useFetchMessageData};
+export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData, useFetchMessageData, useFetchTeams};
 

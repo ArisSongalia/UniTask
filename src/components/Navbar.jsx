@@ -40,12 +40,16 @@ function Navbar() {
 
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-fit px-4 mb-2 sticky top-0 shadow-sm">
-      <div className="flex relative items-center justify-between w-full py-3  max-w-screen-2xl">
-        <Link to="/Home" className="flex items-center gap-2 text-green-900 text-lg font-bold">
-        <img src={unitask} alt="UniTask" className="w-6 h-6" />
-        
-          UniTask
-        </Link>
+      <div className="flex relative items-center justify-between w-full py-3 max-w-[1920px]">
+        <div className="flex gap-4">
+          <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
+          {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
+
+          <Link to="/Home" className="flex items-center gap-2 text-green-900 text-lg font-bold">
+          <img src={unitask} alt="UniTask" className="w-6 h-6" />
+            UniTask
+          </Link>
+        </div>
 
         <SearchBar />
 
@@ -59,9 +63,6 @@ function Navbar() {
             closeModal={() => toggleVisibility('sideBar')}
             className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
           />}
-
-          <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
-          {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
         </span>
       </div>
     </section>
