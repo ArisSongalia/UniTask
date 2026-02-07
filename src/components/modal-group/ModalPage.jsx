@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import { IconTitleSection } from "../TitleSection";
 import ModalOverlay from "../ModalOverlay";
 import { useFetchTaskData } from "../../services/FetchData";
-import { collection, getCountFromServer, query, where } from "firebase/firestore";
-import { db } from "../../config/firebase";
-import { useReloadContext } from "../../context/ReloadContext";
 
 
 function DashBoard({ closeModal }) {
-  const { key } = useReloadContext;
   const { taskData, loading } = useFetchTaskData();
 
   const todoN = taskData ? taskData.filter(task => task.status === 'To-do').length : 0;
