@@ -307,7 +307,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   );
 }
 
-function TaskCard({taskData, className, statusColor = ''}) {
+function TaskCard({taskData, className}) {
   const location = useLocation();
   const navigate = useNavigate();
   const [visibility, setVisbility] = useState({
@@ -322,12 +322,17 @@ function TaskCard({taskData, className, statusColor = ''}) {
     }))
   }
 
+  const borderColor = 
+    taskData.status === 'In-progress' ? 'border-green-700' : 
+    taskData.status === 'To-review'   ? 'border-blue-700' : 
+    'border-gray-300';
+
   if(!taskData) return <span className='text-sm bg-red-50 p-1 w-fit text-red-700'>Cannot load task info</span>
 
   return (
     <div 
-      className={`flex flex-col bg-white rounded-md h-auto border-opacity-50 shadow-md
-        w-full justify-between border p-2 hover:cursor-pointer hover:shadow-lg ${className}`}
+      className={`flex flex-col bg-white rounded-md h-auto shadow-md border-opacity-75
+        w-full justify-between border p-2 hover:cursor-pointer hover:shadow-lg ${borderColor} ${className}`}
       onClick={() => {
         if (location.pathname === '/Home') {
             navigate(`/Project/${taskData['project-id']}`);

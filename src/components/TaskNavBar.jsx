@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IconAction, IconUser } from './Icon';
+import Icon, { IconAction, IconUser } from './Icon';
 import { Link, useParams } from 'react-router-dom';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { BounceLoader, BarLoader } from 'react-spinners';
@@ -7,6 +7,7 @@ import { AddMembers } from './modal-group/Modal';
 import SocialSection from './SocialSection';
 import { useReloadContext } from '../context/ReloadContext';
 import TaskSideBar from './TaskSideBar';
+import { DashBoard } from './modal-group/ModalPage';
 
 
 function TaskNavBar() {
@@ -16,6 +17,7 @@ function TaskNavBar() {
     addMembers: false,
     socialSection: false,
     taskSideBar: false,
+    dashBoard: false,
   });
 
   const toggleVisbility = (section) => {
@@ -53,7 +55,11 @@ function TaskNavBar() {
             </span>
           )}
         </span>
+
         <span className='flex items-center gap-1'>
+          <IconAction dataFeather='pie-chart' iconOnClick={() => toggleVisbility('dashBoard')}/>
+          {visibility.dashBoard && <DashBoard closeModal={() => toggleVisbility('dashBoard')} projectId={[projectId]} />}
+
           { projectData.type === 'Shared' ? (
             <>
               <IconAction dataFeather='user-plus' iconOnClick={() => toggleVisbility('addMembers')} />

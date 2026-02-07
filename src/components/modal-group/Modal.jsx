@@ -773,7 +773,6 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
 
   const { handleSignOut } = HandleSignOut();
   const { teamsData, loading} = useFetchTeams(user.uid, reloadKey);
-  console.log(teamsData)
 
   const profileContent = (
     <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-md font-medium' onClick={(e) => e.stopPropagation()}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../config/firebase';
 import { collection, doc, getDoc, getDocs, where, query, orderBy,or } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useParams } from 'react-router-dom';
 
 
 function UseFetchUserName() {
@@ -211,18 +212,14 @@ const useFetchActiveProjectData = ( projectId, refreshKey ) => {
 const useFetchTaskData = (customWhere, refreshKey) => {
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { projectId } = useParams();
 
   useEffect(() => {
     const fetchTaskData = async () => {
-      if (!customWhere) {
-        setTaskData([]);
-        setLoading(false);
-        return;
-      }
-
       setLoading(true);
       try {
-        const whereToArray = Array.isArray(customWhere) ? customWhere : [customWhere]
+        const initWhere = where('project-id', '==', projectId);
+        const whereToArray = Array.isArray(customWhere) ? customWhere : [initWhere];
         const taskRef = collection(db, "tasks");
         const q = query(taskRef, ...whereToArray);
         const querySnapshot = await getDocs(q);

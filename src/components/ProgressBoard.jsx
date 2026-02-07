@@ -13,7 +13,7 @@ import { ButtonIcon } from './Button'
 import { useParams } from 'react-router-dom'
 
 function ProgressBoard() {
-  const [visibilitity, setVisbility] = useState({
+  const [visibility, setVisibility] = useState({
     completedTab: false,
     createTask: false,
   })
@@ -25,7 +25,7 @@ function ProgressBoard() {
   }
 
   const toggleVisibility = (section) => {
-    setVisbility(prev => ({
+    setVisibility(prev => ({
       ...prev,
       [section]: !prev[section],
     }));
@@ -64,14 +64,15 @@ function ProgressBoard() {
         <h2 className='font-bold text-lg'>Progress Board</h2>
         <span className='flex gap-2 items-center'>
           <ReloadIcon />
+
           <IconAction dataFeather='check-square' iconOnClick={() => toggleVisibility('completedTab')} />
-          {visibilitity.completedTab && <CompletedTab taskData={finishedTasks} closeModal={() => toggleVisibility('completedTab')} loading={loadingFinished} />}
+          {visibility.completedTab && <CompletedTab taskData={finishedTasks} closeModal={() => toggleVisibility('completedTab')} loading={loadingFinished} />}
           <ButtonIcon
             text='Create Task'
             dataFeather='plus'
             onClick={() => toggleVisibility('createTask')}
           />
-          {visibilitity.createTask && <CreateTask closeModal={() => toggleVisibility('createTask')} />}
+          {visibility.createTask && <CreateTask closeModal={() => toggleVisibility('createTask')} />}
         </span>
       </section>
 
@@ -92,7 +93,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toDoTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} statusColor={'yellow'}/>
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>
@@ -110,7 +111,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               inProgressTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} statusColor='green' />
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>
@@ -129,7 +130,7 @@ function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toReviewTasks.map((taskData) => (
-                <TaskCard key={taskData.id} taskData={taskData} statusColor='violet'/>
+                <TaskCard key={taskData.id} taskData={taskData} />
               ))
             )}
           </section>
