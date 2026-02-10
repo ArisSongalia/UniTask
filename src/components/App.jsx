@@ -1,7 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from './Home';
-import { Navigate } from 'react-router-dom';
 import Project from './Project';
 import { SignIn, SignUp } from './modal-group/ModalAuth';
 

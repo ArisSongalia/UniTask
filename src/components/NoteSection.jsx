@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {IconTitleSection} from './TitleSection';
-import { CreateNote } from './modal-group/Modal';
-import { useFetchActiveProjectData, useFetchNoteData, useFetchProjectData } from '../services/FetchData';
-import { useReloadContext } from '../context/ReloadContext';
 import { where } from 'firebase/firestore';
-import { BarLoader } from 'react-spinners';
-import { NoteCard } from './Cards';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
+import { useReloadContext } from '../context/ReloadContext';
+import { useFetchActiveProjectData, useFetchNoteData } from '../services/FetchData';
+import { NoteCard } from './Cards';
+import { IconTitleSection } from './TitleSection';
+import { CreateNote } from './modal-group/Modal';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);

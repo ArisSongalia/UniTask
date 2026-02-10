@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Icon, { IconAction, IconUser } from './Icon';
-import { Link, useParams } from 'react-router-dom';
-import { useFetchActiveProjectData } from '../services/FetchData';
-import { BounceLoader, BarLoader } from 'react-spinners';
-import { AddMembers } from './modal-group/Modal';
-import SocialSection from './SocialSection';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { BarLoader, BounceLoader } from 'react-spinners';
 import { useReloadContext } from '../context/ReloadContext';
-import TaskSideBar from './TaskSideBar';
+import { useFetchActiveProjectData } from '../services/FetchData';
+import { IconAction, IconUser } from './Icon';
+import { AddMembers } from './modal-group/Modal';
 import { DashBoard } from './modal-group/ModalPage';
+import SocialSection from './SocialSection';
+import TaskSideBar from './TaskSideBar';
 
 
 function TaskNavBar() {

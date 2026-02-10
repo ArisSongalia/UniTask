@@ -1,9 +1,8 @@
-import { collection, limit, query, where, getDocs } from "firebase/firestore"; 
-import Icon, {IconAction} from "./Icon";
-import { db } from "../config/firebase";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserProfile } from "./modal-group/Modal";
+import { db } from "../config/firebase";
+import Icon, { IconAction } from "./Icon";
 
 
 function SearchBar({ onResultClick }) {

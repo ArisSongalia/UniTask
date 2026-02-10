@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { ProjectCard, CreateCard } from './Cards';
-import { CreateProject, CreateNote} from './modal-group/Modal';
-import { IconTitleSection } from './TitleSection';
-import { useFetchProjectData, useFetchNoteData } from '../services/FetchData';
+import { useState } from 'react';
 import { BarLoader } from 'react-spinners';
-import { ReloadIcon } from './ReloadComponent';
 import { useReloadContext } from '../context/ReloadContext';
-import { NoteCard } from './Cards';
-import { FilterPopup } from './modal-group/Popup';
 import { useSort } from '../context/SortContext';
+import { useFetchNoteData, useFetchProjectData } from '../services/FetchData';
+import { CreateCard, NoteCard, ProjectCard } from './Cards';
+import { CreateNote, CreateProject } from './modal-group/Modal';
+import { FilterPopup } from './modal-group/Popup';
+import { ReloadIcon } from './ReloadComponent';
+import { IconTitleSection } from './TitleSection';
 
 
 function MainProjectSection() {

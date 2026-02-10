@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/unitask.svg';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import Icon, { IconUser, IconAction } from './Icon';
 import HomeSideBar from './HomeSideBar';
-import SocialSection from './SocialSection';
-import SearchBar from './SearchBar';
+import { IconAction } from './Icon';
 import MenuBar from './MenuBar';
+import SearchBar from './SearchBar';
+import SocialSection from './SocialSection';
 
 
 function Navbar() {

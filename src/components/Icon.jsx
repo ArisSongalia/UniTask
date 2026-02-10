@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import * as FeatherIcons from "react-feather";
-import { UserProfile } from "./modal-group/Modal";
 import defaultUserIcon from "../assets/default-icon.png";
+import { UserProfile } from "./modal-group/Modal";
 
 /* ---------------- ICON CORE ---------------- */
 
@@ -122,4 +122,5 @@ function IconText({ text = "", className = "", border = false }) {
 
 
 export default Icon;
-export { IconAction, IconUser, IconText };
+export { IconAction, IconText, IconUser };
+

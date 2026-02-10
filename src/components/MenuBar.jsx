@@ -1,9 +1,9 @@
-import { IconText, IconUser } from "./Icon";
-import { auth } from "../config/firebase";
-import { IconTitleSection}  from "./TitleSection";
-import ModalOverlay from "./ModalOverlay";
-import { UserProfile } from "./modal-group/Modal";
 import { useState } from "react";
+import { auth } from "../config/firebase";
+import { IconText } from "./Icon";
+import ModalOverlay from "./ModalOverlay";
+import { IconTitleSection } from "./TitleSection";
+import { UserProfile } from "./modal-group/Modal";
 
 
 function MenuBar ({ closeModal }) {

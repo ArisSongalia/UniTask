@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { MultiTitleSection } from './TitleSection';
+import { useState } from 'react';
 import { MainNotesSection, MainProjectSection } from './MainSections';
+import { MultiTitleSection } from './TitleSection';
 
 function RecentTasks() {
   const [activeSection, setActiveSection] = useState('project');

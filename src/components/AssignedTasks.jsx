@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { DisplayTitleSection } from './TitleSection';
-import { useFetchTaskData } from '../services/FetchData';
-import { useReloadContext } from '../context/ReloadContext';
-import { BarLoader } from 'react-spinners';
-import { TaskCard } from './Cards';
 import { where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { BarLoader } from 'react-spinners';
+import { useReloadContext } from '../context/ReloadContext';
+import { useFetchTaskData } from '../services/FetchData';
+import { TaskCard } from './Cards';
 import { useAuth } from './hooks/useAuth';
+import { DisplayTitleSection } from './TitleSection';
 
 function AssignedTasks({}) {
   const { key } = useReloadContext();

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import RecentTasks from './RecentTasks';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { auth } from '../config/firebase';
+import { SortProvider } from '../context/SortContext';
 import HomeSideBar from './HomeSideBar';
 import Navbar from './Navbar';
-import { auth } from '../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useNavigate, Outlet, useLocation } from 'react-router-dom';
-import { SortProvider } from '../context/SortContext';
+import RecentTasks from './RecentTasks';
 
 function Home() {
   const [user, setUser] = useState(undefined);

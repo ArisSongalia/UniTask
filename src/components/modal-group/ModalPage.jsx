@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { IconTitleSection } from "../TitleSection";
-import ModalOverlay from "../ModalOverlay";
 import { useFetchTaskData } from "../../services/FetchData";
+import ModalOverlay from "../ModalOverlay";
+import { IconTitleSection } from "../TitleSection";
 
 
 function DashBoard({ closeModal }) {
@@ -47,4 +46,4 @@ function DashBoard({ closeModal }) {
 }
 
 
-export { DashBoard }
+export { DashBoard };

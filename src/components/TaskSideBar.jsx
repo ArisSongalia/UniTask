@@ -1,6 +1,4 @@
-import React from 'react'
 import NoteSection from './NoteSection'
-import CanvasSection from './CanvasSection'
 import { IconTitleSection } from './TitleSection'
 
 function TaskSideBar({ className = "", closeModal = () => {}}) {

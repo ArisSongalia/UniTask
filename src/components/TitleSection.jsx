@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import icon from '../assets/unitask.svg'
 import { ButtonIcon } from './Button'
 import { IconAction } from './Icon'
-import icon from '../assets/unitask.svg'
 
 function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon, buttonVisible}) {
   return ( 
@@ -97,4 +96,4 @@ function DisplayTitleSection({title = 'Title', displayCount = '0', className = '
 
 
 export default TitleSection
-export { MultiTitleSection, IconTitleSection, DisplayTitleSection, HeadTitleSection }
+export { DisplayTitleSection, HeadTitleSection, IconTitleSection, MultiTitleSection }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { IconTitleSection } from './TitleSection';
+import { useState } from 'react';
 import { CanvasCard } from './Cards';
 import { CreateCanvas } from './modal-group/Modal';
+import { IconTitleSection } from './TitleSection';
 
 function CanvasSection() {
   const [showCreateCanvas, setShowCreateCanvas] = useState(false);

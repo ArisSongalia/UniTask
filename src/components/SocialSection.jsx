@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
-import { IconTitleSection } from './TitleSection';
-import { EveryOneCard, UserCard } from './Cards';
-import { useFetchActiveProjectData } from '../services/FetchData';
-import { useReloadContext } from '../context/ReloadContext';
-import { BarLoader } from 'react-spinners';
-import { IconAction, IconUser } from './Icon';
-import { auth, db } from '../config/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { useFetchMessageData } from '../services/FetchData';
+import { useReducer, useRef } from 'react';
+import { BarLoader } from 'react-spinners';
+import { auth, db } from '../config/firebase';
+import { useReloadContext } from '../context/ReloadContext';
+import { useFetchActiveProjectData, useFetchMessageData } from '../services/FetchData';
+import { EveryOneCard, UserCard } from './Cards';
+import { IconAction, IconUser } from './Icon';
+import { IconTitleSection } from './TitleSection';
 
 
 function reducer(state, action) {

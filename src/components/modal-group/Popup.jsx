@@ -1,12 +1,12 @@
 
-import { IconTitleSection } from '../TitleSection';
-import deleteData from '../../services/DeleteData';
-import { useReloadContext } from '../../context/ReloadContext';
-import Button, { ButtonIcon } from '../Button';
-import { useMoveStatus } from '../../services/useMoveStatus';
 import { useState } from 'react';
-import { CreateNote, CreateProject, CreateTask } from './Modal';
+import { useReloadContext } from '../../context/ReloadContext';
 import { useSort } from '../../context/SortContext';
+import deleteData from '../../services/DeleteData';
+import { useMoveStatus } from '../../services/useMoveStatus';
+import { ButtonIcon } from '../Button';
+import { IconTitleSection } from '../TitleSection';
+import { CreateNote, CreateProject, CreateTask } from './Modal';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -118,3 +118,4 @@ function FilterPopup({ closeModal }) {
 export default Popup;
 
 export { FilterPopup };
+

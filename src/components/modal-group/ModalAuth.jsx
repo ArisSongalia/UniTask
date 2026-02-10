@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { auth, googleProvider, facebookProvider, db} from '../../config/firebase';
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { IconTitleSection, HeadTitleSection } from '../TitleSection';
-import Button, { ButtonIcon } from '../Button';
-import { AlertCard } from '../Cards';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgMain from '../../assets/bg-main.jpg';
+import { auth, db, googleProvider } from '../../config/firebase';
+import Button, { ButtonIcon } from '../Button';
+import { AlertCard } from '../Cards';
+import { HeadTitleSection } from '../TitleSection';
 
 
 function SignUp() {
@@ -348,4 +348,4 @@ function HandleSignOut() {
 }
 
 
-export {SignIn, SignUp, CreateUsername, HandleSignOut};
+export { CreateUsername, HandleSignOut, SignIn, SignUp };

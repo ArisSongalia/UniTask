@@ -1,19 +1,16 @@
-import React, { useState, useEffect, useReducer } from 'react'
-import Button from './Button'
-import Icon, {IconText} from './Icon'
-import { IconAction } from './Icon';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Popup from './modal-group/Popup';
-import { useProjectContext } from '../context/ProjectContext';
 import { where } from 'firebase/firestore';
-import { useReloadContext } from '../context/ReloadContext';
-import { useFetchTaskData, useFetchNoteData, useFetchProjectData, UseFetchUserName } from '../services/FetchData';
-import { IconUser } from './Icon';
-import MainCanvas from './modal-group/MainCanvas';
-import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from './hooks/useAuth';
-import { NoteFocus, Summary, TaskFocus } from "./modal-group/Modal";
+import { useEffect, useReducer, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
+import "react-toastify/dist/ReactToastify.css";
+import { useReloadContext } from '../context/ReloadContext';
+import { useFetchNoteData, useFetchProjectData, useFetchTaskData, UseFetchUserName } from '../services/FetchData';
+import Button from './Button';
+import { useAuth } from './hooks/useAuth';
+import Icon, { IconAction, IconText, IconUser } from './Icon';
+import MainCanvas from './modal-group/MainCanvas';
+import { NoteFocus, Summary, TaskFocus } from "./modal-group/Modal";
+import Popup from './modal-group/Popup';
 import { IconTitleSection } from './TitleSection';
 
 
@@ -461,4 +458,4 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 }
 
 
-export { AlertCard, CreateCard, ProjectCard, UserCard, TaskCard, ProgressAlertCard, SummaryCard, CountCard, CanvasCard, NoteCard, EveryOneCard }
+export { AlertCard, CanvasCard, CountCard, CreateCard, EveryOneCard, NoteCard, ProgressAlertCard, ProjectCard, SummaryCard, TaskCard, UserCard };

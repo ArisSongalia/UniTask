@@ -1,25 +1,21 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import Icon, { IconAction, IconText, IconUser } from '../Icon';
-import Button, { ButtonIcon } from '../Button';
-import TitleSection, { IconTitleSection, MultiTitleSection } from '../TitleSection';
-import { addDoc, collection, getDoc, updateDoc, doc, getDocs, limit, query, where  } from 'firebase/firestore';
-import { auth, db } from '../../config/firebase';
-import deleteData from '../../services/DeleteData';
-import { useReloadContext } from '../../context/ReloadContext';
-import { UserCard } from '../Cards';
-import { AlertCard } from '../Cards';
-import { useFetchUsers, useFetchActiveProjectData, useFetchProjectData } from '../../services/FetchData';
-import { BarLoader } from 'react-spinners';
-import { TaskCard } from '../Cards';
-import { HandleSignOut } from './ModalAuth';
-import ModalOverlay from '../ModalOverlay';
-import { useMoveStatus } from '../../services/useMoveStatus';
-import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { addDoc, collection, doc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
+import { auth, db } from '../../config/firebase';
 import { useProjectContext } from '../../context/ProjectContext';
+import { useReloadContext } from '../../context/ReloadContext';
+import deleteData from '../../services/DeleteData';
+import { useFetchActiveProjectData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
 import syncToSearch from '../../services/SyncToSearch';
-import { useFetchTeams } from '../../services/FetchData';
-import { Key } from 'react-feather';
+import { useMoveStatus } from '../../services/useMoveStatus';
+import Button, { ButtonIcon } from '../Button';
+import { AlertCard, TaskCard, UserCard } from '../Cards';
+import Icon, { IconAction, IconText, IconUser } from '../Icon';
+import ModalOverlay from '../ModalOverlay';
+import { IconTitleSection, MultiTitleSection } from '../TitleSection';
+import { HandleSignOut } from './ModalAuth';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -1284,5 +1280,5 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
   )
 }
 
-export { CreateTask, CreateProject, NoteFocus, CreateNote, UserProfile, AddMembers, CreateCanvas, CompletedTab, TaskFocus, Summary, AddTeamMates}
+export { AddMembers, AddTeamMates, CompletedTab, CreateCanvas, CreateNote, CreateProject, CreateTask, NoteFocus, Summary, TaskFocus, UserProfile };
  

@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { IconTitleSection } from '../TitleSection';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconAction } from '../Icon';
+import { IconTitleSection } from '../TitleSection';
 
 
 function MainCanvas({ closeModal }) {
