@@ -20,9 +20,9 @@ export function useMoveStatus() {
           } else if (currentStatus === "To-do") {
             await updateDoc(taskRef, { status: "In-progress"})
           } else if (currentStatus === "In-progress") {
-            await updateDoc(taskRef, { status: "To-Review"}) 
-          } else if (currentStatus === "To-Review") {
-            await updateDoc(taskRef, { status: "Reviewed"}) 
+            await updateDoc(taskRef, { status: "To-review"}) 
+          } else if (currentStatus === "To-review") {
+            await updateDoc(taskRef, { status: "Finished", completedAt: new Date()}) 
           } else {
             console.log("No update performed.");
           }

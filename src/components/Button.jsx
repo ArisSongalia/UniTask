@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from './Icon';
 
-function Button({ text = 'Button', onClick, className = '', type = 'button', iconClassName = ''}) {
+function Button({ text = 'Button', onClick, className = '', type = 'button'}) {
   return (
     <button
       type={`${type}`}

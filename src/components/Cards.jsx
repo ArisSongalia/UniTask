@@ -233,7 +233,7 @@ function NoteCard({
 }
 
 
-function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false, onClick={} }) {
+function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false, onClick=null }) {
   const [localActive, setLocalActive] = useState(isActive);
 
   useEffect(() => {
@@ -251,10 +251,9 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`} onClick={onClick} >
+    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`} onClick={onClick ? onClick : toggleIsActive} >
       <span
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
-        onClick={onClick ? onClick : toggleIsActive}
       >
         <img className="w-6 h-6 rounded-full" src={user?.photoURL?? null} alt="user-icon" />
         <span className="flex flex-col w-full">
@@ -364,8 +363,11 @@ function TaskCard({taskData, className}) {
       
       <section className="flex gap-1 items-center justify-between mt-2">
         <section className='flex flex-wrap gap-1'>
-          <IconText text={taskData.status} />
-          
+          <IconText text={taskData.status}/>
+          <IconText text={`Priority: ${taskData.priority}`}/>
+          {taskData.category && (
+            <IconText text={`#${taskData.category}`} />
+          )}
           <span className='flex text-xs font-semibold text-gray-600 flex-wrap'>
             {(location.pathname == '/Home') ? (
               <IconText text={`Task In: ${taskData['project-title']}`} />

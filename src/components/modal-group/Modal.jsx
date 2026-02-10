@@ -14,7 +14,7 @@ import Button, { ButtonIcon } from '../Button';
 import { AlertCard, TaskCard, UserCard } from '../Cards';
 import Icon, { IconAction, IconText, IconUser } from '../Icon';
 import ModalOverlay from '../ModalOverlay';
-import { IconTitleSection, MultiTitleSection } from '../TitleSection';
+import { DisplayTitleSection, IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { HandleSignOut } from './ModalAuth';
 
 
@@ -339,6 +339,8 @@ function CreateTask({ closeModal, taskData }) {
     status: taskData?.status || 'To-do',
     team: taskData?.team || [],
     'team-uids': taskData?.['team-uids'] || [],
+    priority: taskData?.priority || 'Low',
+    category: taskData?.category || '',
   });
 
   const minDateTime = useMemo(() => {
@@ -393,6 +395,9 @@ function CreateTask({ closeModal, taskData }) {
         'team-uids': form['team-uids'],
         searchTitle: form.title.toLowerCase(),
         updatedAt: new Date(),
+        priority: form.priority,
+        category: form.category.toLowerCase(),
+        completedAt: null,
       };
 
       let savedId = taskData?.id;
@@ -447,10 +452,6 @@ function CreateTask({ closeModal, taskData }) {
         />
 
         <form className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
-          <AlertCard 
-            text='Note: Deadline should at least be 1 hour from now.' 
-            className='rounded-md bg-yellow-50 border-yellow-300 text-yellow-700'
-          />
           
           <label className="flex flex-col text-gray-600">
             Title
@@ -488,7 +489,6 @@ function CreateTask({ closeModal, taskData }) {
                 <option value="To-do">To-do</option>
                 <option value="In-progress">In-progress</option>
                 <option value="To-review">To-review</option>
-                <option value="Finished">Finished</option>
               </select>
             </label>
 
@@ -502,6 +502,35 @@ function CreateTask({ closeModal, taskData }) {
                 className="mt-1 border border-gray-300 rounded-md px-4 py-2 outline-none"
                 onChange={handleChange}
                 required
+              />
+            </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <label className="flex flex-col text-gray-600">
+              Priority
+              <select 
+                name='priority' 
+                value={form.priority} 
+                onChange={handleChange}
+                className="mt-1 border border-gray-300 rounded-md px-4 py-2 outline-none"
+                required
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col text-gray-600">
+              Category
+              <input
+                name='category'
+                type='text'
+                value={form.category}
+                className="mt-1 border border-gray-300 rounded-md px-4 py-2 outline-none"
+                onChange={handleChange}
               />
             </label>
           </div>
@@ -535,12 +564,24 @@ function CreateTask({ closeModal, taskData }) {
             </p>
           )}
           
-          <Button 
-            type="submit" 
-            disabled={isSaving}
-            text={isSaving ? 'Saving...' : (taskData ? 'Update Task' : 'Create Task')} 
-            className="py-3" 
-          />
+          <div className="flex flex-col gap-1">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              text={isSaving ? 'Saving...' : (taskData ? 'Update Task' : 'Create Task')}
+              className="py-3"
+            />
+
+            <Button text='Mark as Finshed' className='p-3 border-none' 
+            onClick={async () => {
+              await updateDoc(doc(db, 'tasks', taskData.id), {status: 'Finished'});
+              setMessage({ text: 'Successfully Updated Status', color: 'green' });
+              setTimeout(() => {
+                reloadComponent();
+                closeModal();
+              }, 800);
+            }}/>
+          </div>
         </form>
       </section>
     </ModalOverlay>
@@ -1093,10 +1134,11 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <div className='flex flex-col p-4 justify-between bg-white rounded-md h-[40rem] w-[30rem]' onClick={(e) => e.stopPropagation()}>
+      <div className='flex flex-col p-4 justify-between bg-white rounded-md h-[40rem] w-[30rem] overflow-hidden' onClick={(e) => e.stopPropagation()}>
         <section className='h-full'>
           <IconTitleSection title='Finished Tasks' dataFeather='x' iconOnClick={closeModal} />
-          <section className='flex flex-col gap-1 overflow-y-scroll pr-2'>
+          <DisplayTitleSection displayCount={taskData.length} title='Completed Tasks'/>
+          <section className='flex flex-col gap-1 overflow-y-scroll pr-2 h-[33rem]'>
             {loading ? (
               <BarLoader color='#228B22' size={20}/>
             ) : (
@@ -1112,9 +1154,6 @@ function CompletedTab({ closeModal, taskData={}, loading}) {
             )}
           </section>
         </section>
-        <span className='flex w-full p-2 text-sm justify-center bg-green-50 text-green-800 rounded-md self-end'>
-          <p>Completed {taskData.length} tasks</p>
-        </span>
       </div>
     </ModalOverlay>
   )
