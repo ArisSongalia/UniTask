@@ -21,8 +21,6 @@ function HomeSideBar({ className = '', closeModal = () => {} }) {
     }
   }, [user]);
 
-  const filter = where("team-uids", 'array-contains', user.uid)
-
   const { taskData } = useFetchTaskData(customWhere);
   const { noteData } = useFetchNoteData();
 
@@ -53,6 +51,7 @@ function HomeSideBar({ className = '', closeModal = () => {} }) {
         description={`Hi ${user?.displayName || 'User'}, here is your overview.`}
         items={summaryItems}
         SummaryContent={<Summary />}
+        button
       />
 
       <AssignedTasks />

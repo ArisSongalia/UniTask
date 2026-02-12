@@ -16,7 +16,8 @@ function SummaryCard({
   items = [], 
   loading = false, 
   className = '',
-  SummaryContent = null 
+  SummaryContent = null,
+  button = false
 }) {
   const [showSummary, setShowSummary] = useState(false);
 
@@ -42,11 +43,14 @@ function SummaryCard({
         </div>
       )}
 
-      <Button 
-        text='View Details' 
-        onClick={() => setShowSummary(true)} 
-        className="mt-2 bg-white !text-green-900 hover:bg-slate-100" 
-      />
+      {(button) ? (
+        <Button 
+          text='View Details' 
+          onClick={() => setShowSummary(true)} 
+          className="mt-2 bg-white !text-green-900 hover:bg-slate-100" 
+        />
+      ) : (null)}
+
 
       {showSummary && SummaryContent && (
         <div className="text-slate-900">
