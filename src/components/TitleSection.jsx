@@ -1,6 +1,7 @@
 import icon from '../assets/unitask.svg'
 import { ButtonIcon } from './Button'
 import { IconAction } from './Icon'
+import Button from './Button'
 
 function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon, buttonVisible}) {
   return ( 

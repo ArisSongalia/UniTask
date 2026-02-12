@@ -16,6 +16,7 @@ import Icon, { IconAction, IconText, IconUser } from '../Icon';
 import ModalOverlay from '../ModalOverlay';
 import { DisplayTitleSection, IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { HandleSignOut } from './ModalAuth';
+import { useFetchProjectData, useFetchTaskData, useFetchNoteData } from '../../services/FetchData';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -1214,87 +1215,96 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
   )
 }
 
-function Summary({ closeModal, taskData, projectData, noteData }) {
-  const [activeSection, setActiveSection] = useState('Assigned Tasks')
+function Summary({ closeModal }) {
+  const [activeSection, setActiveSection] = useState('Assigned Tasks');
+  const [customWhere, setCustomWhere] = useState(null);
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    if (user?.uid) {
+      setCustomWhere([
+        where("team-uids", "array-contains", user.uid),
+      ]);
+    }
+  }, [user]);
+
+  // 🔹 Fetch data internally
+  const { taskData = [] } = useFetchTaskData(customWhere);
+  const { projectData = [] } = useFetchProjectData();
+  const { noteData = [] } = useFetchNoteData();
+
   const titles = [
     {
       label: 'Assigned Tasks',
       onClick: () => setActiveSection('Assigned Tasks'),
       isActive: activeSection === 'Assigned Tasks',
       dataFeather: 'check-square',
-      key: 'title',
     },
     {
       label: 'Pending Projects',
       onClick: () => setActiveSection('Pending Projects'),
       isActive: activeSection === 'Pending Projects',
       dataFeather: 'briefcase',
-      key: 'title',
     },
     {
       label: 'Pinned Notes',
-      onClick: () => setActiveSection('Action Notes'),
-      isActive: activeSection === 'Action Notes',
+      onClick: () => setActiveSection('Pinned Notes'),
+      isActive: activeSection === 'Pinned Notes',
       dataFeather: 'file-text',
-      key: 'title',
     }
-  ]
+  ];
 
   const columns = useMemo(() => [
-
     {
       header: 'Title',
       accessorFn: row => row.title || row['project-title'] || 'N/A'
     },
     {
       header: 'Description',
-        accessorFn: row => {
-          const { title, team, file, ...rest } = row;
-          const { ['team-uids']: _, ...filteredRest } = rest;
-          return Object.entries(filteredRest)
-            .map(([key, value]) => `${key}: ${value ?? 'N/A'}`)
-            .join('\n');
-        },
+      accessorFn: row => {
+        const { title, team, file, ...rest } = row;
+        const { ['team-uids']: _, ...filteredRest } = rest;
+        return Object.entries(filteredRest)
+          .map(([key, value]) => `${key}: ${value ?? 'N/A'}`)
+          .join('\n');
+      },
     }
   ], []);
 
-  const table = useReactTable({
-    data: activeSection === 'Assigned Tasks'
+  const data =
+    activeSection === 'Assigned Tasks'
       ? taskData
-      : activeSection === 'Pending Projects' 
-      ? projectData 
-      : activeSection === 'Action Notes'
-      ? noteData
-      : null ,
+      : activeSection === 'Pending Projects'
+      ? projectData
+      : noteData;
+
+  const table = useReactTable({
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
-
-  
+  });
 
   return (
     <ModalOverlay>
       <div
-        className='flex flex-col max-w-[60rem] w-full h-[75vh] bg-white p-4 rounded-md overflow-x-auto'
+        className="flex flex-col max-w-[60rem] w-full h-[75vh] bg-white p-4 rounded-md overflow-x-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title='Task Summary' dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection title="Task Summary" dataFeather="x" iconOnClick={closeModal} />
         <MultiTitleSection titles={titles} />
 
-        <table className='w-full bg-white text-slate-800'>
+        <table className="w-full bg-white text-slate-800">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <th 
-                    key={header.id} 
-                    className={`border px-2 py-1 text-xs font-semibold text-left w-[5rem]`}
+                  <th
+                    key={header.id}
+                    className="border px-2 py-1 text-xs font-semibold text-left w-[5rem]"
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext()
-                      )
-                    }
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
               </tr>
@@ -1305,19 +1315,22 @@ function Summary({ closeModal, taskData, projectData, noteData }) {
             {table.getRowModel().rows.map(row => (
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className='border px-2 py-1 text-sm whitespace-pre-wrap'>
+                  <td
+                    key={cell.id}
+                    className="border px-2 py-1 text-sm whitespace-pre-wrap"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
     </ModalOverlay>
-  )
+  );
 }
+
 
 export { AddMembers, AddTeamMates, CompletedTab, CreateCanvas, CreateNote, CreateProject, CreateTask, NoteFocus, Summary, TaskFocus, UserProfile };
  

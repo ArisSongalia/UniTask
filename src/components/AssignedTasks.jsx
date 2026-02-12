@@ -4,23 +4,22 @@ import { BarLoader } from 'react-spinners';
 import { useReloadContext } from '../context/ReloadContext';
 import { useFetchTaskData } from '../services/FetchData';
 import { TaskCard } from './Cards';
-import { useAuth } from './hooks/useAuth';
+import { auth } from '../config/firebase';
 import { DisplayTitleSection } from './TitleSection';
 
 function AssignedTasks({}) {
   const { key } = useReloadContext();
-  const user = useAuth();
+  const user = auth.currentUser;
   const [customWhere, setCustomWhere] = useState(null);
 
   useEffect(() => {
     if (user?.uid) {
       setCustomWhere([
-        where("team-uids", "array-contains", user.uid),
+        where("team-uids", "array-contains", user?.uid),
         where("status", "!=", "Finished")
       ]);
     }
-  }, [user?.uid]);
-  
+  }, [user]);
 
   const { taskData, loading } = useFetchTaskData(customWhere, key);
 

@@ -1,80 +1,60 @@
-import { where } from 'firebase/firestore';
-import { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import "react-toastify/dist/ReactToastify.css";
-import { useReloadContext } from '../context/ReloadContext';
-import { useFetchNoteData, useFetchProjectData, useFetchTaskData, UseFetchUserName } from '../services/FetchData';
 import Button from './Button';
-import { useAuth } from './hooks/useAuth';
 import Icon, { IconAction, IconText, IconUser } from './Icon';
 import MainCanvas from './modal-group/MainCanvas';
-import { NoteFocus, Summary, TaskFocus } from "./modal-group/Modal";
+import { NoteFocus, TaskFocus } from "./modal-group/Modal";
 import Popup from './modal-group/Popup';
 import { IconTitleSection } from './TitleSection';
 
 
-function SummaryCard({
-  title = 'Summary Card', 
-  count = 0, 
-  className = '', 
-  }) {
-
-  const user = useAuth();
-  const { key } = useReloadContext()
-  const [customWhere, setCustomWhere] = useState(null);
+function SummaryCard({ 
+  title = 'Summary', 
+  description = '', 
+  items = [], 
+  loading = false, 
+  className = '',
+  SummaryContent = null 
+}) {
   const [showSummary, setShowSummary] = useState(false);
 
-  
-  const handleShowSummary = () => {
-    setShowSummary(!showSummary);
-  }
-
-  useEffect(() => {
-    if (user?.uid) {
-      setCustomWhere([
-        where("team-uids", "array-contains", user.uid),
-        where("status", "!=", "Finished")
-      ]);
-    }
-  }, [user?.uid]);
-
-  const { taskData, loading: taskLoading } = useFetchTaskData(customWhere, key );
-  const { projectData, loading: projectLoading } = useFetchProjectData(key);
-  const { noteData, loading: noteLoading } = useFetchNoteData(key);
-  const pendingProjects = projectData.filter(project => project.status === 'On-going');
-
-
   return (
-  <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md
-                       p-4 justify-between text-white h-auto ${className}`}>
-      <span className='flex flex-col w-full justify-between border-b-2 pb-2'>
+    <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md p-4 justify-between text-white h-auto ${className}`}>
+      <span className='flex flex-col w-full border-b-2 border-white/20 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
-        <p className='font-semibold text-sm'>Hi <UseFetchUserName />, Here's your tasks📋</p>
+        <p className='font-semibold text-sm opacity-90'>{description}</p>
       </span>
 
-      
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <BarLoader color='white' />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+          {items.slice(0, 4).map((item, index) => (
+            <div key={index} className="flex flex-col items-center justify-center bg-white/10 border border-white/10 rounded-md p-2 ">
+              <span className="text-xl font-bold">{item.count}</span>
+              <span className="text-[10px] uppercase font-medium tracking-tight text-center">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
-        {!projectLoading || !noteLoading || !taskLoading ?(
-          <div className="flex w-full h-fit">
-            <CountCard count={pendingProjects.length} title='Pending Projects'/>
-            <CountCard count={taskData.length} title='Assigned Task' />
-            <CountCard count={noteData.length} title='Action Notes' className=''/>
-          </div>
-        ) : (
-          <BarLoader color='white' className='self-center'/>
-        )}
+      <Button 
+        text='View Details' 
+        onClick={() => setShowSummary(true)} 
+        className="mt-2 bg-white !text-green-900 hover:bg-slate-100" 
+      />
 
-      <Button text='Check Summary' onClick={handleShowSummary} />
-      {showSummary && 
-      <Summary 
-        closeModal={handleShowSummary} 
-        taskData={taskData} 
-        projectData={projectData}
-        noteData={noteData}
-      />}
+      {showSummary && SummaryContent && (
+        <div className="text-slate-900">
+           {React.cloneElement(SummaryContent, { closeModal: () => setShowSummary(false) })}
+        </div>
+      )}
     </section>
-  )
+  );
 }
 
 function CountCard({ count = '', title = '', onClick, className = ''}) {
@@ -461,3 +441,4 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 
 
 export { AlertCard, CanvasCard, CountCard, CreateCard, EveryOneCard, NoteCard, ProgressAlertCard, ProjectCard, SummaryCard, TaskCard, UserCard };
+

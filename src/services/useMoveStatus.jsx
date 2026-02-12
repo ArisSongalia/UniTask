@@ -16,11 +16,11 @@ export function useMoveStatus() {
         const data = statusSnap.data();
         const currentStatus = data.status;
           if (currentStatus === "On-going") {
-            await updateDoc(taskRef, { status: "Finished" });
+            await updateDoc(taskRef, { status: "Finished", updatedAt: new Date()});
           } else if (currentStatus === "To-do") {
-            await updateDoc(taskRef, { status: "In-progress"})
+            await updateDoc(taskRef, { status: "In-progress", updatedAt: new Date()})
           } else if (currentStatus === "In-progress") {
-            await updateDoc(taskRef, { status: "To-review"}) 
+            await updateDoc(taskRef, { status: "To-review", updatedAt: new Date()}) 
           } else if (currentStatus === "To-review") {
             await updateDoc(taskRef, { status: "Finished", completedAt: new Date()}) 
           } else {

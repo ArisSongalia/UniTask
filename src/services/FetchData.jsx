@@ -217,23 +217,34 @@ const useFetchTaskData = (customWhere, refreshKey) => {
   useEffect(() => {
     const fetchTaskData = async () => {
       setLoading(true);
+
       try {
-        const initWhere = where('project-id', '==', projectId);
-        const whereToArray = Array.isArray(customWhere) ? customWhere : [initWhere];
         const taskRef = collection(db, "tasks");
-        const q = query(taskRef, ...whereToArray);
+        let filters = [];
+
+        if (Array.isArray(customWhere)) {
+          filters = customWhere.filter(Boolean);
+        } else if (projectId) {
+          filters = [where("project-id", "==", projectId)];
+          console.log('using def where')
+        }
+
+        if (filters.length === 0) {
+          setTaskData([]);
+          setLoading(false);
+          return;
+        }
+
+        const q = query(taskRef, ...filters);
         const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const data = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          setTaskData(data);
-        } else {
-          console.log("No task data found");
-          setTaskData([]);
-        }
+        const data = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setTaskData(data);
+
       } catch (error) {
         console.error("Error fetching task data:", error);
       } finally {
@@ -242,10 +253,11 @@ const useFetchTaskData = (customWhere, refreshKey) => {
     };
 
     fetchTaskData();
-  }, [customWhere, refreshKey]);
+  }, [customWhere, refreshKey, projectId]);
 
-  return { taskData, loading};
+  return { taskData, loading };
 };
+
 
 const useFetchUsers = (setUsers, setLoading, refreshKey) => {
   useEffect(() => {
