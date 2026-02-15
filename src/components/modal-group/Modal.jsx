@@ -18,6 +18,7 @@ import ModalOverlay from '../ModalOverlay';
 import { DisplayTitleSection, IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { HandleSignOut } from './ModalAuth';
 import { useFetchProjectData, useFetchTaskData, useFetchNoteData } from '../../services/FetchData';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -334,6 +335,7 @@ function CreateTask({ closeModal, taskData }) {
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
   const user = auth.currentUser;
+  const userId = user.uid;
 
   const [form, setForm] = useState({
     title: taskData?.title || '',
@@ -416,7 +418,8 @@ function CreateTask({ closeModal, taskData }) {
       }
 
       await syncToSearch('task', taskId, payload);
-      
+      const analytics = getAnalytics();
+      logEvent(analytics, 'task_created', { taskId, userId });
 
       setMessage({ text: 'Successfully Saved Task', color: 'green' });
       

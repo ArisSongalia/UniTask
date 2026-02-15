@@ -4,7 +4,6 @@ import { BarLoader } from 'react-spinners';
 import "react-toastify/dist/ReactToastify.css";
 import Button from './Button';
 import Icon, { IconAction, IconText, IconUser } from './Icon';
-import MainCanvas from './modal-group/MainCanvas';
 import { NoteFocus, TaskFocus } from "./modal-group/Modal";
 import Popup from './modal-group/Popup';
 import { IconTitleSection } from './TitleSection';

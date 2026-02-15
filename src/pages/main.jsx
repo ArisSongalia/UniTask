@@ -6,6 +6,7 @@ import App from '../components/App';
 import { ProjectProvider } from '../context/ProjectContext';
 import { ReloadProvider } from '../context/ReloadContext';
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ReloadProvider>

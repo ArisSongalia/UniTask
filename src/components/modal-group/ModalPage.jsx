@@ -4,10 +4,9 @@ import { useFetchProjectHistory, useFetchTaskData } from "../../services/FetchDa
 import { SummaryCard } from "../Cards";
 import ModalOverlay from "../ModalOverlay";
 import { IconTitleSection } from "../TitleSection";
-import { IconText } from "../Icon";
 
 
-function DashBoard({ closeModal }) {
+export default function DashBoard({ closeModal }) {
   const { taskData, loading } = useFetchTaskData();
   const { projectId } = useParams();
 
@@ -21,57 +20,68 @@ function DashBoard({ closeModal }) {
     { count: progressN, label: 'In-progress'},
     { count: reviewN, label: 'Review'},
     { count: finishedN, label: 'Finished'},
-  ]
+  ];
 
   const { history, loading: loadingHistory } = useFetchProjectHistory(projectId);
 
   return (
-    <ModalOverlay>  
-      <div className="bg-zinc-100 flex flex-col p-2 w-full max-w-screen-2xl h-full rounded-md shadow-2xl overflow-hidden">
-        <IconTitleSection title="Project Analytics" iconOnClick={closeModal} dataFeather="x" />
-        
+    <ModalOverlay onClick={closeModal}>
+      <div className="absolute bg-zinc-100 flex flex-col p-2 max-w-screen-2xl w-full h-[95vh] rounded-md shadow-2xl overflow-hidden">
+        <IconTitleSection title="Dashboard" iconOnClick={closeModal} dataFeather="x" />
+
         {loading ? (
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center flex-1 min-h-0">
             <p className="animate-pulse">Loading Dashboard...</p>
           </div>
         ) : (
-          <div className="flex gap-2">
-            <div className="flex flex-col h-full max-w-[30rem] w-full gap-2">
-              <SummaryCard description="Heres the summary for this project" items={tasksSummary} title="Tasks Summary" />
+          <div className="flex gap-2 flex-1 min-h-0">
+            {/* Left Column */}
+            <div className="flex flex-col gap-2 max-w-[30rem] w-full flex-1 min-h-0">
+              {/* Tasks Summary */}
+              <SummaryCard
+                description="Here's the summary for this project"
+                items={tasksSummary}
+                title="Tasks Summary"
+              />
+
               {/* Project History */}
-              <div className="flex flex-col bg-white flex-1 p-2 border rounded-md ">
-                <IconTitleSection title="Project History" dataFeather="refresh-cw" />
-                <div className="flex flex-col gap-2 h-full">
+              <div className="flex flex-col bg-white p-2 border rounded-md flex-1 min-h-0">
+                <IconTitleSection title="Project History" />
+                <div className="flex flex-col gap-2 overflow-auto flex-1 min-h-0">
                   {loadingHistory ? (
-                      <BarLoader />
-                    ) : history.length > 0 ? (
-                      history.map(item => (
-                        <div key={item.id} className="border p-2 rounded-md text-sm">
-                          <span className="flex items-center justify-between">
-                            <p className="font-semibold">{item.action}</p>
-                            <IconText text={item.actionType} />
-                          </span>
-                          <p className="text-xs text-gray-500">{item.username}</p>
-                        </div>
-                      ))
-                    ) : (
+                    <BarLoader />
+                  ) : history.length > 0 ? (
+                    history.map(item => (
+                      <div
+                        key={item.id}
+                        className="border p-2 rounded-md text-sm flex justify-between"
+                      >
+                        <p className="font-semibold">
+                          {item.username} {item.action.toLowerCase()}
+                        </p>
+                        {item.createdAt.toDate().toLocaleString()}
+                      </div>
+                    ))
+                  ) : (
                     <p className="text-sm text-gray-400">No history yet</p>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="flex bg-white p-4 w-full max-h-full rounded-md border">
+            {/* Right Column (Analytics) */}
+            <div className="flex flex-col bg-white p-4 w-full rounded-md border flex-1 min-h-0">
               <IconTitleSection title="Analytics" />
+              <div className="flex-1 min-h-0 overflow-auto">
+                <p className="text-gray-500 text-sm">Analytics content goes here.</p>
+              </div>
             </div>
           </div>
         )}
-
       </div>
     </ModalOverlay>
   );
 }
 
 
-export { DashBoard };
 
