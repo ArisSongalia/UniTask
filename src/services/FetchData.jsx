@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../config/firebase';
-import { collection, doc, getDoc, getDocs, where, query, orderBy,or } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, where, query, orderBy,or, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'react-router-dom';
 
@@ -412,6 +412,43 @@ const useFetchTeams = (userId, refreshKey) => {
   return { teamsData, loading };
 }
 
+const useFetchProjectHistory = (projectId) => {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true)
 
-export { UseFetchUserName, useFetchUsers, useFetchProjectData, useFetchNoteData, useFetchActiveProjectData, useFetchTaskData, useFetchMessageData, useFetchTeams};
+    useEffect(() => {
+      if(!projectId) return console.log("No Project ID");
+      setLoading(true);
+
+      const q = query(
+        collection(db, 'projects', projectId, "project-history"),
+        orderBy("createdAt", "desc")
+      )
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setHistory(data);
+        setLoading(false);
+      })
+
+      return () => unsubscribe();
+    }, [projectId])
+    return {history, loading};
+}
+
+
+export {
+  UseFetchUserName,
+  useFetchUsers, 
+  useFetchProjectData, 
+  useFetchNoteData, 
+  useFetchActiveProjectData, 
+  useFetchTaskData,
+  useFetchMessageData, 
+  useFetchTeams,
+  useFetchProjectHistory,
+};
 

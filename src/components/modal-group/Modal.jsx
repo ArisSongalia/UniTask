@@ -1,5 +1,5 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { addDoc, collection, doc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
@@ -9,6 +9,7 @@ import { useReloadContext } from '../../context/ReloadContext';
 import deleteData from '../../services/DeleteData';
 import { useFetchActiveProjectData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
 import syncToSearch from '../../services/SyncToSearch';
+import { logProjectHistory } from '../../services/logProjectHistory';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import Button, { ButtonIcon } from '../Button';
 import { AlertCard, TaskCard, UserCard } from '../Cards';
@@ -332,6 +333,7 @@ function CreateTask({ closeModal, taskData }) {
   const [isSaving, setIsSaving] = useState(false);
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
+  const user = auth.currentUser;
 
   const [form, setForm] = useState({
     title: taskData?.title || '',
@@ -365,7 +367,7 @@ function CreateTask({ closeModal, taskData }) {
         'team-uids': [auth.currentUser.uid],
       }));
     }
-  }, [auth.currentUser, projectData?.type]);
+  }, [user, projectData?.type]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -401,16 +403,20 @@ function CreateTask({ closeModal, taskData }) {
         completedAt: null,
       };
 
-      let savedId = taskData?.id;
+      let taskId;
 
       if (taskData?.id) {
         await updateDoc(doc(db, 'tasks', taskData.id), payload);
+        await logProjectHistory({projectId, action: "Updated a task", actionId: taskData.id, type: 'task', actionType:'task', userDisplayName: user.displayName})
+        taskId = taskData.id;
       } else {
         const docRef = await addDoc(collection(db, 'tasks'), payload);
-        savedId = docRef.id;
+        taskId = docRef.id;
+        await logProjectHistory({projectId, action: "Created a task", actionId: taskId, type: 'task', actionType:'task', userDisplayName: user.displayName})
       }
 
-      await syncToSearch('task', savedId, payload);
+      await syncToSearch('task', taskId, payload);
+      
 
       setMessage({ text: 'Successfully Saved Task', color: 'green' });
       
@@ -570,74 +576,29 @@ function CreateTask({ closeModal, taskData }) {
               type="submit"
               disabled={isSaving}
               text={isSaving ? 'Saving...' : (taskData ? 'Update Task' : 'Create Task')}
-              className="py-3"
+              className="py-3 bg-green-800 text-white"
             />
 
-            <Button text='Mark as Finshed' className='p-3 border-none' 
-            onClick={async () => {
-              await updateDoc(doc(db, 'tasks', taskData.id), {status: 'Finished'});
-              setMessage({ text: 'Successfully Updated Status', color: 'green' });
-              setTimeout(() => {
-                reloadComponent();
-                closeModal();
-              }, 800);
-            }}/>
+            {(taskData) ? (
+              <Button text='Mark as Finshed' className='p-3 border-none'
+                onClick={async () => {
+                await updateDoc(doc(db, 'tasks', taskData.id), {status: 'Finished'});
+                setMessage({ text: 'Successfully Updated Status', color: 'green' });
+                setTimeout(() => {
+                  reloadComponent();
+                  closeModal();
+                }, 800);
+              }}/>
+            ) : (
+              null
+            )}
+
           </div>
         </form>
       </section>
     </ModalOverlay>
   );
 }
-
-function CreateCanvas({ closeModal }) {
-  const { reloadComponent } = useReloadContext()
-  const [message, setMessage] = useState({ text: '', color: '' });
-  const [canvasData, setCanvasData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const [form, setForm] = useState({
-    'canvas-title': "",
-    'canvas-description': "",
-    'canvas-date:': "",
-  });
-
-  return (
-    <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Create Canvas' iconOnClick={closeModal} dataFeather='x' />
-
-        <form action="" className="flex flex-col space-y-4">
-          <label htmlFor="title" className="flex flex-col text-gray-600">
-            Title
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={form['title']}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-              required
-            />
-          </label>
-
-          <label htmlFor="date" className="flex flex-col text-gray-600">
-            Date-time
-            <input
-              type="datetime-local"
-              id="date"
-              name="deadline"
-              value={form['deadline']}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none hover:cursor-pointer"
-            />
-          </label>
-
-          <p style={{ color: message.color }}>{message.text}</p>
-          <Button type="submit" text="Create Canvas" className="py-3" />
-        </form>
-      </section>
-    </ModalOverlay>
-  );
-}
-
 
 function AddMembers({ closeModal }) {
   const [users, setUsers] = useState([]);
@@ -1332,5 +1293,5 @@ function Summary({ closeModal }) {
 }
 
 
-export { AddMembers, AddTeamMates, CompletedTab, CreateCanvas, CreateNote, CreateProject, CreateTask, NoteFocus, Summary, TaskFocus, UserProfile };
+export { AddMembers, AddTeamMates, CompletedTab, CreateNote, CreateProject, CreateTask, NoteFocus, Summary, TaskFocus, UserProfile };
  
