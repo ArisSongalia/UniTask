@@ -28,20 +28,23 @@ function Home() {
 
   if (user === undefined) return null;
 
-  return (
-    <div className="flex flex-col w-full h-[100vh] items-center overflow-auto">
-      <Navbar />
-      {!isProjectView && (
-        <SortProvider>
-          <div className="flex flex-grow w-full h-[calc(100vh-5rem)] gap-2 max-w-screen-2xl justify-center">
-            <RecentTasks />
-            <HomeSideBar className='hidden lg:flex'/>
-          </div>
-        </SortProvider>
-      )}
-      <Outlet />
-    </div>
-  );
+return (
+  <div className="flex flex-col h-screen w-full overflow-hidden">
+    <Navbar />
+
+    {!isProjectView && (
+      <SortProvider>
+        <div className="flex flex-1 min-h-0 w-full gap-2 max-w-screen-2xl mx-auto p-2">
+          <RecentTasks className="flex-1 min-h-0" />
+          <HomeSideBar className="hidden lg:flex flex-col w-80" />
+        </div>
+      </SortProvider>
+    )}
+
+    <Outlet />
+  </div>
+);
+
 }
 
 export default Home;

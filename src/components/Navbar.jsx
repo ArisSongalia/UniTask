@@ -39,7 +39,7 @@ function Navbar() {
   }
 
   return (
-    <section className="bg-white flex z-50 items-center justify-center w-full h-fit px-4 mb-2 sticky top-0 shadow-sm">
+    <section className="bg-white flex z-50 items-center justify-center w-full h-fit px-4 sticky top-0 shadow-sm">
       <div className="flex relative items-center justify-between w-full py-3 max-w-[1920px]">
         <div className="flex gap-4">
           <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />

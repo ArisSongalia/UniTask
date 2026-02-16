@@ -56,7 +56,7 @@ export default function ProgressBoard() {
   return (
     <div className="flex flex-col bg-white rounded-md overflow-hidden h-full shadow-md w-full">
       {/* Header */}
-      <section className="title-section flex p-4 justify-between text-gray-700">
+      <section className="title-section flex p-4 pb-0 justify-between text-gray-700">
         <h2 className="font-bold text-lg">Progress Board</h2>
         <span className="flex gap-2 items-center">
           <ReloadIcon />
@@ -80,7 +80,7 @@ export default function ProgressBoard() {
       {/* Task Columns */}
       <section
         id="task-board-container"
-        className="flex gap-2 flex-1 overflow-x-auto px-4"
+        className="flex gap-2 flex-1 overflow-x-auto p-4"
       >
         {/* To-do Column */}
         <div className="flex flex-col border border-dotted border-gray-500 bg-gray-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
