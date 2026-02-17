@@ -1,5 +1,4 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import { addDoc, collection, doc, getDoc, getDocs, limit, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { useReloadContext } from '../../context/ReloadContext';
 import deleteData from '../../services/DeleteData';
 import { useFetchActiveProjectData, useFetchNoteData, useFetchProjectData, useFetchTaskData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
 import syncToSearch from '../../services/SyncToSearch';
-import { logProjectHistory } from '../../services/logProjectHistory';
+import { logAnalytics } from '../../services/logAnalytics';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import Button, { ButtonIcon } from '../Button';
 import { AlertCard, TaskCard, UserCard } from '../Cards';
@@ -408,17 +407,15 @@ function CreateTask({ closeModal, taskData }) {
 
       if (taskData?.id) {
         await updateDoc(doc(db, 'tasks', taskData.id), payload);
-        await logProjectHistory({projectId, action: "Updated a task", actionId: taskData.id, type: 'task', actionType:'task', userDisplayName: user.displayName})
         taskId = taskData.id;
+        logAnalytics({projectId, event: 'task-updated', taskData});
       } else {
         const docRef = await addDoc(collection(db, 'tasks'), payload);
         taskId = docRef.id;
-        await logProjectHistory({projectId, action: "Created a task", actionId: taskId, type: 'task', actionType:'task', userDisplayName: user.displayName})
+        logAnalytics({projectId, event: 'task-created', taskData: {...payload, id: docRef.id}});
       }
 
       await syncToSearch('task', taskId, payload);
-      const analytics = getAnalytics();
-      logEvent(analytics, 'task_created', { taskId, userId });
 
       setMessage({ text: 'Successfully Saved Task', color: 'green' });
       

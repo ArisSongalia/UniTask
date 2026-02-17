@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { BarLoader } from 'react-spinners'
 import { useReloadContext } from '../context/ReloadContext'
 import { useFetchTaskData } from '../services/FetchData'
-import { ButtonIcon } from './Button'
 import { TaskCard } from './Cards'
 import { IconAction } from './Icon'
 import { ReloadIcon } from './ReloadComponent'
@@ -71,7 +70,7 @@ export default function ProgressBoard() {
           <IconAction
             text="Create Task"
             dataFeather="plus"
-            onClick={() => toggleVisibility("createTask")}
+            iconOnClick={() => toggleVisibility("createTask")}
           />
           {visibility.createTask && <CreateTask closeModal={() => toggleVisibility("createTask")} />}
         </span>

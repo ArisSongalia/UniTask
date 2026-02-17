@@ -412,31 +412,34 @@ const useFetchTeams = (userId, refreshKey) => {
   return { teamsData, loading };
 }
 
-const useFetchProjectHistory = (projectId) => {
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true)
+const useFetchAnalytics = (projectId) => {
+  const [ eventsData, setEventsData ] = useState([]);
+  const [ metricsData, setMetricsData ] = useState({});
 
-    useEffect(() => {
-      if(!projectId) return console.log("No Project ID");
-      setLoading(true);
+  if(!projectId) return console.log('Fetch Analytics: Missing ID');
 
-      const q = query(
-        collection(db, 'projects', projectId, "project-history"),
-        orderBy("createdAt", "desc")
-      )
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try{
+        const qMetrics = doc(db, 'projects', projectId, 'metrics', `${projectId}_metrics`);
+        const metricsSnap = await getDoc(qMetrics);
+        setMetricsData(metricsSnap.data());
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data = snapshot.docs.map(doc => ({
+        const qEvents = collection(db, 'projects', projectId, 'events');
+        const eventsSnap = await getDocs(qEvents)
+        setEventsData(eventsSnap.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
-        }));
-        setHistory(data);
-        setLoading(false);
-      })
+          ...doc.data(),
+        })))
+      } catch (error) {
+        console.error('Failed to fetch analytics: ', error)
+      }
+    }
 
-      return () => unsubscribe();
-    }, [projectId])
-    return {history, loading};
+    fetchAnalytics();
+  }, [projectId])
+
+  return{ eventsData, metricsData };
 }
 
 
@@ -449,6 +452,7 @@ export {
   useFetchTaskData,
   useFetchMessageData, 
   useFetchTeams,
-  useFetchProjectHistory,
+  useFetchAnalytics,
 };
 
+ 
