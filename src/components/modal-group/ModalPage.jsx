@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { BarLoader } from "react-spinners";
-import { useFetchAnalytics, useFetchTaskData, UseFetchUserName } from "../../services/FetchData";
+import { useFetchAnalytics, useFetchTaskData, UseFetchUserData, UseFetchUserName } from "../../services/FetchData";
 import { SummaryCard } from "../Cards";
 import ModalOverlay from "../ModalOverlay";
 import TitleSection, { IconTitleSection } from "../TitleSection";
@@ -23,6 +23,7 @@ export default function DashBoard({ closeModal }) {
   ];
 
   const { eventsData, metricsData } = useFetchAnalytics(projectId);
+  const { eventUserData = userData }  = UseFetchUserData(eventsData.map(eventsData.user))
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -54,7 +55,7 @@ export default function DashBoard({ closeModal }) {
                         key={item.id}
                         className="border p-2 rounded-sm text-sm flex justify-between"
                       >
-                        <UseFetchUserName />
+                        <p>{eventUserData.username}</p>
                         <p>{item.event.toLowerCase()}</p>
                         <p className="text-black">{item.timestamp.toDate().toLocaleString()}</p>
                       </div>

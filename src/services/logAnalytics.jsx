@@ -20,7 +20,7 @@ export const logAnalytics = async ({ projectId, event, taskData}) => {
   await addDoc(collection(db, 'projects', projectId, 'events'), {
     timestamp: serverTimestamp(),
     projectId: projectId,
-    user: user.uid,
+    userId: user.uid,
     event: event,
     taskId: taskData.id,
     status: taskData.status,

@@ -5,48 +5,33 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'react-router-dom';
 
 
-function UseFetchUserName() {
-  const [username, setUsername] = useState('');
+function UseFetchUserData(uid) {
+  const [userdata, setUserData] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUsername = async (user) => {
+  useEffect(() => { 
+    const fetchUserData = async () => {
       try {
-        if (user) {
-          const userDocRef = doc(db, 'users', user.uid);
+        if (uid) {
+          const userDocRef = doc(db, 'users', uid);
           const userDoc = await getDoc(userDocRef);
 
-          if (userDoc.exists()) {
-            setUsername(userDoc.data().username);
+        if (userDoc.exists()) {
+            setUserData(userDoc.data());
           } else {
             console.log('User document not found');
           }
-        } else {
-          console.log('No logged-in user');
-        }
+        };
       } catch (error) {
         console.error('Error fetching username:', error);
       } finally {
         setLoading(false);
       }
     };
+    fetchUserData()
+  }, [uid]);
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      fetchUsername(user);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return <span>...</span>;
-  }
-
-  if (!username) {
-    return <span>{auth.currentUser?.email}</span>;
-  }
-
-  return <span>{username}</span>;
+  return {userdata, loading};
 }
 
 
@@ -444,7 +429,6 @@ const useFetchAnalytics = (projectId) => {
 
 
 export {
-  UseFetchUserName,
   useFetchUsers, 
   useFetchProjectData, 
   useFetchNoteData, 
@@ -453,6 +437,7 @@ export {
   useFetchMessageData, 
   useFetchTeams,
   useFetchAnalytics,
+  UseFetchUserData,
 };
 
  
