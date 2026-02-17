@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 
 function UseFetchUserData(uid) {
-  const [userdata, setUserData] = useState('');
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { 
@@ -31,7 +31,7 @@ function UseFetchUserData(uid) {
     fetchUserData()
   }, [uid]);
 
-  return {userdata, loading};
+  return {userData, loading};
 }
 
 

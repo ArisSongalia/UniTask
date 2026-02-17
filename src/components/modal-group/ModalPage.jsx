@@ -1,9 +1,18 @@
 import { useParams } from "react-router-dom";
-import { BarLoader } from "react-spinners";
-import { useFetchAnalytics, useFetchTaskData, UseFetchUserData, UseFetchUserName } from "../../services/FetchData";
+import { useFetchAnalytics, useFetchTaskData} from "../../services/FetchData";
 import { SummaryCard } from "../Cards";
 import ModalOverlay from "../ModalOverlay";
 import TitleSection, { IconTitleSection } from "../TitleSection";
+import { IconText } from "../Icon";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts";
 
 
 export default function DashBoard({ closeModal }) {
@@ -21,9 +30,16 @@ export default function DashBoard({ closeModal }) {
     { count: reviewN, label: 'Review'},
     { count: finishedN, label: 'Finished'},
   ];
+  
+  const data = [
+    { name: "To-do", tasks: todoN },
+    { name: "Progress", tasks: progressN },
+    { name: "To-review", tasks: reviewN },
+    { name: "Finished", tasks: finishedN },
+  ];
+
 
   const { eventsData, metricsData } = useFetchAnalytics(projectId);
-  const { eventUserData = userData }  = UseFetchUserData(eventsData.map(eventsData.user))
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -53,9 +69,15 @@ export default function DashBoard({ closeModal }) {
                     eventsData.map(item => (
                       <div
                         key={item.id}
-                        className="border p-2 rounded-sm text-sm flex justify-between"
+                        className="border p-1 rounded-sm text-sm flex justify-between items-center"
                       >
-                        <p>{eventUserData.username}</p>
+                        {item.team && item.team.length > 0 ? (
+                          item.team.map((member) => (
+                            <IconText key={member.uid} text={member.username} />
+                          ))
+                        ) : (
+                          <p className="text-gray-400">No user assigned</p>
+                        )}
                         <p>{item.event.toLowerCase()}</p>
                         <p className="text-black">{item.timestamp.toDate().toLocaleString()}</p>
                       </div>
@@ -70,9 +92,22 @@ export default function DashBoard({ closeModal }) {
             {/* Right Column (Analytics) */}
             <div className="flex flex-col bg-white p-4 w-full rounded-md border flex-1 min-h-0">
               <TitleSection title="Analytics" />
-              <div className="flex-1 min-h-0 overflow-auto">
-                {metricsData?.completedTasks}
-              </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="tasks" />
+                  </LineChart>
+                </ResponsiveContainer>
+
+              {metricsData && Object.entries(metricsData).map(([key, value]) => (
+                <IconText 
+                  key={key} 
+                  text={`${key.toUpperCase()}: ${value?.name ?? value}`} 
+                />
+              ))}
             </div>
           </div>
         )}
