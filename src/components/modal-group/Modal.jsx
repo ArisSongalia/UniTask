@@ -333,7 +333,6 @@ function CreateTask({ closeModal, taskData }) {
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
   const user = auth.currentUser;
-  const userId = user.uid;
 
   const [form, setForm] = useState({
     title: taskData?.title || '',
@@ -401,6 +400,7 @@ function CreateTask({ closeModal, taskData }) {
         priority: form.priority,
         category: form.category.toLowerCase(),
         completedAt: null,
+        createdAt: new Date(),
       };
 
       let taskId;
@@ -408,11 +408,11 @@ function CreateTask({ closeModal, taskData }) {
       if (taskData?.id) {
         await updateDoc(doc(db, 'tasks', taskData.id), payload);
         taskId = taskData.id;
-        logAnalytics({projectId, event: 'task-updated', taskData});
+        logAnalytics({projectId, event: 'updated a task', taskData});
       } else {
         const docRef = await addDoc(collection(db, 'tasks'), payload);
         taskId = docRef.id;
-        logAnalytics({projectId, event: 'task-created', taskData: {...payload, id: docRef.id}});
+        logAnalytics({projectId, event: 'created a task', taskData: {...payload, id: docRef.id}});
       }
 
       await syncToSearch('task', taskId, payload);
@@ -444,6 +444,7 @@ function CreateTask({ closeModal, taskData }) {
       };
     });
   };
+  
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -581,7 +582,13 @@ function CreateTask({ closeModal, taskData }) {
             {(taskData) ? (
               <Button text='Mark as Finshed' className='p-3 border-none'
                 onClick={async () => {
-                await updateDoc(doc(db, 'tasks', taskData.id), {status: 'Finished'});
+                const curDate = new Date();
+                await updateDoc(doc(db, 'tasks', taskData.id), {status: 'Finished', completedAt: curDate});
+                await logAnalytics({
+                  projectId,
+                  event: 'completed a task',
+                  taskData: { ...taskData, status: 'Finished', completedAt: curDate }
+                });
                 setMessage({ text: 'Successfully Updated Status', color: 'green' });
                 setTimeout(() => {
                   reloadComponent();

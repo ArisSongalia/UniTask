@@ -4,35 +4,45 @@ import { auth, db } from "../config/firebase";
 export const logAnalytics = async ({ projectId, event, taskData}) => {
   if(!projectId || !taskData) return console.log('Log Analytics: Missing Data');
   const user = auth.currentUser;
+
   if(!user) return
   const metricsId = `${projectId}_metrics`;
-
-  await addDoc(collection(db, 'projects', projectId, 'events'), {
-    timestamp: serverTimestamp(),
-    projectId: projectId,
-    user: user.displayName,
-    event: event,
-    taskId: taskData.id,
-    status: taskData.status,
-    priority: taskData.priority,
-  }) 
 
   let completionTime = null;
 
   if (taskData.completedAt && taskData.createdAt) {
-    completionTime =
-      taskData.completedAt.toDate() - taskData.createdAt.toDate();
+    const createdAt = taskData.createdAt.toDate ? taskData.createdAt.toDate() : taskData.createdAt;
+    const completedAt = taskData.completedAt.toDate ? taskData.completedAt.toDate() : taskData.completedAt;
+
+    completionTime = completedAt.getTime() - createdAt.getTime(); 
   }
 
+  await addDoc(collection(db, 'projects', projectId, 'events'), {
+    timestamp: serverTimestamp(),
+    projectId: projectId,
+    user: user.uid,
+    event: event,
+    taskId: taskData.id,
+    status: taskData.status,
+    priority: taskData.priority,
+    completionDuration: completionTime,
+  }) 
+
+
+  //Metrics data
   const updateData = {
     projectActivity: increment(1),
-    userActivity: arrayUnion(user.displayName),
+    userActivity: arrayUnion(user.uid),
   };
 
-  if (completionTime) {
+
+  if(taskData.status === 'Finished') {
     updateData.totalCompletionTime = increment(completionTime);
-    updateData.tasksCompleted = increment(1);
   }
+
+  if (completionTime) {
+    updateData.tasksCompleted = increment(1);
+  };
 
   await setDoc(
     doc(db, "projects", projectId, "metrics", metricsId),
