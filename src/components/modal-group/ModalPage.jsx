@@ -3,7 +3,7 @@ import { BarLoader } from "react-spinners";
 import { useFetchProjectHistory, useFetchTaskData } from "../../services/FetchData";
 import { SummaryCard } from "../Cards";
 import ModalOverlay from "../ModalOverlay";
-import { IconTitleSection } from "../TitleSection";
+import TitleSection, { IconTitleSection } from "../TitleSection";
 
 
 export default function DashBoard({ closeModal }) {
@@ -46,20 +46,18 @@ export default function DashBoard({ closeModal }) {
 
               {/* Project History */}
               <div className="flex flex-col bg-white p-2 border rounded-md flex-1 min-h-0">
-                <IconTitleSection title="Project History" />
-                <div className="flex flex-col gap-2 overflow-auto flex-1 min-h-0">
+                <TitleSection title="Project History" />
+                <div className="flex flex-col gap-1 overflow-auto flex-1 min-h-0">
                   {loadingHistory ? (
                     <BarLoader />
                   ) : history.length > 0 ? (
                     history.map(item => (
                       <div
                         key={item.id}
-                        className="border p-2 rounded-md text-sm flex justify-between"
+                        className="border p-2 rounded-sm text-sm flex justify-between"
                       >
-                        <p className="font-semibold">
-                          {item.username} {item.action.toLowerCase()}
-                        </p>
-                        {item.createdAt.toDate().toLocaleString()}
+                        <p>{item.username} {item.action.toLowerCase()}</p>
+                        <p className="text-black">{item.createdAt.toDate().toLocaleString()}</p>
                       </div>
                     ))
                   ) : (
@@ -71,9 +69,9 @@ export default function DashBoard({ closeModal }) {
 
             {/* Right Column (Analytics) */}
             <div className="flex flex-col bg-white p-4 w-full rounded-md border flex-1 min-h-0">
-              <IconTitleSection title="Analytics" />
+              <TitleSection title="Analytics" />
               <div className="flex-1 min-h-0 overflow-auto">
-                <p className="text-gray-500 text-sm">Analytics content goes here.</p>
+                
               </div>
             </div>
           </div>

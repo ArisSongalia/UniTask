@@ -331,7 +331,7 @@ function TaskCard({taskData, className}) {
       <span className='flex flex-col'>
 
         <section className="relative">
-          <IconTitleSection title={taskData.title} underTitle={taskData.deadline} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} />
+          <IconTitleSection title={taskData.title} underTitle={taskData.deadline.toDate().toLocaleString()} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} />
           {visibility.popUp &&
             <Popup
               taskData={taskData}

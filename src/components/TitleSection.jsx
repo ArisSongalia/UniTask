@@ -3,25 +3,12 @@ import { ButtonIcon } from './Button'
 import { IconAction } from './Icon'
 import Button from './Button'
 
-function TitleSection({title = 'Title', buttonText = 'Button', buttonOnClick, className = '', nextTitle = '', extraIcon, buttonVisible}) {
+function TitleSection({title = 'Title', className = '', titleClassName = ''}) {
   return ( 
-    <section className='flex w-full mb-4 justify-between'>
-        <span className={`flex gap-2 h-full items-center font-semibold ${className}`}>
-          <h2>{title}</h2>
-          <h2>{nextTitle}</h2>
-        </span>
-      <span>
-
-      {buttonVisible === false ?  (
-        null
-      ) : (
-        <span className='flex gap-2'>
-        <Button text={`${buttonText}`} onClick={buttonOnClick}/>
-        {extraIcon}
-      </span>
-      )}
-      </span>
-
+    <section className={`flex w-full mb-4 justify-between z-0 ${className}`}>
+      <section className='flex flex-col w-full'>
+        <p className={` w-full max-w-[80%] overflow-hidden overflow-ellipsis font-bold text-[0.9rem] text-slate-800 ${titleClassName}`}>{title}</p>
+      </section>
     </section>
   )
 }

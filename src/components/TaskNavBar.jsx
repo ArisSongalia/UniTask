@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { BarLoader, BounceLoader } from 'react-spinners';
 import { useReloadContext } from '../context/ReloadContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
-import { IconAction, IconUser } from './Icon';
+import { IconAction, IconText, IconUser } from './Icon';
 import { AddMembers } from './modal-group/Modal';
 import DashBoard  from './modal-group/ModalPage';
 import SocialSection from './SocialSection';
@@ -57,7 +57,7 @@ function TaskNavBar() {
         </span>
 
         <span className='flex items-center gap-1'>
-          <IconAction dataFeather='pie-chart' iconOnClick={() => toggleVisbility('dashBoard')}/>
+          <IconAction dataFeather='pie-chart' iconOnClick={() => toggleVisbility('dashBoard')} text='Analytics'/>
           {visibility.dashBoard && <DashBoard closeModal={() => toggleVisbility('dashBoard')} projectId={[projectId]} />}
 
           { projectData.type === 'Shared' ? (

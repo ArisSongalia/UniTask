@@ -1,7 +1,7 @@
 import { where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { auth } from '../config/firebase';
-import { useFetchNoteData, useFetchTaskData } from '../services/FetchData';
+import { useFetchNoteData, useFetchProjectData, useFetchTaskData } from '../services/FetchData';
 import AssignedTasks from './AssignedTasks';
 import { SummaryCard } from './Cards';
 import { Summary } from './modal-group/Modal';
@@ -22,17 +22,18 @@ function HomeSideBar({ className = '', closeModal = () => {} }) {
   }, [user]);
 
   const { taskData } = useFetchTaskData(customWhere);
-  const { noteData } = useFetchNoteData();
+  const { projectData } = useFetchProjectData(); 
 
+  
   const tasks = taskData ? taskData.filter(tasks => tasks.completedAt === null).length : 0;
   const urgent = taskData ? taskData.filter(tasks => tasks.priority === 'Urgent').length : 0;
   const review = taskData ? taskData.filter(tasks => tasks.status === 'To-review').length : 0;
-  const ticket = noteData ? noteData.length : 0;
+  const project = projectData ? projectData.length : 0;
 
   const summaryItems = [
+    { count: project, label: 'Project' },
     { count: tasks, label: 'Ongoing' },
     { count: urgent, label: 'Urgent' },
-    { count: ticket, label: 'Tickets' },
     { count: review, label: 'Review' }
   ];
 

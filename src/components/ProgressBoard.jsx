@@ -68,7 +68,7 @@ export default function ProgressBoard() {
               loading={loadingFinished}
             />
           )}
-          <ButtonIcon
+          <IconAction
             text="Create Task"
             dataFeather="plus"
             onClick={() => toggleVisibility("createTask")}

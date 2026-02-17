@@ -5,7 +5,7 @@ import { useReloadContext } from '../context/ReloadContext';
 import { useFetchTaskData } from '../services/FetchData';
 import { TaskCard } from './Cards';
 import { auth } from '../config/firebase';
-import { DisplayTitleSection } from './TitleSection';
+import TitleSection from './TitleSection';
 
 function AssignedTasks({}) {
   const { key } = useReloadContext();
@@ -25,11 +25,7 @@ function AssignedTasks({}) {
 
   return (
     <div className="flex flex-col bg-white p-4 rounded-md w-full h-[calc(100vh-3.5rem)] shadow-md overflow-y-auto">
-      <DisplayTitleSection
-        title="In-progress Tasks"
-        className="text-sm"
-        displayCount={taskData.length}
-      />
+      <TitleSection title='In-progress Tasks' />
       <section className="flex flex-col gap-2 w-full h-full pr-2 overflow-y-auto">
         {loading ? (
           <span><BarLoader color='#228B22' size={20} /></span>

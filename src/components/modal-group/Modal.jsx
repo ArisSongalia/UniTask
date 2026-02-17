@@ -1,5 +1,6 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { addDoc, collection, doc, getDoc, setDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
+import { getAnalytics, logEvent } from 'firebase/analytics';
+import { addDoc, collection, doc, getDoc, getDocs, limit, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
@@ -7,7 +8,7 @@ import { auth, db } from '../../config/firebase';
 import { useProjectContext } from '../../context/ProjectContext';
 import { useReloadContext } from '../../context/ReloadContext';
 import deleteData from '../../services/DeleteData';
-import { useFetchActiveProjectData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
+import { useFetchActiveProjectData, useFetchNoteData, useFetchProjectData, useFetchTaskData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
 import syncToSearch from '../../services/SyncToSearch';
 import { logProjectHistory } from '../../services/logProjectHistory';
 import { useMoveStatus } from '../../services/useMoveStatus';
@@ -17,8 +18,6 @@ import Icon, { IconAction, IconText, IconUser } from '../Icon';
 import ModalOverlay from '../ModalOverlay';
 import { DisplayTitleSection, IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { HandleSignOut } from './ModalAuth';
-import { useFetchProjectData, useFetchTaskData, useFetchNoteData } from '../../services/FetchData';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 
 
 function CreateProject({ closeModal, projectData }) {
@@ -392,7 +391,7 @@ function CreateTask({ closeModal, taskData }) {
       const payload = {
         title: form.title,
         description: form.description,
-        deadline: form.deadline,
+        deadline: Timestamp.fromDate(new Date(form.deadline)),
         status: form.status,
         'project-id': projectId,
         'project-title': projectData?.title || 'Personal', 

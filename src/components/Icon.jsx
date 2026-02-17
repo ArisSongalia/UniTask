@@ -33,8 +33,8 @@ function IconAction({
     <section
       className={`flex rounded-full gap-2 items-center justify-center
         w-fit h-fit cursor-pointer shrink-0 bg-green-50 text-green-900
-        hover:bg-green-700 hover:text-white p-[6px]
-        active:bg-green-700 focus:outline-none ${className}`}
+        hover:bg-green-700 hover:text-white p-1.5 border 
+        active:bg-green-700 focus:outline-none ${text ? 'py-2' : ''} ${className}`}
       aria-label={actionText}
       onClick={(e) => {
         e.stopPropagation();
