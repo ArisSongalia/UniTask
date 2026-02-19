@@ -5,7 +5,7 @@ import { useReloadContext } from '../context/ReloadContext';
 import { useFetchActiveProjectData } from '../services/FetchData';
 import { IconAction, IconText, IconUser } from './Icon';
 import { AddMembers } from './modal-group/Modal';
-import DashBoard  from './modal-group/ModalPage';
+import { DashBoard }  from './modal-group/ModalPage';
 import SocialSection from './SocialSection';
 import TaskSideBar from './TaskSideBar';
 

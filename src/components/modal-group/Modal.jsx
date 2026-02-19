@@ -1,5 +1,5 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { addDoc, collection, doc, getDoc, getDocs, limit, query, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc, limit, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
@@ -81,6 +81,12 @@ function CreateProject({ closeModal, projectData }) {
       }
 
       await syncToSearch('project', finalId, searchData);
+      await setDoc(doc(db, "projects", projectId, "metrics", `${projectId}_metrics`), {
+      projectActivity: 0,
+      urgentTasks: 0,
+      tasksCompleted: 0,
+      totalCompletionTime: 0
+    });
 
       setMessage({ text: 'Project Successfully Saved!', color: 'green' });
       

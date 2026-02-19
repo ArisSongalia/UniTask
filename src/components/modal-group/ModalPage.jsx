@@ -1,114 +1,145 @@
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useFetchAnalytics, useFetchTaskData} from "../../services/FetchData";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from "recharts";
+import { useFetchAnalytics, useFetchTaskData, UseFetchUserData } from "../../services/FetchData";
 import { SummaryCard } from "../Cards";
+import { IconText } from "../Icon";
 import ModalOverlay from "../ModalOverlay";
 import TitleSection, { IconTitleSection } from "../TitleSection";
-import { IconText } from "../Icon";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from "recharts";
 
 
-export default function DashBoard({ closeModal }) {
-  const { taskData, loading } = useFetchTaskData();
+function DashBoard({ closeModal }) {
   const { projectId } = useParams();
+  const { taskData, loading: tasksLoading } = useFetchTaskData();
+  const { eventsData = [], metricsData = {} } = useFetchAnalytics(projectId);
+  const [mostActiveUser, setMostActiveUser] = useState(null);
+  const { userData } = UseFetchUserData(mostActiveUser);
 
-  const todoN = taskData ? taskData.filter(task => task.status === 'To-do').length : 0;
-  const progressN = taskData ? taskData.filter(task => task.status === 'In-progress').length : 0;
-  const reviewN = taskData ? taskData.filter(task => task.status === 'To-review').length : 0;
-  const finishedN = taskData ? taskData.filter(task => task.status === 'Finished').length : 0;
+  // --- 1. Memoized Task Counts ---
+  const { counts, chartData } = useMemo(() => {
+    const todo = taskData?.filter(t => t.status === 'To-do').length || 0;
+    const progress = taskData?.filter(t => t.status === 'In-progress').length || 0;
+    const review = taskData?.filter(t => t.status === 'To-review').length || 0;
+    const finished = taskData?.filter(t => t.status === 'Finished').length || 0;
 
+    return {
+      counts: { todo, progress, review, finished },
+      chartData: [
+        { name: "To-do", tasks: todo },
+        { name: "Progress", tasks: progress },
+        { name: "Review", tasks: review },
+        { name: "Finished", tasks: finished },
+      ]
+    };
+  }, [taskData]);
+
+  // --- 2. Time Calculations ---
+  const displayAvgTime = useMemo(() => {
+    const total = metricsData?.totalCompletionTime || 0;
+    const completed = metricsData?.tasksCompleted || 0;
+    if (completed === 0) return "0m";
+
+    const avgMs = total / completed;
+    const h = Math.floor(avgMs / 3600000);
+    const m = Math.floor((avgMs % 3600000) / 60000);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }, [metricsData]);
+
+  // --- 3. Summary Array ---
   const tasksSummary = [
-    { count: todoN, label: 'To-do'},
-    { count: progressN, label: 'In-progress'},
-    { count: reviewN, label: 'Review'},
-    { count: finishedN, label: 'Finished'},
-  ];
-  
-  const data = [
-    { name: "To-do", tasks: todoN },
-    { name: "Progress", tasks: progressN },
-    { name: "To-review", tasks: reviewN },
-    { name: "Finished", tasks: finishedN },
+    { count: displayAvgTime, label: 'AVG Task Completion Time', customClass: 'col-span-2'},
+    { count: counts.todo, label: 'To-do' },
+    { count: counts.progress, label: 'In-progress' },
+    { count: counts.review, label: 'Review' },
+    { count: counts.finished, label: 'Finished' },
+    { count: metricsData?.projectActivity || 0, label: 'Activity' },
+    { count: metricsData?.urgentTasks || 0, label: 'Urgent' },
   ];
 
+  // --- 4. Most Active User Logic ---
+  useEffect(() => {
+    const users = metricsData?.userActivity;
+    if (!users || users.length === 0) return;
 
-  const { eventsData, metricsData } = useFetchAnalytics(projectId);
+    const hashmap = users.reduce((acc, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
+
+    const winner = Object.keys(hashmap).reduce((a, b) => 
+      hashmap[a] > hashmap[b] ? a : b
+    );
+
+    setMostActiveUser(winner);
+  }, [metricsData]);
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <div className="absolute bg-zinc-100 flex flex-col p-2 max-w-screen-2xl w-full h-[95vh] rounded-md shadow-2xl overflow-hidden">
-        <IconTitleSection title="Dashboard" iconOnClick={closeModal} dataFeather="x" />
+      <div className="absolute bg-zinc-100 flex flex-col p-4 max-w-screen-lg w-full h-[95vh] rounded-md shadow-2xl overflow-hidden">
+        <IconTitleSection title="Project Dashboard" iconOnClick={closeModal} dataFeather="x" />
 
-        {loading ? (
-          <div className="flex justify-center items-center flex-1 min-h-0">
-            <p className="animate-pulse">Loading Dashboard...</p>
+        {tasksLoading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="animate-pulse text-zinc-500">Loading analytics...</p>
           </div>
         ) : (
-          <div className="flex gap-2 flex-1 min-h-0">
-            {/* Left Column */}
-            <div className="flex flex-col gap-2 max-w-[30rem] w-full flex-1 min-h-0">
-              {/* Tasks Summary */}
+          <div className="flex flex-col gap-4 overflow-y-auto pr-2">
+            
+            {/* Top Section: Charts & Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <SummaryCard
-                description="Here's the summary for this project"
+                title="Metrics Overview"
+                description="Real-time project statistics"
                 items={tasksSummary}
-                title="Tasks Summary"
+                className="h-full"
               />
 
-              {/* Project History */}
-              <div className="flex flex-col bg-white p-2 border rounded-md flex-1 min-h-0">
-                <TitleSection title="Project History" />
-                <div className="flex flex-col gap-1 overflow-auto flex-1 min-h-0">
-                  {eventsData.length > 0 ? (
-                    eventsData.map(item => (
-                      <div
-                        key={item.id}
-                        className="border p-1 rounded-sm text-sm flex justify-between items-center"
-                      >
-                        {item.team && item.team.length > 0 ? (
-                          item.team.map((member) => (
-                            <IconText key={member.uid} text={member.username} />
-                          ))
-                        ) : (
-                          <p className="text-gray-400">No user assigned</p>
-                        )}
-                        <p>{item.event.toLowerCase()}</p>
-                        <p className="text-black">{item.timestamp.toDate().toLocaleString()}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-400">No history yet</p>
-                  )}
-                </div>
+              <div className="bg-white p-4 rounded-md border shadow-sm">
+                <TitleSection title="Task Distribution" />
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <Tooltip cursor={{ fill: '#f8fafc' }} />
+                    <Bar dataKey="tasks" fill="#166534" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Right Column (Analytics) */}
-            <div className="flex flex-col bg-white p-4 w-full rounded-md border flex-1 min-h-0">
-              <TitleSection title="Analytics" />
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="tasks" />
-                  </LineChart>
-                </ResponsiveContainer>
-
-              {metricsData && Object.entries(metricsData).map(([key, value]) => (
-                <IconText 
-                  key={key} 
-                  text={`${key.toUpperCase()}: ${value?.name ?? value}`} 
-                />
-              ))}
+            {/* Bottom Section: History */}
+            <div className="bg-white p-4 border rounded-md shadow-sm flex flex-col">
+              <TitleSection title="Recent Activity" />
+              <div className="flex flex-col gap-2 mt-2">
+                {eventsData.length > 0 ? (
+                  eventsData.map((item) => (
+                    <div key={item.id} className="border-b pb-2 last:border-0 flex justify-between items-center text-sm">
+                      <div className="flex gap-2">
+                        <div className="flex gap-2">
+                          {item.team?.map(m => <IconText key={m.uid} text={m.username} />) || "System"}
+                        </div>
+                        <span className="font-medium text-zinc-600 capitalize">{item.event}</span>
+                      </div>
+                      <span className="text-zinc-400">
+                        {item.timestamp?.toDate().toLocaleString() || "Just now"}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center py-4 text-zinc-400">No recent activity found.</p>
+                )}
+              </div>
             </div>
+
           </div>
         )}
       </div>
@@ -116,5 +147,4 @@ export default function DashBoard({ closeModal }) {
   );
 }
 
-
-
+export { DashBoard }

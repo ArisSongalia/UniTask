@@ -32,9 +32,7 @@ export const logAnalytics = async ({ projectId, event, taskData}) => {
   //Metrics data
   const updateData = {
     projectActivity: increment(1),
-    userActivity: arrayUnion(user.uid),
   };
-
 
   if(taskData.status === 'Finished') {
     updateData.totalCompletionTime = increment(completionTime);
@@ -42,6 +40,10 @@ export const logAnalytics = async ({ projectId, event, taskData}) => {
 
   if (completionTime) {
     updateData.tasksCompleted = increment(1);
+  };
+
+  if (taskData.priority === 'Urgent') {
+    updateData.urgentTasks = increment(1);
   };
 
   await setDoc(

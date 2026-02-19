@@ -21,7 +21,7 @@ function SummaryCard({
   const [showSummary, setShowSummary] = useState(false);
 
   return (
-    <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md p-4 justify-between text-white h-auto ${className}`}>
+    <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md p-4 text-white ${className}`}>
       <span className='flex flex-col w-full border-b-2 border-white/20 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
         <p className='font-semibold text-sm opacity-90'>{description}</p>
@@ -32,9 +32,12 @@ function SummaryCard({
           <BarLoader color='white' />
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
-          {items.slice(0, 4).map((item, index) => (
-            <div key={index} className="flex flex-col items-center justify-center bg-white/10 border border-white/10 rounded-md p-2 ">
+        <div className="grid grid-cols-4 gap-3 w-full max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+          {items.map((item, index) => (
+          <div 
+            key={index} 
+            className={`flex flex-col items-center justify-center bg-white/10 border border-white/10 rounded-md p-2 min-h-[60px] ${item.customClass || ''}`}
+          >
               <span className="text-xl font-bold">{item.count}</span>
               <span className="text-[10px] uppercase font-medium tracking-tight text-center">{item.label}</span>
             </div>
@@ -42,14 +45,13 @@ function SummaryCard({
         </div>
       )}
 
-      {(button) ? (
+      {button && (
         <Button 
           text='View Details' 
           onClick={() => setShowSummary(true)} 
-          className="mt-2 bg-white !text-green-900 hover:bg-slate-100" 
+          className="mt-auto bg-white !text-green-900 hover:bg-slate-100" 
         />
-      ) : (null)}
-
+      )}
 
       {showSummary && SummaryContent && (
         <div className="text-slate-900">
