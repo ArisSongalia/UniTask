@@ -53,10 +53,10 @@ export default function ProgressBoard() {
   const { taskData: finishedTasks, loading: loadingFinished } = useFetchTaskData(whereFinished, key);
 
   return (
-    <div className="flex flex-col bg-white rounded-md overflow-hidden h-full shadow-md w-full">
+    <div className="flex flex-col bg-white rounded-md overflow-hidden h-full w-full">
       {/* Header */}
-      <section className="title-section flex p-4 pb-0 justify-between text-gray-700">
-        <h2 className="font-bold text-lg">Progress Board</h2>
+      <section className="title-section flex pb-0 justify-between text-gray-700">
+        <p className="font-bold text-md">Progress Board</p>
         <span className="flex gap-2 items-center">
           <ReloadIcon />
           <IconAction dataFeather="check-square" iconOnClick={() => toggleVisibility("completedTab")} />
@@ -79,10 +79,10 @@ export default function ProgressBoard() {
       {/* Task Columns */}
       <section
         id="task-board-container"
-        className="flex gap-2 flex-1 overflow-x-auto p-4"
+        className="flex gap-2 flex-1 overflow-x-auto pt-4"
       >
         {/* To-do Column */}
-        <div className="flex flex-col border border-dotted border-gray-500 bg-gray-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
+        <div className="flex flex-col border border-dotted border-gray-500 bg-gray-50 min-w-[16rem] w-full rounded-md p-4 flex-1 min-h-0">
           <DisplayTitleSection
             title="To-do"
             className="text-sm"
@@ -99,7 +99,7 @@ export default function ProgressBoard() {
         </div>
 
         {/* In-progress Column */}
-        <div className="flex flex-col border border-dotted border-green-600 bg-green-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
+        <div className="flex flex-col border border-dotted border-green-600 bg-green-50 min-w-[16rem] w-full rounded-md p-4 flex-1 min-h-0">
           <DisplayTitleSection
             title="In-progress"
             className="text-sm"

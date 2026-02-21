@@ -29,12 +29,12 @@ function Home() {
   if (user === undefined) return null;
 
 return (
-  <div className="flex flex-col h-screen w-full overflow-hidden">
+  <div className="flex flex-col h-screen w-full overflow-hidden items-center">
     <Navbar />
 
     {!isProjectView && (
       <SortProvider>
-        <div className="flex flex-1 min-h-0 w-full gap-2 max-w-screen-2xl mx-auto p-2">
+        <div className="flex flex-1 min-h-0 w-full gap-2 max-w-screen-2xl my-2">
           <RecentTasks className="flex-1 min-h-0" />
           <HomeSideBar className="hidden lg:flex flex-col w-80" />
         </div>

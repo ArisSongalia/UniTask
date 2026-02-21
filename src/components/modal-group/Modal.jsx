@@ -105,7 +105,7 @@ function CreateProject({ closeModal, projectData }) {
   return (
     <ModalOverlay onClick={closeModal}>
       <section 
-        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
+        className="absolute flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection 

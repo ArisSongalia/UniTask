@@ -21,14 +21,12 @@ function NoteSection({className = ''}) {
   const customWhere = where("project-id", "==", projectId);
   const { noteData, loading } = useFetchNoteData(key, customWhere)
 
-
-  
   return (
-    <div id='note-div' className={'flex flex-col p-4 bg-white rounded-lg overflow-y-hidden h-full shadow-md'}>
-      <IconTitleSection title='Notes' dataFeather='plus' iconOnClick={togglePopUp} />
+    <div id='note-div' className={'flex flex-col bg-white rounded-lg overflow-y-hidden h-full'}>
+      <IconTitleSection title='Project Notes' dataFeather='plus' iconOnClick={togglePopUp} titleClassName=''/>
       {showPopUp && <CreateNote closeModal={togglePopUp} projectData={projectData}/>}
 
-      <section className={`grid grid-cols-2 gap-1 ${className}`}>
+      <section className={`grid grid-cols-3 2 sm:grid-cols-4 xl:grid-cols-5 gap-2 ${className}`}>
         {loading ? (
           <BarLoader color='#228B22' size={20} />
         ) : (

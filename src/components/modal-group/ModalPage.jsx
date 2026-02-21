@@ -77,7 +77,7 @@ function DashBoard({ closeModal }) {
   return (
     <ModalOverlay onClick={closeModal}>
       <div className="absolute bg-zinc-100 flex flex-col p-4 max-w-screen-lg w-full h-[90vh] rounded-md shadow-2xl overflow-hidden">
-        <IconTitleSection title="Project Dashboard" iconOnClick={closeModal} dataFeather="x" />
+        <IconTitleSection title="Dashboard" iconOnClick={closeModal} dataFeather="x" titleClassName="text-lg"/>
 
         {tasksLoading ? (
           <div className="flex-1 flex items-center justify-center">

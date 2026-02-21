@@ -12,7 +12,7 @@ function RecentTasks() {
       dataFeather: 'briefcase'
     },
     {
-      label: 'Action Notes',
+      label: 'All Notes',
       onClick: () => setActiveSection('notes'),
       isActive: activeSection === 'notes',
       dataFeather: 'file-text'
@@ -24,7 +24,6 @@ function RecentTasks() {
       <MultiTitleSection
         titles={titles}
       />
-      
       <div className="w-full h-full overflow-y-scroll pr-2">
         {activeSection === 'project' && <MainProjectSection />}
         {activeSection === 'notes' && <MainNotesSection />}

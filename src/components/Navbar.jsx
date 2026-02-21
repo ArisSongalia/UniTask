@@ -40,7 +40,7 @@ function Navbar() {
 
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-fit px-4 sticky top-0 shadow-sm">
-      <div className="flex relative items-center justify-between w-full py-3 max-w-[1920px]">
+      <div className="flex relative items-center justify-between max-w-screen-2xl w-full py-3">
         <div className="flex gap-4">
           <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
           {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
