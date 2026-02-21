@@ -267,7 +267,7 @@ function CreateNote({ closeModal, noteData, projectData }) {
   return (
     <ModalOverlay onClick={closeModal}>
       <section 
-        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
+        className="absolute flex flex-col bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" 
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection 
@@ -455,7 +455,7 @@ function CreateTask({ closeModal, taskData }) {
   return (
     <ModalOverlay onClick={closeModal}>
       <section 
-        className="flex flex-col bg-white rounded-md w-full max-w-[35rem] max-h-[90vh] p-4 shadow-lg overflow-y-auto" 
+        className=" absoluteflex flex-col bg-white rounded-md w-full max-w-[35rem] max-h-[90vh] p-4 shadow-lg overflow-y-auto" 
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection 
@@ -703,7 +703,6 @@ function NoteFocus({ closeModal, noteData}) {
   }
   const { key, reloadComponent } = useReloadContext();
   const navigate = useNavigate();
-  const { setProjectID } = useProjectContext();
   const location = useLocation();
 
   const handleDelete = async () => {
@@ -711,16 +710,8 @@ function NoteFocus({ closeModal, noteData}) {
   }
 
   const headerToProject = () => {
-    navigate('/Home/Project');
-    setProjectID(noteData?.['project-id'])
+    navigate(`/Project/${noteData['project-id']}`)
   }
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/data')
-      .then(res => res.json())
-      .then(data => setItems(data))
-      .catch(err => console.error(err))
-  }, [])
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -730,20 +721,10 @@ function NoteFocus({ closeModal, noteData}) {
       >
         <section>
           <span className="flex flex-col justify-between w-full gap-2">
-            <IconTitleSection title={noteData.title} iconOnClick={closeModal} dataFeather='x'/>
+            <IconTitleSection title={noteData.title} underTitle={noteData.date} iconOnClick={closeModal} dataFeather='x'/>
   
             <p id="note-card-text" className="text-slate-800 font-semibold my-2 hover:cursor-pointer w-full break-words">
               {noteData.message}
-              {noteData.file && (
-                <span className="block mt-2 text-gray-500 text-xs">
-                  Attached File: <img src={`http://localhost:5000/api/files/image/${noteData.fileId}`} />
-                </span>
-              )}
-              { (noteData['project-id' && location.pathname == '/Home/Project']) ? (
-                <ButtonIcon text={`Go to ${noteData['project-title']}`} dataFeather='arrow-right' onClick={headerToProject} className='mt-2'/>
-              ) : (
-                null
-              )}
             </p>
           </span>
         </section>
@@ -753,10 +734,15 @@ function NoteFocus({ closeModal, noteData}) {
             <IconText text={noteData['project-title']} />
             <IconText text={noteData.status} />
           </span>
-          <span className="flex gap-2">
-            {showPopUp && <CreateNote closeModal={closeModal} noteData={noteData}/>}
+          <span className="flex gap-2 items-center justify-end w-full">
+            {showPopUp && <CreateNote closeModal={togglePopUp} noteData={noteData}/>}
             <IconAction dataFeather="trash-2" iconOnClick={handleDelete} />
             <IconAction dataFeather="edit" iconOnClick={togglePopUp} />
+            {(noteData['project-id'] && location.pathname == '/Home') ? (
+              <IconAction text={`Open in Project`} dataFeather='arrow-right' onClick={headerToProject} className=''/>
+            ) : (
+              null
+            )}
           </span>
         </section>
       </section>
@@ -1156,7 +1142,7 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
   return (
     <ModalOverlay onClick={closeModal}>
       <div className='flex flex-col h-[30rem] w-[40rem] max-h-full max-w-full bg-white p-4 rounded-md' onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x' underTitle={taskData.deadline}/>
+        <IconTitleSection title={loading ? '...' : taskData.title} iconOnClick={closeModal} dataFeather='x' underTitle={taskData.deadline.toDate().toLocaleString()}/>
         <div className='flex flex-col justify-between h-full w-full'>
           <p className='font-semibold text-slate-800'>{taskData.description}</p>
 

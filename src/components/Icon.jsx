@@ -110,8 +110,8 @@ function IconUser({ user = {}, className = ""}) {
 
 function IconText({ text = "", className = "", border = false }) {
   const baseClass = border
-    ? "text-xs bg-green-50 p-1 w-fit font-semibold border border-green-500 text-slate-800"
-    : "text-xs bg-slate-100 p-1 w-fit font-semibold text-slate-800";
+    ? "text-xs bg-green-50 p-1 w-fit h-fit font-semibold border border-green-500 text-slate-800"
+    : "text-xs bg-slate-100 p-1 w-fit h-fit font-semibold text-slate-800";
 
   return (
     <span className={`${baseClass} rounded-sm ${className}`}>

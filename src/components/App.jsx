@@ -13,7 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/Home" replace />} />
             <Route path='/Home' element={<Home />} />
-            <Route path='/project/:projectId' element={<Project />} />
+            <Route path='/Project/:projectId' element={<Project />} />
             <Route path='/Sign-In' element={<SignIn />} />
             <Route path='/Sign-Up' element={<SignUp />} />
           </Routes>

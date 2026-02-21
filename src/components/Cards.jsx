@@ -118,7 +118,7 @@ function ProjectCard({projectData}) {
       return;
     };
 
-    navigate(`/project/${projectData.id}`)
+    navigate(`/Project/${projectData.id}`)
   };
 
   return (

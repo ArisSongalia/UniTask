@@ -1,14 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { useFetchAnalytics, useFetchTaskData, UseFetchUserData } from "../../services/FetchData";
 import { SummaryCard } from "../Cards";
 import { IconText } from "../Icon";
@@ -22,6 +14,7 @@ function DashBoard({ closeModal }) {
   const { eventsData = [], metricsData = {} } = useFetchAnalytics(projectId);
   const [mostActiveUser, setMostActiveUser] = useState(null);
   const { userData } = UseFetchUserData(mostActiveUser);
+  const COLORS = ['#71717a', '#2563eb', '#ca8a04', '#166534'];
 
   // --- 1. Memoized Task Counts ---
   const { counts, chartData } = useMemo(() => {
@@ -83,7 +76,7 @@ function DashBoard({ closeModal }) {
 
   return (
     <ModalOverlay onClick={closeModal}>
-      <div className="absolute bg-zinc-100 flex flex-col p-4 max-w-screen-lg w-full h-[95vh] rounded-md shadow-2xl overflow-hidden">
+      <div className="absolute bg-zinc-100 flex flex-col p-4 max-w-screen-lg w-full h-[90vh] rounded-md shadow-2xl overflow-hidden">
         <IconTitleSection title="Project Dashboard" iconOnClick={closeModal} dataFeather="x" />
 
         {tasksLoading ? (
@@ -105,13 +98,26 @@ function DashBoard({ closeModal }) {
               <div className="bg-white p-4 rounded-md border shadow-sm">
                 <TitleSection title="Task Distribution" />
                 <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" fontSize={12} />
-                    <YAxis fontSize={12} />
-                    <Tooltip cursor={{ fill: '#f8fafc' }} />
-                    <Bar dataKey="tasks" fill="#166534" radius={[4, 4, 0, 0]} />
-                  </BarChart>
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      isAnimationActive={false}
+                      dataKey="tasks"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60} 
+                      outerRadius={80}
+                      paddingAngle={5}
+                      label
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend verticalAlign="bottom" height={36}/>
+                  </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
@@ -147,4 +153,4 @@ function DashBoard({ closeModal }) {
   );
 }
 
-export { DashBoard }
+export { DashBoard };
