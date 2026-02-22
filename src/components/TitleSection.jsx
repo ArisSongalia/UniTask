@@ -49,10 +49,10 @@ function MultiTitleSection({ titles = {}, className = ''}) {
     <section className={`flex w-full mb-4 justify-between items-center border-b-2  pb-2 ${className}`}>
       <div className="flex gap-2 items-center">
         {titles.map((titleObj, index) => (
-          <ButtonIcon
+          <IconAction
             key={index}
             text={titleObj.label}
-            onClick={titleObj.onClick}
+            iconOnClick={titleObj.onClick}
             dataFeather={titleObj.dataFeather}
             className={`${
               titleObj.isActive ? 'text-white bg-green-700' : 'bg-solid'

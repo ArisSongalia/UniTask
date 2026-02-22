@@ -6,9 +6,10 @@ import { SummaryCard } from "../Cards";
 import { IconText } from "../Icon";
 import ModalOverlay from "../ModalOverlay";
 import TitleSection, { IconTitleSection } from "../TitleSection";
+import { BarLoader } from "react-spinners";
 
 
-function DashBoard({ closeModal }) {
+function DashBoard() {
   const { projectId } = useParams();
   const { taskData, loading: tasksLoading } = useFetchTaskData();
   const { eventsData = [], metricsData = {} } = useFetchAnalytics(projectId);
@@ -16,7 +17,6 @@ function DashBoard({ closeModal }) {
   const { userData } = UseFetchUserData(mostActiveUser);
   const COLORS = ['#71717a', '#2563eb', '#ca8a04', '#166534'];
 
-  // --- 1. Memoized Task Counts ---
   const { counts, chartData } = useMemo(() => {
     const todo = taskData?.filter(t => t.status === 'To-do').length || 0;
     const progress = taskData?.filter(t => t.status === 'In-progress').length || 0;
@@ -75,19 +75,15 @@ function DashBoard({ closeModal }) {
   }, [metricsData]);
 
   return (
-    <ModalOverlay onClick={closeModal}>
-      <div className="absolute bg-zinc-100 flex flex-col p-4 max-w-screen-lg w-full h-[90vh] rounded-md shadow-2xl overflow-hidden">
-        <IconTitleSection title="Dashboard" iconOnClick={closeModal} dataFeather="x" titleClassName="text-lg"/>
+      <div className="flex flex-col w-full h-full rounded-md overflow-hidden">
+        <TitleSection title="Dashboard" />
 
         {tasksLoading ? (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="animate-pulse text-zinc-500">Loading analytics...</p>
-          </div>
+          <BarLoader />
         ) : (
-          <div className="flex flex-col gap-4 overflow-y-auto pr-2">
-            
+          <div className="bg-zinc-100 p-4 flex flex-col h-full gap-4 overflow-y-auto">
             {/* Top Section: Charts & Summary */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               <SummaryCard
                 title="Metrics Overview"
                 description="Real-time project statistics"
@@ -95,7 +91,7 @@ function DashBoard({ closeModal }) {
                 className="h-full"
               />
 
-              <div className="bg-white p-4 rounded-md border shadow-sm">
+              <div className="bg-white p-4 rounded-md border shadow-sm h-full">
                 <TitleSection title="Task Distribution" />
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
@@ -123,7 +119,7 @@ function DashBoard({ closeModal }) {
             </div>
 
             {/* Bottom Section: History */}
-            <div className="bg-white p-4 border rounded-md shadow-sm flex flex-col">
+            <div className="bg-white p-4 border rounded-md shadow-sm flex flex-col h-full">
               <TitleSection title="Recent Activity" />
               <div className="flex flex-col gap-2 mt-2">
                 {eventsData.length > 0 ? (
@@ -149,8 +145,15 @@ function DashBoard({ closeModal }) {
           </div>
         )}
       </div>
-    </ModalOverlay>
   );
 }
 
-export { DashBoard };
+function Timeline() {
+  return (
+    <div className="flex flex-1 bg-white">
+      <TitleSection title="Timeline" />
+    </div>
+  )
+}
+
+export { DashBoard, Timeline };

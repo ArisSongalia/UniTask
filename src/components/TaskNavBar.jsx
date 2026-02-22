@@ -57,9 +57,6 @@ function TaskNavBar() {
         </span>
 
         <span className='flex items-center gap-1'>
-          <IconAction dataFeather='pie-chart' iconOnClick={() => toggleVisbility('dashBoard')} text='Dashboard  '/>
-          {visibility.dashBoard && <DashBoard closeModal={() => toggleVisbility('dashBoard')} projectId={[projectId]} />}
-
           { projectData.type === 'Shared' ? (
             <>
               <IconAction dataFeather='user-plus' iconOnClick={() => toggleVisbility('addMembers')} />

@@ -8,11 +8,10 @@ import { TaskCard } from './Cards'
 import { IconAction } from './Icon'
 import { ReloadIcon } from './ReloadComponent'
 import { DisplayTitleSection } from './TitleSection'
-import { CompletedTab, CreateTask } from './modal-group/Modal'
+import { CreateTask } from './modal-group/Modal'
 
 export default function ProgressBoard() {
   const [visibility, setVisibility] = useState({
-    completedTab: false,
     createTask: false,
   });
 
@@ -59,14 +58,6 @@ export default function ProgressBoard() {
         <p className="font-bold text-md">Progress Board</p>
         <span className="flex gap-2 items-center">
           <ReloadIcon />
-          <IconAction dataFeather="check-square" iconOnClick={() => toggleVisibility("completedTab")} />
-          {visibility.completedTab && (
-            <CompletedTab
-              taskData={finishedTasks}
-              closeModal={() => toggleVisibility("completedTab")}
-              loading={loadingFinished}
-            />
-          )}
           <IconAction
             text="Create Task"
             dataFeather="plus"
@@ -99,7 +90,7 @@ export default function ProgressBoard() {
         </div>
 
         {/* In-progress Column */}
-        <div className="flex flex-col border border-dotted border-green-600 bg-green-50 min-w-[16rem] w-full rounded-md p-4 flex-1 min-h-0">
+        <div className="flex flex-col border border-dotted border-blue-600 bg-blue-50 min-w-[16rem] w-full rounded-md p-4 flex-1 min-h-0">
           <DisplayTitleSection
             title="In-progress"
             className="text-sm"
@@ -115,11 +106,10 @@ export default function ProgressBoard() {
         </div>
 
         {/* To-review Column */}
-        <div className="flex flex-col border border-dotted border-blue-600 bg-blue-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
+        <div className="flex flex-col border border-dotted border-purple-600 bg-purple-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
           <DisplayTitleSection
             title="To-review"
             className="text-sm"
-            displayClassName="bg-violet-100 text-violet-900"
             displayCount={toReviewTasks.length}
           />
           <section className="flex flex-col gap-2 overflow-auto flex-1 min-h-0">
@@ -127,6 +117,21 @@ export default function ProgressBoard() {
               <BarLoader color="#228B22" size={20} />
             ) : (
               toReviewTasks.map((taskData) => <TaskCard key={taskData.id} taskData={taskData} />)
+            )}
+          </section>
+        </div>
+
+        <div className="flex flex-col border border-dotted border-green-600 bg-green-50 min-w-[16rem] w-full rounded-md p-2 flex-1 min-h-0">
+          <DisplayTitleSection
+            title="Finished"
+            className="text-sm"
+            displayCount={finishedTasks.length}
+          />
+          <section className="flex flex-col gap-2 overflow-auto flex-1 min-h-0">
+            {loadingFinished ? (
+              <BarLoader color="#228B22" size={20} />
+            ) : (
+              finishedTasks.map((taskData) => <TaskCard key={taskData.id} taskData={taskData} />)
             )}
           </section>
         </div>
