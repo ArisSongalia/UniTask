@@ -1,0 +1,47 @@
+import { where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { BarLoader } from 'react-spinners';
+import { useReloadContext } from '../context/ReloadContext';
+import { useFetchTaskData } from '../services/FetchData';
+import { TaskCard } from './Cards';
+import { auth } from '../config/firebase';
+import TitleSection from './TitleSection';
+
+function AssignedTasks({}) {
+  const { key } = useReloadContext();
+  const user = auth.currentUser;
+  const [customWhere, setCustomWhere] = useState(null);
+
+  useEffect(() => {
+    if (user?.uid) {
+      setCustomWhere([
+        where("team-uids", "array-contains", user?.uid),
+        where("status", "!=", "Finished")
+      ]);
+    }
+  }, [user]);
+
+  const { taskData, loading } = useFetchTaskData(customWhere, key);
+
+  return (
+    <div className="flex flex-col bg-white p-4 rounded-md w-full h-[calc(100vh-3.5rem)] shadow-md overflow-y-auto">
+      <TitleSection title='In-progress Tasks' />
+      <section className="flex flex-col gap-2 w-full h-full pr-2 overflow-y-auto">
+        {loading ? (
+          <span><BarLoader color='#228B22' size={20} /></span>
+        ) : (
+          taskData.length > 0 && (
+            taskData.map((data) => (
+              <TaskCard 
+                key={data.id}
+                taskData={data}
+              />
+            ))
+          )
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default AssignedTasks;

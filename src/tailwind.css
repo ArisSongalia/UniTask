@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scrollable-container {
+  overflow-y: scroll;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px; 
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #86b99a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #429156;
+  cursor: pointer;
+}
