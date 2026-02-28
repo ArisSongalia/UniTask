@@ -97,7 +97,7 @@ function AddMembers({ closeModal }) {
       </section>
     </ModalOverlay>
   );
-}
+};
 
 
 function NoteFocus({ closeModal, noteData}) {
@@ -153,7 +153,7 @@ function NoteFocus({ closeModal, noteData}) {
     </ModalOverlay>
   );
   
-}
+};
 
 function UserProfile({ closeModal, user={}, overlay = true}) {
   const [reloadKey, setReloadKey] = useState(0);
@@ -277,7 +277,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
     return (
       profileContent
     )
-}
+};
 
 function AddTeamMates({ closeModal, reload }) {
   const currentUserUid = auth.currentUser?.uid;
@@ -492,7 +492,7 @@ function AddTeamMates({ closeModal, reload }) {
       </div>
     </ModalOverlay>
   );
-}
+};
 
 function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) {
   const { reloadComponent } = useReloadContext();
@@ -547,7 +547,7 @@ function TaskFocus({ closeModal, taskData, loading, collectionName = 'tasks' }) 
       </div>
     </ModalOverlay>
   )
-}
+};
 
 function Summary({ closeModal }) {
   const [activeSection, setActiveSection] = useState('Assigned Tasks');
@@ -663,8 +663,153 @@ function Summary({ closeModal }) {
       </div>
     </ModalOverlay>
   );
-}
+};
+
+function UnlockPro({ closeModal }) {
+  const [showGetCardDetails, setGetShowCardDetails] = useState(false);
+
+  return (
+    <ModalOverlay>
+      <div className="absolute bg-white h-fit max-w-screen-md w-full p-4 rounded-md">
+        <IconTitleSection title="Pro Plan" dataFeather="x" iconOnClick={closeModal} />
+
+        <div className="flex justify-center mb-4">
+          <span className="bg-violet-700 text-white text-xs px-3 py-1 rounded-full tracking-wide">
+            🚀 PRO PLAN
+          </span>
+        </div>
 
 
-export { AddMembers, AddTeamMates, NoteFocus, Summary, TaskFocus, UserProfile };
+        <h2 className="text-3xl font-bold text-center mb-2">
+          Unlock Uni Pro
+        </h2>
+
+        <p className="text-gray-500 text-center mb-6">
+          Supercharge your workflow with AI-powered features and unlimited creativity.
+        </p>
+
+
+        <div className="text-center mb-6">
+          <span className="text-4xl font-extrabold">$6.99</span>
+          <span className="text-gray-500">/month</span>
+        </div>
+
+        <ul className="space-y-3 mb-8">
+          <li className="flex items-center gap-2 text-gray-700">
+            <span className="text-green-500">✔</span>
+            AI-powered tools
+          </li>
+          <li className="flex items-center gap-2 text-gray-700">
+            <span className="text-green-500">✔</span>
+            Create unlimited projects
+          </li>
+          <li className="flex items-center gap-2 text-gray-700">
+            <span className="text-green-500">✔</span>
+            Faster processing & priority access
+          </li>
+          <li className="flex items-center gap-2 text-gray-700">
+            <span className="text-green-500">✔</span>
+            Early access to new features
+          </li>
+        </ul>
+
+        <button 
+          className="w-full py-3 rounded-xl bg-violet-700 text-white font-semibold hover:shadow-lg border border-violet-700  hover:shadow-blue-500/50"
+          onClick={() => setGetShowCardDetails(!showGetCardDetails)}
+          >
+          Upgrade to Pro
+        </button>
+
+
+        <p className="text-sm text-gray-400 text-center mt-4">
+          Cancel anytime. No hidden fees.
+        </p>
+      </div>
+    </ModalOverlay>
+  )
+};
+
+function GetCardDetails({closeModal}) {
+  const [form, setForm] = useState({
+    cardHolderName: "",
+    cardNumber: "",
+    expirationDate: "",
+    cvc: "",
+  });
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value}));
+  }
+
+  return(
+    <ModalOverlay>
+      <div className='absolute bg-white flex-col p-4 max-h-[35rem] max-w-screen-sm h-fit w-full rounded-md'>
+        <IconTitleSection title='Enter Card Details' iconOnClick={closeModal} dataFeather='x' />
+        <form 
+          action="" 
+          method="post" 
+          className='flex flex-col gap-2 text-gray-700'
+        >
+          <label className='flex flex-col'>
+            Card Holder Name
+            <input
+              name='cardHolderName'
+              onChange={handleFormChange}
+              value={form.cardHolderName}
+              type="text" 
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+              required
+            />
+          </label>
+
+          <label className='flex flex-col'>
+            Card Number
+            <input
+              name='cardNumber'
+              onChange={handleFormChange}
+              value={form.cardNumber}
+              type='text'
+              inputMode='numeric'
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+              required
+            />
+          </label>
+
+          <label className='flex flex-col'>
+            Expiration Date
+            <input
+              name='expirationDate'
+              onChange={handleFormChange}
+              value={form.expirationDate}
+              type='text'
+              placeholder='MM/YY'
+              maxLength={5}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+              required
+            />
+          </label>
+
+          <label className='flex flex-col'>
+            CVC
+            <input
+              name='cvc'
+              onChange={handleFormChange}
+              value={form.cvc}
+              type="text"
+              inputMode='numeric'
+              maxLength={3}
+              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+              required
+            />
+          </label>
+
+          <Button text='Confirm and Submit' className='py-3'/>
+        </form>
+      </div>
+    </ModalOverlay>
+  )
+};
+
+export { AddMembers, AddTeamMates, NoteFocus, Summary, TaskFocus, UserProfile, UnlockPro };
  

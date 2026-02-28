@@ -8,7 +8,7 @@ import { IconAction } from './Icon';
 import MenuBar from './MenuBar';
 import SearchBar from './SearchBar';
 import SocialSection from './SocialSection';
-import { UnlockPro } from './modal-group/modals/UnlockPro';
+import { UnlockPro } from './modal-group/SharedModals';
 
 
 function Navbar() {

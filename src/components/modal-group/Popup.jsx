@@ -5,9 +5,10 @@ import deleteData from '../../services/DeleteData';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { ButtonIcon } from '../Button';
 import { IconTitleSection } from '../TitleSection';
+import CreateTask from './Modals/CreateTask';
 import CreateNote from './modals/CreateNote';
 import CreateProject from './modals/CreateProject';
-import CreateTask from './modals/CreateTask';
+
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
