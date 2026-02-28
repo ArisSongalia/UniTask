@@ -14,6 +14,8 @@ import Icon, { IconAction, IconText, IconUser } from '../Icon';
 import ModalOverlay from '../ModalOverlay';
 import { IconTitleSection, MultiTitleSection } from '../TitleSection';
 import { HandleSignOut } from './ModalAuth';
+import axios from "axios";
+
 
 
 function AddMembers({ closeModal }) {
@@ -729,87 +731,23 @@ function UnlockPro({ closeModal }) {
   )
 };
 
-function GetCardDetails({closeModal}) {
-  const [form, setForm] = useState({
-    cardHolderName: "",
-    cardNumber: "",
-    expirationDate: "",
-    cvc: "",
-  });
+export function SubscriptionForm({planType}) {
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value}));
-  }
+  const handleCheckout = async () => {
+    const response = await axios.post(
+      "http://localhost:5000/api/create-checkout",
+      { planType: planType }
+    );
 
-  return(
-    <ModalOverlay>
-      <div className='absolute bg-white flex-col p-4 max-h-[35rem] max-w-screen-sm h-fit w-full rounded-md'>
-        <IconTitleSection title='Enter Card Details' iconOnClick={closeModal} dataFeather='x' />
-        <form 
-          action="" 
-          method="post" 
-          className='flex flex-col gap-2 text-gray-700'
-        >
-          <label className='flex flex-col'>
-            Card Holder Name
-            <input
-              name='cardHolderName'
-              onChange={handleFormChange}
-              value={form.cardHolderName}
-              type="text" 
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
+    window.location.href = response.data.checkout_url;
+  };
 
-          <label className='flex flex-col'>
-            Card Number
-            <input
-              name='cardNumber'
-              onChange={handleFormChange}
-              value={form.cardNumber}
-              type='text'
-              inputMode='numeric'
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
-
-          <label className='flex flex-col'>
-            Expiration Date
-            <input
-              name='expirationDate'
-              onChange={handleFormChange}
-              value={form.expirationDate}
-              type='text'
-              placeholder='MM/YY'
-              maxLength={5}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
-
-          <label className='flex flex-col'>
-            CVC
-            <input
-              name='cvc'
-              onChange={handleFormChange}
-              value={form.cvc}
-              type="text"
-              inputMode='numeric'
-              maxLength={3}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
-
-          <Button text='Confirm and Submit' className='py-3'/>
-        </form>
-      </div>
-    </ModalOverlay>
-  )
-};
+  return (
+    <button onClick={handleCheckout}>
+      Subscribe Securely
+    </button>
+  );
+}
 
 export { AddMembers, AddTeamMates, NoteFocus, Summary, TaskFocus, UserProfile, UnlockPro };
  
