@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 
+
 const router = express.Router();
 
 router.post("/create-checkout", async(req, res) => {
@@ -28,7 +29,7 @@ router.post("/create-checkout", async(req, res) => {
       },
       {
         headers: {
-          Authorization: `Basic ${Buffer.from(process.env.PAYMONGO_SECRET + ":").toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(process.env.PAYMONGO_SECRET_KEY + ":").toString("base64")}`,
           "Content-Type": "application/json",
         }
       }

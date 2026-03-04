@@ -775,7 +775,7 @@ function SubscriptionForm({planType, text, className=""}) {
 
   const handleCheckout = async () => {
     const response = await axios.post(
-      "http://localhost:5000/api/create-checkout",
+      "https://untroublesome-vaulted-vennie.ngrok-free.dev/api/create-checkout",
       { planType: planType }
     );
 
