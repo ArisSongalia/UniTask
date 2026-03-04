@@ -1,7 +1,6 @@
 import express from 'express';
 import axios from 'axios';
 
-
 const router = express.Router();
 
 router.post("/create-checkout", async(req, res) => {
@@ -9,7 +8,7 @@ router.post("/create-checkout", async(req, res) => {
     const { planType } = req.body;
 
     const checkout = await axios.post(
-      "htpps://api.paymongo.com/v1/checkout_sessions",
+      "https://api.paymongo.com/v1/checkout_sessions",
       {
         data: {
           attributes: {
