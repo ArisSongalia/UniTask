@@ -16,14 +16,14 @@ router.post("/create-checkout", async(req, res) => {
             line_items: [
               {
                 currency: "PHP",
-                amount: planType === "monthly" ? 5000 : 50000,
+                amount: planType === "monthly" ? 50000 : 500000,
                 name: "Subscription Plan",
                 quantity: 1,
               }
             ],
             payment_method_types: ["card"],
-            success_url: "http://localhost:5173/success",
-            cancel_url: "http://localhost:5173/cancel",
+            success_url: "http://localhost:5173",
+            cancel_url: "http://localhost:5173",
           }
         }
       },
