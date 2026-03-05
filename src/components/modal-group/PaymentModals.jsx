@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalOverlay from "../ModalOverlay";
 import { IconTitleSection } from "../TitleSection";
 import axios from "axios";
+import Button, { ButtonIcon } from "../Button";
+import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 
 function UnlockPro({ closeModal }) {
@@ -37,7 +40,7 @@ function UnlockPro({ closeModal }) {
             <button
               className={`px-4 py-2 rounded-full text-sm font-medium ${
                 planType === "monthly"
-                  ? "bg-violet-700 text-white"
+                  ? "bg-green-700 text-white"
                   : "text-gray-600"
               }`}
               onClick={() => setPlanType("monthly")}
@@ -48,7 +51,7 @@ function UnlockPro({ closeModal }) {
             <button
               className={`px-4 py-2 rounded-full text-sm font-medium ${
                 planType === "yearly"
-                  ? "bg-violet-700 text-white"
+                  ? "bg-green-700 text-white"
                   : "text-gray-600"
               }`}
               onClick={() => setPlanType("yearly")}
@@ -93,10 +96,9 @@ function UnlockPro({ closeModal }) {
           </li>
         </ul>
 
-        <SubscriptionForm
+        <SubscriptionFormButton
           text={`Upgrade to ${planType === "monthly" ? "Monthly" : "Yearly"} Pro`}
           planType={planType}
-          className='w-full py-3 rounded-xl bg-violet-700 text-white font-semibold hover:shadow-lg border border-violet-700 hover:shadow-blue-500/50"'
         />
 
         <p className="text-sm text-gray-400 text-center mt-4">
@@ -107,8 +109,7 @@ function UnlockPro({ closeModal }) {
   );
 }
 
-function SubscriptionForm({planType, text, className=""}) {
-
+function SubscriptionFormButton({ planType, text, className="" }) {
   const handleCheckout = async () => {
     const response = await axios.post(
       "https://untroublesome-vaulted-vennie.ngrok-free.dev/api/create-checkout",
@@ -119,12 +120,75 @@ function SubscriptionForm({planType, text, className=""}) {
   };
 
   return (
-    <button onClick={handleCheckout} className={className}>
-      {text}
-    </button>
+    <Button onClick={handleCheckout} className={className} text={text} />
+
+  );
+}
+
+function PaymentResultsModal({ result, closeModal }) {
+  const isSuccess = result === "success";
+  const [searchParams] = useSearchParams();
+  const planType = searchParams.get("plan");
+
+  return (
+    <ModalOverlay>
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 flex flex-col items-center text-center gap-6">
+
+        <IconTitleSection
+          iconOnClick={closeModal}
+          dataFeather="x"
+          title="Payment Result"
+        />
+
+        {/* Status Icon */}
+        <div
+          className={`flex items-center justify-center w-16 h-16 rounded-full ${
+            isSuccess ? "bg-green-100" : "bg-red-100"
+          }`}
+        >
+          <span
+            className={`text-3xl ${
+              isSuccess ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {isSuccess ? "✓" : "!"}
+          </span>
+        </div>
+
+        {/* Message */}
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-semibold">
+            {isSuccess
+              ? "Payment Successful 🎉"
+              : "Payment Failed"}
+          </h2>
+
+          <p className="text-gray-500 text-sm">
+            {isSuccess
+              ? "Your subscription has been activated. Enjoy all Pro features."
+              : "Something went wrong during the payment process."}
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-col w-full gap-2 mt-2">
+          {isSuccess ? (
+            <Button
+              text="Return to Unitask"
+              onClick={closeModal}
+              className="w-full rounded-lg"
+              dataFeather=""
+            />
+          ) : (
+            <>
+              <SubscriptionFormButton text={"Try Payment Again"} planType={planType} />
+            </>
+          )}
+        </div>
+      </div>
+    </ModalOverlay>
   );
 }
 
 
-
-export { UnlockPro }
+export { UnlockPro, PaymentResultsModal}

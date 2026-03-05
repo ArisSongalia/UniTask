@@ -22,8 +22,8 @@ router.post("/create-checkout", async(req, res) => {
               }
             ],
             payment_method_types: ["card"],
-            success_url: "http://localhost:5173",
-            cancel_url: "http://localhost:5173",
+            success_url: `http://localhost:5173/Home/?payment=success&plan=${planType}&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:5173/Home/?payment=cancel&plan=${planType}`
           }
         }
       },
@@ -36,6 +36,7 @@ router.post("/create-checkout", async(req, res) => {
     )
 
     res.json({ checkout_url: checkout.data.data.attributes.checkout_url})
+
   } catch (err) {
     res.status(500).json(err.response?.data || err.message);
   }
