@@ -1,10 +1,11 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { auth } from "../../config/firebase";
+import Button from "../Button";
 import ModalOverlay from "../ModalOverlay";
 import { IconTitleSection } from "../TitleSection";
-import axios from "axios";
-import Button, { ButtonIcon } from "../Button";
-import { useParams } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 function UnlockPro({ closeModal }) {
@@ -110,10 +111,13 @@ function UnlockPro({ closeModal }) {
 }
 
 function SubscriptionFormButton({ planType, text, className="" }) {
+  const user = auth.currentUser;
+
   const handleCheckout = async () => {
+    if(!user) return
     const response = await axios.post(
       "https://untroublesome-vaulted-vennie.ngrok-free.dev/api/create-checkout",
-      { planType: planType }
+      { planType: planType, userId: user.uid }
     );
 
     window.location.href = response.data.checkout_url;
@@ -129,6 +133,7 @@ function PaymentResultsModal({ result, closeModal }) {
   const isSuccess = result === "success";
   const [searchParams] = useSearchParams();
   const planType = searchParams.get("plan");
+
 
   return (
     <ModalOverlay>
@@ -191,4 +196,5 @@ function PaymentResultsModal({ result, closeModal }) {
 }
 
 
-export { UnlockPro, PaymentResultsModal}
+export { PaymentResultsModal, UnlockPro };
+
