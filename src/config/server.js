@@ -3,8 +3,8 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import aiRoutes from '../routes/ai.js'
-import taskRoutes from '../routes/tasks.js'
+import aiRoutes from '../routes/aiRoutes.js'
+import taskRoutes from '../routes/tasksRoutes.js'
 import checkoutRoutes from "../routes/checkoutRoute.js";
 import paymentWebhook from '../routes/paymentsWebhook.js';
 

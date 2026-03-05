@@ -9,6 +9,10 @@ import MenuBar from './MenuBar';
 import SearchBar from './SearchBar';
 import SocialSection from './SocialSection';
 import { UnlockPro } from './modal-group/PaymentModals';
+import { checkIsPro } from '../services/CheckIsPro';
+import { ProSubscriptionButton } from './modal-group/ProSubscriptionModal';
+
+const isPro = await checkIsPro();
 
 
 function Navbar() {
@@ -58,23 +62,17 @@ function Navbar() {
         <span className="flex w-fit gap-2 items-center">
           <IconAction dataFeather='message-square' iconOnClick={() => toggleVisibility('socialSection')} />
           {visibilitity.socialSection && <SocialSection closeModal={() => toggleVisibility('socialSection')} />}
+          <ProSubscriptionButton />
 
           <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={() => toggleVisibility('sideBar')} />
           {visibilitity.sideBar && 
-          <HomeSideBar 
-            closeModal={() => toggleVisibility('sideBar')}
-            className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
-          />}
-
-          <IconAction 
-            text='Unlock Uni Pro' 
-            dataFeather='unlock' 
-            iconOnClick={() => toggleVisibility('unlockPro')}
-            className='bg-violet-50 text-violet-700 border-violet-300 hover:bg-violet-700 hover:text-white' 
-          />
-          {visibilitity.unlockPro &&
-            <UnlockPro closeModal={() => toggleVisibility('unlockPro')} />
+            <HomeSideBar 
+              closeModal={() => toggleVisibility('sideBar')}
+              className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
+            />
           }
+
+
         </span>
       </div>
     </section>

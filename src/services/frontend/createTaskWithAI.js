@@ -1,6 +1,11 @@
+let isProcessing = false;
+
 export const handleAnalyzeTaskAI = async (taskText) => {
 
   try{
+    if(isProcessing) return;
+
+    isProcessing = true;
     const aiResponse = await fetch('http://localhost:5000/api/ai/analyze-task', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -24,5 +29,7 @@ export const handleAnalyzeTaskAI = async (taskText) => {
     return saveData.task;
   } catch (error) {
     console.error('AI failed: handleAnalyzeTaskAI', error)
+  } finally {
+    isProcessing = false;
   }
 }

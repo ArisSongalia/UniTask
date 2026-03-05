@@ -5,13 +5,12 @@ import { auth, db } from '../../../config/firebase';
 import { useReloadContext } from '../../../context/ReloadContext';
 import { useFetchActiveProjectData } from '../../../services/FetchData';
 import syncToSearch from '../../../services/SyncToSearch';
-import { handleAnalyzeTaskAI } from '../../../services/frontend/createTaskWithAI';
 import { logAnalytics } from '../../../services/logAnalytics';
 import Button from '../../Button';
 import { UserCard } from '../../Cards';
 import ModalOverlay from '../../ModalOverlay';
 import { IconTitleSection } from '../../TitleSection';
-import { IconAction } from '../../Icon';
+import { ToggleAnalyzeTaskWithAI } from '../ProSubscriptionModal';
 
 
 export default function CreateTask({ closeModal, taskData }) {
@@ -20,7 +19,6 @@ export default function CreateTask({ closeModal, taskData }) {
   const [isSaving, setIsSaving] = useState(false);
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
-  const [aiLoading, setAiLoading] = useState(false);
   const user = auth.currentUser;
 
   const [form, setForm] = useState({
@@ -120,35 +118,6 @@ export default function CreateTask({ closeModal, taskData }) {
     }
   };
 
-  const handleToggleAnalyzeTaskAI = async () => {
-    if (!form.title) {
-      return setMessage({ text: 'Please input task title first', color: 'green' });
-    }
-
-    try {
-      setAiLoading(true);
-
-      const aiData = await handleAnalyzeTaskAI(form.title);
-
-      if (!aiData || !aiData.priority) {
-        throw new Error('Invalid AI response');
-      }
-
-      setForm((prev) => ({
-        ...prev,
-        priority: aiData.priority,
-        category: aiData.tag,
-        description: aiData.description,
-      }));
-
-    } catch (error) {
-      console.error('AI failed:', error);
-      setMessage({ text: 'AI analysis failed', color: 'red' });
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
   const handleStateChange = (data) => {
     setForm((prevForm) => {
       const updatedTeam = data.isActive 
@@ -171,16 +140,20 @@ export default function CreateTask({ closeModal, taskData }) {
         onClick={(e) => e.stopPropagation()}
       >
         <IconTitleSection 
-          title={taskData ? 'Update Task' : 'Create Task'} 
+          title={form.id ? 'Update Task' : 'Create Task'} 
           dataFeather='x' 
           iconOnClick={closeModal} 
-          extraIcon={
-            <IconAction
-              dataFeather={aiLoading ? 'loader' : 'zap'}
-              text={aiLoading ? 'Analyzing...' : 'AI Auto Fill'}
-              iconOnClick={!aiLoading ? handleToggleAnalyzeTaskAI : undefined}
-            />
-          }
+            extraIcon={
+              <ToggleAnalyzeTaskWithAI
+                taskTitle={form.title}
+                onAIResult={(aiData) => {
+                  setForm((prev) => ({
+                    ...prev,
+                    ...aiData
+                  }));
+                }}
+              />
+            }
         />
 
         <form className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
