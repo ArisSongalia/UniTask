@@ -52,7 +52,7 @@ function Navbar() {
 
           <Link to="/Home" className="flex items-center gap-2 text-green-900 text-lg font-bold">
           <img src={unitask} alt="UniTask" className="w-6 h-6" />
-            UniTask
+            <span className="font-merriweather">UniTask</span>
           </Link>
         </div>
 

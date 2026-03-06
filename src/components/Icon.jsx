@@ -64,15 +64,16 @@ function Icon({
   dataFeather = "edit-2",
   actionText = "",
   style = {},
+  size = 16,
 }) {
   return (
     <span
-      className={`p-2 flex items-center justify-center text-green-900 w-8 h-8 ${className}`}
+      className={`flex items-center justify-center text-green-900 ${className}`}
       aria-label={actionText}
     >
       <FeatherIcon
         name={dataFeather}
-        size={16}
+        size={size}
         style={style}
       />
     </span>
