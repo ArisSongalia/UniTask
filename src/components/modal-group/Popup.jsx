@@ -40,13 +40,13 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
           text="Move Status" 
           dataFeather="flag" 
           onClick={handleMoveStatus} 
-          className='bg-white'
+          className='bg-white shadow-none'
         />
         <ButtonIcon 
           text="Edit" 
           dataFeather="edit"
           onClick={handleShowUpdateInfo}
-          className='bg-white'
+          className='bg-white shadow-none'
         />
         {showUpdateInfo && (
           taskData? (
@@ -63,7 +63,7 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
           text="Delete" 
           dataFeather="trash"
           onClick={handleDelete} 
-          className='bg-white'
+          className='bg-white shadow-none'
          />
       </div>
   );

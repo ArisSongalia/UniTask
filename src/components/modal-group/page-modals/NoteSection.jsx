@@ -2,11 +2,11 @@ import { where } from 'firebase/firestore';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
-import { useReloadContext } from '../context/ReloadContext';
-import { useFetchActiveProjectData, useFetchNoteData } from '../services/FetchData';
-import { NoteCard } from './Cards';
-import { IconTitleSection } from './TitleSection';
-import CreateNote from './modal-group/create-modals/CreateNote';
+import { useReloadContext } from '../../../context/ReloadContext';
+import { useFetchActiveProjectData, useFetchNoteData } from '../../../services/FetchData';
+import { NoteCard } from '../../Cards';
+import { IconTitleSection } from '../../TitleSection';
+import CreateNote from '../create-modals/CreateNote';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -22,11 +22,19 @@ function NoteSection({className = ''}) {
   const { noteData, loading } = useFetchNoteData(key, customWhere)
 
   return (
-    <div id='note-div' className={'flex flex-col bg-white rounded-lg overflow-y-hidden h-full'}>
-      <IconTitleSection title='Project Notes' dataFeather='plus' iconText='Write Note' iconOnClick={togglePopUp} titleClassName=''/>
+    <div id='note-div' className='flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full w-full'>
+      <IconTitleSection 
+        iconText='Create-note'
+        dataFeather='plus'
+        iconOnClick={togglePopUp}
+        title='Progress Notes'
+        className='flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-gray-50'
+        titleClassName='text-lg font-merriweather'
+      />
       {showPopUp && <CreateNote closeModal={togglePopUp} projectData={projectData}/>}
 
-      <section className={`grid grid-cols-3 2 sm:grid-cols-4 xl:grid-cols-5 gap-2 ${className}`}>
+      {/* Notes Section */}
+      <section className={`grid grid-cols-3 2 sm:grid-cols-4 xl:grid-cols-5 gap-2 p-4 pt-0 ${className}`}>
         {loading ? (
           <BarLoader color='#228B22' size={20} />
         ) : (

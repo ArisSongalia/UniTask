@@ -1,4 +1,4 @@
-import NoteSection from './NoteSection'
+import NoteSection from './modal-group/page-modals/NoteSection'
 import { IconTitleSection } from './TitleSection'
 
 function TaskSideBar({ className = "", closeModal = () => {}}) {

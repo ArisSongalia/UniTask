@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import ProgressBoard from './ProgressBoard';
-import NoteSection from './NoteSection';
+import DashBoard from './modal-group/page-modals/Dashboard';
+import NoteSection from './modal-group/page-modals/NoteSection';
+import ProgressBoard from './modal-group/page-modals/ProgressBoard';
+import Timeline from './modal-group/page-modals/Timeline';
 import TaskNavBar from './TaskNavBar';
 import { MultiTitleSection } from './TitleSection';
-import { DashBoard, Timeline } from './modal-group/ModalPage';
 
 
 function Project() {

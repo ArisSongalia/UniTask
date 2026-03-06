@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BarLoader } from "react-spinners";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { useFetchActiveProjectData, useFetchAnalytics, useFetchTaskData } from "../../services/FetchData";
-import { SummaryCard } from "../Cards";
-import { IconText } from "../Icon";
-import TitleSection from "../TitleSection";
-import { TaskFocus } from "./SharedModals";
+import { useFetchAnalytics, useFetchTaskData } from "../../../services/FetchData";
+import { SummaryCard } from "../../Cards";
+import { IconText } from "../../Icon";
+import TitleSection from "../../TitleSection";
 
 
-function DashBoard() {
+export default function DashBoard() {
   const { projectId } = useParams();
   const { taskData, loading: tasksLoading } = useFetchTaskData();
   const { eventsData = [], metricsData = {} } = useFetchAnalytics(projectId);
@@ -146,102 +145,4 @@ function DashBoard() {
       </div>
   );
 }
-
-function Timeline() {
-  const [days, setDays] = useState([]);
-  const { projectId } = useParams();
-  const [showTaskFocus, setShowTaskFocus] = useState(false);
-
-  const toggleShowTaskFocus = () => {
-    setShowTaskFocus(!showTaskFocus)
-  };
-
-  const generateDays = (startDate, numberOfDays) => {
-    return Array.from({ length: numberOfDays }, (_, i) => {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-      return date;
-    });
-  };
-
-  const { projectData } = useFetchActiveProjectData(projectId);
-    useEffect(() => {
-      if (projectData?.createdAt && projectData?.targetDate) {
-        const start = projectData.createdAt.toDate();
-        const end = projectData.targetDate.toDate();
-
-        // Remove time portion
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
-
-        // Include last day (+1 because range is inclusive)
-        const diffDays =
-          (end - start) / (1000 * 60 * 60 * 24) + 1;
-
-        setDays(generateDays(start, diffDays));
-      }
-    }, [projectData]);
-  const { taskData } = useFetchTaskData(projectId);
-
-  const compareDate = (d1, d2) => {
-    return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate())
-  }
-
-  return (
-    <div className="flex flex-1 flex-col bg-white overflow-hidden">
-      <TitleSection title="Timeline" />
-      <div className="flex flex-1 bg-zinc-100 overflow-x-scroll">
-        {days.map((day, i) => {
-          const showMonth = i === 0 || day.getMonth() !== days[i - 1].getMonth();
-
-          return (
-            <div
-              key={i}
-              className="flex flex-col items-start gap-1 min-w-[60px] border-r flex-shrink-0 border-gray-200"
-            >
-              {/* Dates */}
-              <div className="flex w-full items-center flex-col">
-                {/* Month Header (only when month changes) */}
-                {showMonth && (
-                  <div className=" w-full text-center bg-gray-100 border-b border-gray-300 py-1">
-                    <span className="text-xs font-semibold tracking-wide text-gray-700">
-                      {day.toLocaleString("en-US", { month: "long" })}
-                    </span>
-                  </div>
-                )}
-                <span className={`font-medium text-sm border-b-2 w-full text-center text-gray-700 ${!showMonth && 'pt-[2.10rem]'}`}>
-                  {day.getDate()}
-                </span>
-              </div>
-
-              {/* Tasks*/}
-              {taskData
-                .filter(data => compareDate(new Date(data.deadline.toDate()), day))
-                .map(task => (
-                  <div className="l">
-                    <IconText 
-                      key={task.id}
-                      text={task.title} 
-                      className="max-w-[12rem] break-words whitespace-normal hover:bg-green-100 hover:cursor-pointer" 
-                      border 
-                      onClick={toggleShowTaskFocus}
-                    />
-                    {showTaskFocus && <TaskFocus key={task.id} taskData ={task} closeModal={toggleShowTaskFocus} />}
-                  </div>
-                ))
-       
-              }
-
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  )
-}
-
-export { DashBoard, Timeline };
 
