@@ -1,4 +1,4 @@
-import icon from '../assets/unitask.svg'
+import icon from '../assets/images/unitask.svg'
 import { IconAction } from './Icon'
 
 function TitleSection({title = 'Title', className = '', titleClassName = ''}) {

@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithP
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bgMain from '../../assets/bg-main.jpg';
+import bgMain from '../../assets/images/bg-main.jpg';
 import { auth, db, googleProvider } from '../../config/firebase';
 import Button, { ButtonIcon } from '../Button';
 import { AlertCard } from '../Cards';

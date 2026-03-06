@@ -1,15 +1,14 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import unitask from '../assets/unitask.svg';
+import unitask from '../assets/images/unitask.svg';
 import { auth } from '../config/firebase';
+import { checkIsPro } from '../services/CheckIsPro';
 import HomeSideBar from './HomeSideBar';
 import { IconAction } from './Icon';
 import MenuBar from './MenuBar';
 import SearchBar from './SearchBar';
 import SocialSection from './SocialSection';
-import { UnlockPro } from './modal-group/PaymentModals';
-import { checkIsPro } from '../services/CheckIsPro';
 import { ProSubscriptionButton } from './modal-group/ProSubscriptionModal';
 
 const isPro = await checkIsPro();

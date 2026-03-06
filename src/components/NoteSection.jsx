@@ -6,7 +6,7 @@ import { useReloadContext } from '../context/ReloadContext';
 import { useFetchActiveProjectData, useFetchNoteData } from '../services/FetchData';
 import { NoteCard } from './Cards';
 import { IconTitleSection } from './TitleSection';
-import CreateNote from './modal-group/modals/CreateNote';
+import CreateNote from './modal-group/create-modals/CreateNote';
 
 function NoteSection({className = ''}) {
   const [showPopUp, setShowPopUp] = useState(false);

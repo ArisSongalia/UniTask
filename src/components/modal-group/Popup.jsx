@@ -5,9 +5,9 @@ import deleteData from '../../services/DeleteData';
 import { useMoveStatus } from '../../services/useMoveStatus';
 import { ButtonIcon } from '../Button';
 import { IconTitleSection } from '../TitleSection';
-import CreateTask from './Modals/CreateTask';
-import CreateNote from './modals/CreateNote';
-import CreateProject from './modals/CreateProject';
+import CreateNote from './create-modals/CreateNote';
+import CreateProject from './create-modals/CreateProject';
+import CreateTask from './create-modals/CreateTask';
 
 
 

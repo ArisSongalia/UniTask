@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as FeatherIcons from "react-feather";
-import defaultUserIcon from "../assets/default-icon.png";
+import defaultUserIcon from "../assets/images/default-icon.png";
 import { UserProfile } from "./modal-group/SharedModals";
 
 /* ---------------- ICON CORE ---------------- */

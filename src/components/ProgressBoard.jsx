@@ -8,7 +8,7 @@ import { TaskCard } from './Cards'
 import { IconAction } from './Icon'
 import { ReloadIcon } from './ReloadComponent'
 import { DisplayTitleSection } from './TitleSection'
-import CreateTask from './modal-group/Modals/CreateTask'
+import CreateTask from './modal-group/create-modals/CreateTask'
 
 export default function ProgressBoard() {
   const [visibility, setVisibility] = useState({
