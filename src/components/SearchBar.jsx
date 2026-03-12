@@ -57,12 +57,12 @@ return (
       <input 
         type="text" 
         placeholder="Search projects, notes, and tasks"
-        className="w-full pl-10 pr-4 py-2 border rounded-full focus:ring-2 focus:ring-green-500 outline-none bg-green-50 text-sm"
+        className="w-full pl-10 pr-4 py-2.5 border rounded-full focus:ring-2 focus:ring-green-500 outline-none border-green-700 text-sm"
         value={searchTerm}
         onChange={(e) => setSearchterm(e.target.value)}
         onFocus={() => searchTerm.length >= 2 && setIsResultOpen(true)}
       />
-      <span className="absolute left-2 top-1">
+      <span className="absolute left-4 top-3">
         <Icon dataFeather="search" className="text-gray-500"/>
       </span>
     </div>

@@ -564,7 +564,7 @@ function Summary({ closeModal }) {
     }
   }, [user]);
 
-  // 🔹 Fetch data internally
+  // Fetch data internally
   const { taskData = [] } = useFetchTaskData(customWhere);
   const { projectData = [] } = useFetchProjectData();
   const { noteData = [] } = useFetchNoteData();
