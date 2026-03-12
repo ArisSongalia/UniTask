@@ -10,177 +10,94 @@ import { FilterPopup } from './modal-group/Popup';
 import { ReloadIcon } from './ReloadComponent';
 import { IconTitleSection } from './TitleSection';
 
-// ─── Shared section wrapper ───────────────────────────────────────────────────
-
-function SectionShell({ children }) {
-  return (
-    <div className="flex flex-col w-full h-full bg-white rounded-2xl border shadow-md overflow-hidden">
-      {children}
-    </div>
-  );
-}
-
-
-// ─── Count badge ─────────────────────────────────────────────────────────────
-
-function CountBadge({ count }) {
-  if (!count && count !== 0) return null;
-  return (
-    <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-700 border border-green-200">
-      {count}
-    </span>
-  );
-}
-
-// ─── Loading row ─────────────────────────────────────────────────────────────
-
-function LoadingRow() {
-  return (
-    <div className="col-span-full flex items-center justify-start px-1 py-2">
-      <BarLoader color="#228B22" width={120} height={3} />
-    </div>
-  );
-}
-
-// ─── Empty state ─────────────────────────────────────────────────────────────
-
-function EmptyState({ label }) {
-  return (
-    <div className="col-span-full flex flex-col items-center justify-center py-12 gap-2 text-gray-400">
-      <div className="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center">
-        <span className="text-green-300 text-xl font-light">∅</span>
-      </div>
-      <p className="text-sm text-gray-400">No {label} yet</p>
-    </div>
-  );
-}
-
-// ─── Section grid ─────────────────────────────────────────────────────────────
-
-function SectionGrid({ id, children }) {
-  return (
-    <section
-      id={id}
-      className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 p-4"
-    >
-      {children}
-    </section>
-  );
-}
-
-// ─── Projects ─────────────────────────────────────────────────────────────────
-
-function MainProjectSection() {
+export function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const { key } = useReloadContext();
   const { sortState } = useSort();
 
-  const activeSort = Object.entries(sortState).find(([, value]) => value);
-  const orderValue = activeSort ? activeSort[0] : null;
-  const orderPos = activeSort ? activeSort[1] : "asc";
-
-  const togglePopUp = () => setShowPopUp((p) => !p);
-  const toggleShowFilter = () => setShowFilter((p) => !p);
+  const activeSort = Object.entries(sortState).find(([, v]) => v);
+  const orderValue = activeSort?.[0] ?? null;
+  const orderPos = activeSort?.[1] ?? 'asc';
 
   const { projectData, loading } = useFetchProjectData(key, orderValue, orderPos);
 
   return (
-    <SectionShell>
-      <header className='relative border-b p-4 pb-0'>
+    <div className="flex flex-col w-full h-full bg-white rounded-2xl border shadow-md overflow-hidden">
+      <header className="relative border-b p-4 pb-0">
         <IconTitleSection
           title="Projects"
           dataFeather="filter"
-          iconOnClick={toggleShowFilter}
+          iconOnClick={() => setShowFilter(p => !p)}
           extraIcon={<ReloadIcon />}
           titleClassName="text-lg font-merriweather"
-          className="bg-transparent border-0 shadow-none px-0 "
+          className="bg-transparent border-0 shadow-none px-1"
         />
-
-        {showFilter && (
-          <div className="px-4 pb-3">
-            <FilterPopup closeModal={toggleShowFilter} />
-          </div>
-        )}
+        {showFilter && <FilterPopup closeModal={() => setShowFilter(false)} />}
       </header>
 
-      <div className="overflow-y-auto flex-1">
-        <SectionGrid id="project-container">
-          <CreateCard
-            onClick={togglePopUp}
-            title="Create Project"
-            description="Get started! Manage tasks individually or collaboratively."
-          />
-          {showPopUp && <CreateProject closeModal={togglePopUp} />}
+      {loading && <BarLoader color="#228B22" width="100%" height={3} />}
 
-          {loading ? (
-            <LoadingRow />
-          ) : projectData?.length > 0 ? (
-            projectData.map((project) => (
-              <ProjectCard key={project.id} projectData={project} />
-            ))
-          ) : (
-            <EmptyState label="projects" />
+      <div className="overflow-y-auto flex-1">
+        <section id="project-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 p-4">
+          <CreateCard onClick={() => setShowPopUp(true)} title="Create Project" description="Get started! Manage tasks individually or collaboratively." />
+          {showPopUp && <CreateProject closeModal={() => setShowPopUp(false)} />}
+
+          {!loading && (projectData?.length > 0
+            ? projectData.map(project => <ProjectCard key={project.id} projectData={project} />)
+            : <div className="col-span-full flex flex-col items-center justify-center py-12 gap-2">
+                <div className="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center">
+                  <span className="text-green-300 text-xl font-light">∅</span>
+                </div>
+                <p className="text-sm text-gray-400">No projects yet</p>
+              </div>
           )}
-        </SectionGrid>
+        </section>
       </div>
-    </SectionShell>
+    </div>
   );
 }
 
-// ─── Notes ────────────────────────────────────────────────────────────────────
-
-function MainNotesSection() {
+export function MainNotesSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const { key } = useReloadContext();
 
-  const togglePopUp = () => setShowPopUp((p) => !p);
-  const toggleShowFilter = () => setShowFilter((p) => !p);
-
   const { noteData, loading } = useFetchNoteData(key);
 
   return (
-    <SectionShell>
-      <div className="flex items-center p-4 pb-0 border-b">
-          <IconTitleSection
-            title="Notes"
-            dataFeather="filter"
-            extraIcon={<ReloadIcon />}
-            titleClassName="text-lg font-merriweather"
-            className="bg-transparent border-0 shadow-none px-0"
-            iconOnClick={toggleShowFilter}
-          />
-        </div>
-        {showFilter && (
-          <div className="px-4 pb-3">
-            <FilterPopup closeModal={toggleShowFilter} />
-          </div>
-        )}
+    <div className="flex flex-col w-full h-full bg-white rounded-2xl border shadow-md overflow-hidden">
+      <header className="border-b p-4 pb-0 relative">
+        <IconTitleSection
+          title="Project Notes"
+          dataFeather="filter"
+          iconOnClick={() => setShowFilter(p => !p)}
+          extraIcon={<ReloadIcon />}
+          titleClassName="text-lg font-merriweather"
+          className="bg-transparent border-0 shadow-none px-1"
+        />
+        {showFilter && <FilterPopup closeModal={() => setShowFilter(false)} />}
+      </header>
+      
+
+      {loading && <BarLoader color="#228B22" width="100%" height={3} />}
 
       <div className="overflow-y-auto flex-1">
-        <SectionGrid id="note-container">
-          <CreateCard
-            onClick={togglePopUp}
-            title="Create Note"
-            description="Write a personal note."
-            titleClassName="text-lg font-merriweather"
-          />
-          {showPopUp && <CreateNote closeModal={togglePopUp} />}
+        <section id="note-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 p-4">
+          <CreateCard onClick={() => setShowPopUp(true)} title="Create Note" description="Write a personal note." />
+          {showPopUp && <CreateNote closeModal={() => setShowPopUp(false)} />}
 
-          {loading ? (
-            <LoadingRow />
-          ) : noteData?.length > 0 ? (
-            noteData.map((note, index) => (
-              <NoteCard key={`${note.id}-${index}`} noteData={note} />
-            ))
-          ) : (
-            <EmptyState label="notes" />
+          {!loading && (noteData?.length > 0
+            ? noteData.map((note, i) => <NoteCard key={`${note.id}-${i}`} noteData={note} />)
+            : <div className="col-span-full flex flex-col items-center justify-center py-12 gap-2">
+                <div className="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center">
+                  <span className="text-green-300 text-xl font-light">∅</span>
+                </div>
+                <p className="text-sm text-gray-400">No notes yet</p>
+              </div>
           )}
-        </SectionGrid>
+        </section>
       </div>
-    </SectionShell>
+    </div>
   );
 }
-
-export { MainNotesSection, MainProjectSection };

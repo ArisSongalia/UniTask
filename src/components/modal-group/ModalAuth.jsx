@@ -90,6 +90,7 @@ const handleSignInWithGoogle = async () => {
 
           <p style={{ color: message.color }}>{message.text}</p>
 
+          {/* Google sign in */}
           <Button text='Register' type='submit' />
           <p>
             Already have an account?&nbsp;       
@@ -101,12 +102,10 @@ const handleSignInWithGoogle = async () => {
           </p>
         </form>
 
-        <hr className='border mt-8 mb-6' />
+        
 
-        <section className="w-full flex flex-col gap-4 items-center">
-          <p>Or sign up with</p>
-          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} />
-        </section>
+        <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} />
+
       </div>
       {showCreateUsername && (
         <CreateUsername 
@@ -219,12 +218,9 @@ const handleSignInWithGoogle = async () => {
           </p>
         </form>
 
-        <hr className='border mt-8 mb-6' />
-        
-        <section className="w-full flex flex-col gap-4 items-center">
-          <p>Or sign up with</p>
-          <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle}/>
-        </section>
+        {/* Google Sign IN */}
+        <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle}/>
+
       </div>
       {showCreateUsername && (
         <CreateUsername 
@@ -239,11 +235,13 @@ const handleSignInWithGoogle = async () => {
 
 function SignInOptions({handleSignInWithGoogle, handleSignInWithFacebook}) {
   return (
-    <section className='flex gap-1 h-full w-full items-center justify-center'>
-      <ButtonIcon 
+    <section className='flex flex-col gap-4 h-full w-full items-center justify-center border-t-2 mt-4'>
+      <p className='mt-2'>Or sign in with</p>
+
+      <ButtonIcon
         dataFeather='mail' 
         onClick={handleSignInWithGoogle} 
-        className='border border-red-800 w-full justify-center hover:bg-red-700 bg-red-50 text-red-700' 
+        className='border border-red-800 w-full justify-center hover:bg-red-700 bg-red-50 text-red-900 py-4 rounded-md gap-1' 
         iconClassName='text-red-700' 
         text='Google' 
       />

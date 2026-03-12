@@ -30,14 +30,10 @@ export default function CreateNote({ closeModal, noteData, projectData }) {
   const handleCreateNote = async (e) => {
     e.preventDefault();
     if (isSaving) return;
-
     setIsSaving(true);
     setMessage({ text: "Saving...", color: "blue" });
 
     try {
-      const projId = projectData?.id || null;
-      const projTitle = projectData?.title || "Personal";
-
       const payload = {
         title: form.title,
         message: form.message,
@@ -45,8 +41,8 @@ export default function CreateNote({ closeModal, noteData, projectData }) {
         owner: user.displayName || "Anonymous",
         ownerUid: user.uid,
         status: noteData?.status || "To-Review",
-        'project-id': projId,
-        'project-title': projTitle,
+        'project-id': projectData?.id || null,
+        'project-title': projectData?.title || "Personal",
         searchTitle: form.title.toLowerCase(),
         updatedAt: new Date(),
       };
@@ -55,38 +51,31 @@ export default function CreateNote({ closeModal, noteData, projectData }) {
 
       if (noteData?.id) {
         await updateDoc(doc(db, 'notes', noteData.id), payload);
-        logAnalytics({finalId, event: 'Updated a Note', noteData});
+        logAnalytics({ finalId, event: 'Updated a Note', noteData });
       } else {
         const docRef = await addDoc(collection(db, 'notes'), payload);
         finalId = docRef.id;
-        logAnalytics({finalId, event: 'Created a Note', noteData: {...payload, id: docRef.id}});
+        logAnalytics({ finalId, event: 'Created a Note', noteData: { ...payload, id: docRef.id } });
       }
 
       await syncToSearch('note', finalId, payload);
-
-
       setMessage({ text: "Note Saved Successfully!", color: "green" });
-
-      setTimeout(() => {
-        reloadComponent();
-        closeModal();
-      }, 800);
+      setTimeout(() => { reloadComponent(); closeModal(); }, 800);
 
     } catch (error) {
-      console.error("Error saving note:", error);
+      console.error(error);
       setMessage({ text: "Failed: " + error.message, color: "red" });
       setIsSaving(false);
     }
   };
 
+  const inputClass = "mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none";
+
   return (
     <ModalOverlay onClick={closeModal}>
-      <section
-        className="bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <section className="absolute bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <IconTitleSection
-          title={!noteData ? "Create Note" : `Update: ${noteData.title}`}
+          title={noteData ? `Update: ${noteData.title}` : "Create Note"}
           iconOnClick={closeModal}
           dataFeather="x"
         />
@@ -94,55 +83,24 @@ export default function CreateNote({ closeModal, noteData, projectData }) {
         <form onSubmit={handleCreateNote} className="flex flex-col space-y-4">
           <label className="flex flex-col text-gray-600">
             Title
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
+            <input type="text" name="title" value={form.title} onChange={handleChange} className={inputClass} required />
           </label>
 
           <label className="flex flex-col text-gray-600">
             Message
-            <textarea
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none h-[10rem] resize-none"
-              required
-            />
+            <textarea name="message" value={form.message} onChange={handleChange} className={`${inputClass} h-40 resize-none`} required />
           </label>
 
           <label className="flex flex-col text-gray-600">
             Target Date
-            <input
-              type="date"
-              name="date"
-              min={new Date().toISOString().split("T")[0]}
-              value={form.date}
-              onChange={handleChange}
-              className="mt-1 border border-gray-300 rounded-md px-4 py-2 hover:cursor-pointer"
-              required
-            />
+            <input type="date" name="date" min={new Date().toISOString().split("T")[0]} value={form.date} onChange={handleChange} className={inputClass} required />
           </label>
 
           {message.text && (
-            <p
-              className="text-center text-sm font-medium"
-              style={{ color: message.color }}
-            >
-              {message.text}
-            </p>
+            <p className="text-center text-sm font-medium" style={{ color: message.color }}>{message.text}</p>
           )}
 
-          <Button
-            type="submit"
-            disabled={isSaving}
-            text={noteData ? "Update Note" : "Create Note"}
-            className="py-3"
-          />
+          <Button type="submit" disabled={isSaving} text={isSaving ? 'Saving...' : (noteData ? "Update Note" : "Create Note")} className="py-3" />
         </form>
       </section>
     </ModalOverlay>

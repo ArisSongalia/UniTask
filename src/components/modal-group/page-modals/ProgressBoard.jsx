@@ -151,7 +151,6 @@ export default function ProgressBoard() {
     { column: COLUMNS[3], tasks: finishedTasks, loading: loadingFinished },
   ]
 
-  const totalTasks = toDoTasks.length + inProgressTasks.length + toReviewTasks.length + finishedTasks.length
 
   return (
     <div className="flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full w-full">

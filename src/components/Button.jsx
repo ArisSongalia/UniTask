@@ -18,7 +18,7 @@ function ButtonIcon({ text = 'Button', onClick, className = '', type = 'button',
   return (
     <button
       type={`${type}`}
-      className={`group flex bg-green-50 p-1 items-center rounded-full pr-2 text-xs font-bold h-fit shadow-md
+      className={`group flex bg-green-50 p-2 items-center rounded-full pr-2 text-xs font-bold h-fit shadow-md gap-1
       hover:bg-green-700 hover:text-white text-green-800  ${className}`}
       onClick={onClick}
     >

@@ -10,7 +10,6 @@ import CreateProject from './create-modals/CreateProject';
 import CreateTask from './create-modals/CreateTask';
 
 
-
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
   const { reloadComponent } = useReloadContext();
   const [showUpdateInfo, setShowUpdateInfo] = useState(false);
@@ -70,48 +69,33 @@ function Popup({ closeModal, className = '',  collectionName, taskData, projectD
 }
 
 function FilterPopup({ closeModal }) {
-  const { sortState, setSortState} = useSort();
+  const { sortState, setSortState } = useSort();
 
-  const handleChangeIcon = (key) => {
+  const cycle = (key) => {
     setSortState(prev => {
-      const current = prev[key];
-      const next = current === null ? "asc" : current === "asc" ? "desc" : null;
+      const next = prev[key] === null ? "asc" : prev[key] === "asc" ? "desc" : null;
       return { title: null, date: null, progress: null, [key]: next };
     });
   };
 
-  const getIcon = (value) =>
-    value === "asc" ? "arrow-up" :
-    value === "desc" ? "arrow-down" :
-    "minus";
-
-  const getClass = (value) =>
-    value === "asc" ? "bg-green-200 hover:bg-blue-700" :
-    value === "desc" ? "bg-blue-200 hover:bg-gray-700" :
-    "bg-gray-100";
+  const icon = (v) => v === "asc" ? "arrow-up" : v === "desc" ? "arrow-down" : "minus";
+  const style = (v) => v ? "bg-green-700 text-white border-green-600" : "bg-white text-green-700 border-green-600";
+  const iconStyle = (v) => v ? "text-white" : "text-green-600";
 
   return (
-    <div
-      className="bg-white p-4 flex flex-col absolute z-50 top-0 right-0 shadow-md"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <IconTitleSection
-        title="Order By"
-        iconOnClick={closeModal}
-        dataFeather="x"
-      />
+    <div className="absolute z-50 top-0 right-0 bg-white border rounded-xl shadow-lg p-3 w-44" onClick={e => e.stopPropagation()}>
+      <IconTitleSection iconOnClick={closeModal} title='Order By' dataFeather='x' />
 
-      <div className="flex flex-col flex-1 gap-1">
-        {["title", "date", "progress"].map(key => (
-          <ButtonIcon
-            key={key}
-            text={key.charAt(0).toUpperCase() + key.slice(1)}
-            dataFeather={getIcon(sortState[key])}
-            className={getClass(sortState[key])}
-            onClick={() => handleChangeIcon(key)}
-          />
-        ))}
-      </div>
+      {["title", "date", "progress"].map(key => (
+        <ButtonIcon
+          key={key}
+          onClick={() => cycle(key.toLowerCase())}
+          className={`w-full flex items-center p-3 rounded-md font-medium border mb-1 ${style(sortState[key])}`}
+          dataFeather={icon(sortState[key])}
+          text={key.charAt(0).toUpperCase() + key.slice(1)}
+          iconClassName={iconStyle(sortState[key])}
+        />
+      ))}
     </div>
   );
 }

@@ -26,15 +26,9 @@ export default function CreateProject({ closeModal, projectData }) {
 
   useEffect(() => {
     if (user && !projectData) {
-      const initialMember = {
-        uid: user.uid,
-        username: user.displayName || 'You',
-        email: user.email || '',
-        photoURL: user.photoURL || '',
-      };
       setForm(prev => ({
         ...prev,
-        team: [initialMember],
+        team: [{ uid: user.uid, username: user.displayName || 'You', email: user.email || '', photoURL: user.photoURL || '' }],
         'team-uid': [user.uid]
       }));
     }
@@ -48,7 +42,6 @@ export default function CreateProject({ closeModal, projectData }) {
   const handleCreateProject = async (e) => {
     e.preventDefault();
     if (isSaving) return;
-
     setIsSaving(true);
     setMessage({ text: "Saving...", color: "blue" });
 
@@ -71,20 +64,12 @@ export default function CreateProject({ closeModal, projectData }) {
       }
 
       await syncToSearch('project', projectId, payload);
-
       await setDoc(doc(db, "projects", projectId, "metrics", `${projectId}_metrics`), {
-        projectActivity: 0,
-        urgentTasks: 0,
-        tasksCompleted: 0,
-        totalCompletionTime: 0
+        projectActivity: 0, urgentTasks: 0, tasksCompleted: 0, totalCompletionTime: 0
       });
 
       setMessage({ text: 'Project Successfully Saved!', color: 'green' });
-
-      setTimeout(() => {
-        reloadComponent();
-        closeModal();
-      }, 800);
+      setTimeout(() => { reloadComponent(); closeModal(); }, 800);
 
     } catch (error) {
       setIsSaving(false);
@@ -92,16 +77,34 @@ export default function CreateProject({ closeModal, projectData }) {
     }
   };
 
+  const inputClass = "mt-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none";
+
   return (
     <ModalOverlay onClick={closeModal}>
-      <section className="bg-white rounded-md p-4 max-w-[35rem] w-full" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={!projectData ? 'Create Project' : 'Update Project'} dataFeather='x' iconOnClick={closeModal} />
+      <section className="absolute bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
+        <IconTitleSection title={projectData ? 'Update Project' : 'Create Project'} dataFeather='x' iconOnClick={closeModal} />
+
         <form onSubmit={handleCreateProject} className="flex flex-col space-y-4">
-          <input name="title" value={form.title} onChange={handleChange} placeholder="Title" required />
-          <input name="description" value={form.description} onChange={handleChange} placeholder="Description" required />
-          <input type="datetime-local" name="date" value={form.date} onChange={handleChange} required />
-          {message.text && <p style={{ color: message.color }}>{message.text}</p>}
-          <Button type="submit" disabled={isSaving} text={projectData ? 'Update Project' : 'Create Project'} />
+          <label className="flex flex-col text-gray-600">
+            Title
+            <input name="title" value={form.title} onChange={handleChange} className={inputClass} required />
+          </label>
+
+          <label className="flex flex-col text-gray-600">
+            Description
+            <textarea name="description" value={form.description} onChange={handleChange} className={`${inputClass} resize-none h-28`} required />
+          </label>
+
+          <label className="flex flex-col text-gray-600">
+            Target Date
+            <input type="datetime-local" name="date" value={form.date} onChange={handleChange} className={inputClass} required />
+          </label>
+
+          {message.text && (
+            <p className="text-center text-sm font-medium" style={{ color: message.color }}>{message.text}</p>
+          )}
+
+          <Button type="submit" disabled={isSaving} text={isSaving ? 'Saving...' : (projectData ? 'Update Project' : 'Create Project')} className="py-3" />
         </form>
       </section>
     </ModalOverlay>
