@@ -4,6 +4,7 @@ export const handleAnalyzeTaskAI = async (taskText) => {
 
   try{
     if(isProcessing) return;
+    
 
     isProcessing = true;
     const aiResponse = await fetch('http://localhost:5000/api/ai/analyze-task', {
@@ -11,6 +12,9 @@ export const handleAnalyzeTaskAI = async (taskText) => {
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ task: taskText })
     });
+    if (!aiResponse.ok) {
+      throw new Error('AI analyze request failed');
+    }
 
     const aiData = await aiResponse.json();
 
@@ -24,6 +28,7 @@ export const handleAnalyzeTaskAI = async (taskText) => {
         description: aiData.description,
       })
     });
+    
 
     const saveData = await saveResponse.json();
     return saveData.task;
