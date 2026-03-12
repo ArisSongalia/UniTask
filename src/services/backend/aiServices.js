@@ -1,20 +1,28 @@
 import { VertexAI } from '@google-cloud/vertexai'
 
-const vertexAI = new VertexAI({
-  project: process.env.GCP_PROJECT_ID,
-  location: process.env.GCP_LOCATION,
-  googleAuthOptions: {
-    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
-  }
-})
+function getModel() {
+  console.log("PROJECT:", process.env.GCP_PROJECT_ID);
+  console.log("KEYFILE:", process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+  const vertexAI = new VertexAI({
+    project: process.env.GCP_PROJECT_ID,
+    location: process.env.GCP_LOCATION,
+    googleAuthOptions: {
+      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    }
+  });
 
-const model = vertexAI.getGenerativeModel({
-  model: MODEL_NAME,
-});
+  const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+
+  return vertexAI.getGenerativeModel({
+    model: MODEL_NAME,
+  });
+}
 
 export async function analyzeTask(taskText) {
+
+  const model = getModel();  
+
   const request = {
     contents: [
       {
@@ -23,7 +31,7 @@ export async function analyzeTask(taskText) {
           {
             text: `
             Return valid JSON only:
-            {"priority":"Urgent|High|Medium|Low","tag":"1-2 words","description":"short summary"  }
+            {"priority":"Urgent|High|Medium|Low","tag":"1-2 words","description":"short summary"}
 
             Task: ${taskText}
             `,
@@ -41,13 +49,11 @@ export async function analyzeTask(taskText) {
   const response = result.response;
   let text = response.candidates[0].content.parts[0].text.trim();
 
-
   if (!text) throw new Error('No AI response');
 
   if (text.startsWith("```")) {
     text = text.replace(/```json|```/g, "").trim();
   }
-  
 
   try {
     return JSON.parse(text);

@@ -1,18 +1,21 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
 import aiRoutes from '../routes/aiRoutes.js'
 import taskRoutes from '../routes/tasksRoutes.js'
 import checkoutRoutes from "../routes/checkoutRoute.js";
 import paymentWebhook from '../routes/paymentsWebhook.js';
 
-dotenv.config();
-
 const app = express();
 
 app.use(cors({
-  origin: true,
+  origin: [
+    "http://localhost:5173",
+    "https://uni-task-lime.vercel.app"
+  ],
   credentials: true
 }));
 
