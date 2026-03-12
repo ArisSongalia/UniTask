@@ -1,12 +1,17 @@
 import { VertexAI } from '@google-cloud/vertexai'
 
 const vertexAI = new VertexAI({
-  project: 'unitask-b9b5e',
-  location: 'us-central1',
+  project: process.env.GCP_PROJECT_ID,
+  location: process.env.GCP_LOCATION,
+  googleAuthOptions: {
+    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
+  }
 })
 
+const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+
 const model = vertexAI.getGenerativeModel({
-  model: 'gemini-2.5-flash-lite',
+  model: MODEL_NAME,
 });
 
 export async function analyzeTask(taskText) {
@@ -36,9 +41,18 @@ export async function analyzeTask(taskText) {
   const response = result.response;
   let text = response.candidates[0].content.parts[0].text.trim();
 
+
+  if (!text) throw new Error('No AI response');
+
   if (text.startsWith("```")) {
     text = text.replace(/```json|```/g, "").trim();
   }
+  
 
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error('AI JSON parse failed:', text);
+    throw new Error('AI returned invalid JSON');
+  }
 }
