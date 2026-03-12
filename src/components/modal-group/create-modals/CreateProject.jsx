@@ -65,7 +65,20 @@ export default function CreateProject({ closeModal, projectData }) {
 
       await syncToSearch('project', projectId, payload);
       await setDoc(doc(db, "projects", projectId, "metrics", `${projectId}_metrics`), {
-        projectActivity: 0, urgentTasks: 0, tasksCompleted: 0, totalCompletionTime: 0
+        projectActivity:    0,
+        urgentTasks:        0,
+        tasksCompleted:     0,
+        totalCompletionTime: 0,
+        highPriorityTasks:  0,
+        mediumPriorityTasks: 0,
+        lowPriorityTasks:   0,
+        userActivity:       [],
+        tasksStarted:       0,
+        tasksInReview:      0,
+        overdueTasks:       0,
+        dueSoonTasks:       0,
+        tasksOnTime:        0,
+        tasksLate:          0,
       });
 
       setMessage({ text: 'Project Successfully Saved!', color: 'green' });
