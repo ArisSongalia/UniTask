@@ -621,12 +621,12 @@ function Summary({ closeModal }) {
   });
 
   return (
-    <ModalOverlay>
+    <ModalOverlay onClick={closeModal}>
       <div
-        className="flex flex-col max-w-[60rem] w-full h-[75vh] bg-white p-4 rounded-md overflow-x-auto"
+        className="absolute flex flex-col max-w-[60rem] w-full h-[75vh] bg-white p-4 rounded-md overflow-x-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <IconTitleSection title="Task Summary" dataFeather="x" iconOnClick={closeModal} />
+        <IconTitleSection title="Summary" dataFeather="x" iconOnClick={closeModal}/>
         <MultiTitleSection titles={titles} />
 
         <table className="w-full bg-white text-slate-800">

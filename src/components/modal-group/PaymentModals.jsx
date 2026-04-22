@@ -7,6 +7,7 @@ import ModalOverlay from "../ModalOverlay";
 import { IconTitleSection } from "../TitleSection";
 import { onAuthStateChanged } from "firebase/auth";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function UnlockPro({ closeModal }) {
   const [planType, setPlanType] = useState("monthly");
@@ -115,11 +116,17 @@ function SubscriptionFormButton({ planType, text, className="" }) {
 
   const handleCheckout = async () => {
     if(!user) return
-    const response = await axios.post(
-      "https://untroublesome-vaulted-vennie.ngrok-free.dev/api/create-checkout",
-      { planType: planType, userId: user.uid }
-    );
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/create-checkout`,
+        { planType, userId: user.uid }
+      );
 
+      window.location.href = response.data.checkout_url;
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Payment failed. Please try again.");
+    }
     window.location.href = response.data.checkout_url;
   };
 

@@ -2,11 +2,12 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import "react-toastify/dist/ReactToastify.css";
-import Button from './Button';
+import Button, {ButtonIcon} from './Button';
 import Icon, { IconAction, IconText, IconUser } from './Icon';
 import Popup from './modal-group/Popup';
 import { NoteFocus, TaskFocus } from "./modal-group/SharedModals";
 import { IconTitleSection } from './TitleSection';
+import { Summary } from './modal-group/SharedModals';
 
 
 function SummaryCard({ 
@@ -46,17 +47,15 @@ function SummaryCard({
       )}
 
       {button && (
-        <Button 
+        <Button
           text='View Details' 
           onClick={() => setShowSummary(true)} 
-          className="mt-auto bg-white !text-green-900 hover:bg-slate-100" 
+          className="bg-white !text-green-900 hover:bg-slate-100 py-1" 
         />
       )}
 
       {showSummary && SummaryContent && (
-        <div className="text-slate-900">
-           {React.cloneElement(SummaryContent, { closeModal: () => setShowSummary(false) })}
-        </div>
+        <Summary closeModal={() => setShowSummary(false)} />
       )}
     </section>
   );
@@ -88,7 +87,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, col
   return (
     <div
       className={`flex flex-col bg-green-700 rounded-md overflow-hidden text-white hover:cursor-pointer 
-      flex-grow justify-between border-2 gap-4 border-opacity-30 hover:bg-green-600 p-4 font-semibold h-[12rem] min-w-[9rem] ${className}`}
+      flex-grow justify-between border-2 gap-4 border-opacity-30 hover:bg-green-800 p-4 font-semibold h-[12rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">

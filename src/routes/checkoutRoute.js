@@ -2,9 +2,10 @@ import axios from "axios";
 import express from "express";
 
 const router = express.Router();
-
+const baseURL = process.env.FRONTEND_URL
 
 router.post("/create-checkout", async (req, res) => {
+  console.log("🔥 /create-checkout endpoint HIT");
   try {
     const { planType, userId } = req.body;
 
@@ -28,8 +29,8 @@ router.post("/create-checkout", async (req, res) => {
               planType
             },
 
-            success_url: `http://localhost:5173/Home/?payment=success&plan=${planType}&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:5173/Home/?payment=cancel&plan=${planType}`
+            success_url: `${baseURL}/Home/?payment=success&plan=${planType}&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseURL}/Home/?payment=cancel&plan=${planType}`
           }
         }
       },
@@ -48,8 +49,12 @@ router.post("/create-checkout", async (req, res) => {
     });
 
   } catch (err) {
-    console.error(err.response?.data || err);
-    res.status(500).json(err.response?.data || err.message);
+    console.log("==== PAYMONGO ERROR ====");
+    console.log("STATUS:", err.response?.status);
+    console.log("DATA:", JSON.stringify(err.response?.data, null, 2));
+    console.log("========================");
+
+    res.status(err.response?.status || 500).json(err.response?.data || err.message);
   }
 });
 

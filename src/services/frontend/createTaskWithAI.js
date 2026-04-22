@@ -1,4 +1,5 @@
 let isProcessing = false;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const handleAnalyzeTaskAI = async (taskText) => {
 
@@ -7,7 +8,7 @@ export const handleAnalyzeTaskAI = async (taskText) => {
     
 
     isProcessing = true;
-    const aiResponse = await fetch('http://localhost:5000/api/ai/analyze-task', {
+    const aiResponse = await fetch(`${API_URL}/api/ai/analyze-task`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ task: taskText })
@@ -18,7 +19,7 @@ export const handleAnalyzeTaskAI = async (taskText) => {
 
     const aiData = await aiResponse.json();
 
-    const saveResponse = await fetch('http://localhost:5000/api/tasks', {
+    const saveResponse = await fetch(`${API_URL}/api/tasks`, {
       method: 'POST',
       headers: { 'Content-Type' : 'application/json' },
       body: JSON.stringify({
