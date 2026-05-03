@@ -1,7 +1,7 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { addDoc, collection, doc, getDoc, limit, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { auth, db } from '../../config/firebase';
 import { useReloadContext } from '../../context/ReloadContext';
@@ -24,14 +24,13 @@ function AddMembers({ closeModal }) {
   const [message, setMessage] = useState({ text: "", color: ""})
   const { key, reloadComponent } = useReloadContext();
   const [members, setMembers] = useState([...new Set([])]);
-  const activeProjectId = localStorage.getItem('activeProjectId');
-  const [activeProjectData, setActiveProjectData] = useState([]);
-
+  const { projectId: routeProjectId } = useParams();
+  const storedProjectId = localStorage.getItem('activeProjectId');
+  const normalizedStoredProjectId = storedProjectId && storedProjectId !== 'undefined' ? storedProjectId : null;
+  const activeProjectId = normalizedStoredProjectId || routeProjectId || null;
+  const { projectData: activeProjectData, loading: projectLoading } = useFetchActiveProjectData(activeProjectId, key);
 
   useFetchUsers(setUsers, setLoading, key);
-  useFetchActiveProjectData(activeProjectId, setActiveProjectData, setLoading, key)
-
-  console.log(activeProjectData.team)
   
   const handleAddMembers = (user) => {
     setMembers((prevMembers) => {
@@ -44,6 +43,11 @@ function AddMembers({ closeModal }) {
   };
 
   const addMembersToProject = async () => {
+    if (!activeProjectId) {
+      setMessage({ text: "No active project selected.", color: "red" });
+      return;
+    }
+
     if (!Array.isArray(members) || members.length === 0) {
       setMessage({ text: "No members to add. Please select at least one member.", color: "red" });
       return;
@@ -53,8 +57,15 @@ function AddMembers({ closeModal }) {
       const projectDocRef = doc(db, 'projects', activeProjectId);
       const projectDoc = await getDoc(projectDocRef);
 
-      if(projectDoc.exists()) {
-        await updateDoc(projectDocRef, { team: members });
+      if (projectDoc.exists()) {
+        const existingTeam = Array.isArray(projectDoc.data().team) ? projectDoc.data().team : [];
+        const mergedTeam = [...existingTeam, ...members];
+        const uniqueTeam = mergedTeam.filter((member, index, self) =>
+          member?.uid && index === self.findIndex((m) => m?.uid === member.uid)
+        );
+        const teamUids = uniqueTeam.map((member) => member.uid);
+
+        await updateDoc(projectDocRef, { team: uniqueTeam, 'team-uid': teamUids });
         closeModal();
         reloadComponent();
       } else {
@@ -88,9 +99,12 @@ function AddMembers({ closeModal }) {
             { loading ? (
               <BarLoader />
             ) : users.length > 0 && (
-              users.map((user) => (
-                <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers} />
-              ))
+              users
+                .filter((user) => user.uid !== auth.currentUser?.uid)
+                .filter((user) => !activeProjectData?.team?.some((member) => member?.uid === user.uid))
+                .map((user) => (
+                  <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers} />
+                ))
             )}
           </span>
         </span>
@@ -178,7 +192,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
   const { teamsData, loading} = useFetchTeams(user.uid, reloadKey);
 
   const profileContent = (
-    <div id='main' className='flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-md font-medium' onClick={(e) => e.stopPropagation()}>
+    <div id='main' className='absolute flex flex-col bg-white rounded-md w-full max-w-[30rem] p-4 shadow-md font-medium' onClick={(e) => e.stopPropagation()}>
       <IconTitleSection title='User Profile' dataFeather={(overlay) ? 'x' : ''} iconOnClick={closeModal} className=''/>
         <div className='flex p-2 gap-4 items-center w-full'>
           <img 
@@ -203,7 +217,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
 
 
       <div id="connections" className='mt-2 border shadow-md rounded-md p-2'>
-        <IconTitleSection dataFeather={self ? 'user-plus' : ''} title='Teams' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={self ? () => toggleVisbility('addTeamMates') : null} />
+        <IconTitleSection dataFeather={self ? 'user-plus' : ''} title='Connections' className='border-b-2 border-green-700 border-opacity-50' iconOnClick={self ? () => toggleVisbility('addTeamMates') : null} />
         {visibility.addTeamMates && <AddTeamMates closeModal={() => toggleVisbility('addTeamMates')} reload={reload}/> }
 
         {loading ? (

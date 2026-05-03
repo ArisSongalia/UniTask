@@ -328,7 +328,7 @@ function ProSubscriptionButton() {
           className="bg-violet-50 text-violet-700 border-violet-300 hover:bg-violet-700 hover:text-white"
         />
       ) : (
-        <IconAction text="Powered by UniPro" dataFeather="zap"/>
+        null
       )}
 
       {unlockPro && <UnlockPro closeModal={toggleUnlockPro}/>}

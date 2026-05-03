@@ -5,7 +5,7 @@ import unitask from '../assets/images/unitask.svg';
 import { auth } from '../config/firebase';
 import { checkIsPro } from '../services/CheckIsPro';
 import HomeSideBar from './HomeSideBar';
-import { IconAction } from './Icon';
+import { IconAction, IconUser } from './Icon';
 import MenuBar from './MenuBar';
 import SearchBar from './SearchBar';
 import SocialSection from './SocialSection';
@@ -45,22 +45,20 @@ function Navbar() {
 
   return (
     <section className="bg-white flex z-50 items-center justify-center w-full h-fit px-4 sticky top-0 shadow-sm">
-      <div className="flex relative items-center justify-between max-w-screen-2xl w-full py-3">
+      <div className="flex relative items-center gap-2 justify-between max-w-screen-2xl w-full py-3">
         <div className="flex gap-4">
           <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
           {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
 
           <Link to="/Home" className="flex items-center gap-2 text-green-900 text-lg font-bold">
           <img src={unitask} alt="UniTask" className="w-6 h-6" />
-            <span className="font-merriweather">UniTask</span>
+            <span className="font-merriweather md:block hidden md:block w-fit pr-8">UniTask</span>
           </Link>
         </div>
 
         <SearchBar />
 
         <span className="flex w-fit gap-2 items-center">
-          <IconAction dataFeather='message-square' iconOnClick={() => toggleVisibility('socialSection')} />
-          {visibilitity.socialSection && <SocialSection closeModal={() => toggleVisibility('socialSection')} />}
           <ProSubscriptionButton />
 
           <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={() => toggleVisibility('sideBar')} />
@@ -70,8 +68,7 @@ function Navbar() {
               className='fixed top-0 left-0 w-full min-h-screen max-w-[100vw] z-40 bg-white lg:hidden'
             />
           }
-
-
+          <IconUser user={auth.currentUser} />
         </span>
       </div>
     </section>

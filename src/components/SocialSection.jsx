@@ -1,5 +1,6 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useReducer, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { auth, db } from '../config/firebase';
 import { useReloadContext } from '../context/ReloadContext';
@@ -21,16 +22,17 @@ function reducer(state, action) {
 
 function SocialSection({ className = '', closeModal = () => {} }) {
   const { key } = useReloadContext();
-  const projectId = localStorage.getItem('activeProjectId');
+  const { projectId } = useParams();
   const initialState = {
     activeUser: null,
   };
   const [state, dispatch] = useReducer(reducer, initialState);
   const { activeUser } = state;
 
-  const { projectData, projectLoading } = useFetchActiveProjectData(projectId, key);
+  const { projectData, loading: projectLoading } = useFetchActiveProjectData(projectId, key);
   const messageRef = useRef(null);  
-  const { sentMessageData, receivedMessageData, loading: messageLoading } = useFetchMessageData({activeUser, projectId: projectData.id});
+  const activeProjectId = projectData?.id || projectId;
+  const { sentMessageData, receivedMessageData, loading: messageLoading } = useFetchMessageData(activeUser, activeProjectId);
 
   const handleSendMessage = async () => {
     const messageText = messageRef.current.value.trim();
@@ -49,7 +51,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         type: 'text',
         readBy: [],
         messageTo: activeUser.uid ?? activeUser.tag,
-        messageFrom: projectData.id,
+        messageFrom: activeProjectId,
       })
     } catch(error) {
         console.log('Error sending message: ', error)
@@ -89,7 +91,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 <UserCard
                   key={member.uid}
                   user={member}
-                  withEmail={false}
+
                   isActive={activeUser?.uid === member.uid}
                   onStateChange={(data) => {
                     dispatch({ type: 'SET_ACTIVE_USER', payload: data.isActive ? data : null });
@@ -102,71 +104,71 @@ function SocialSection({ className = '', closeModal = () => {} }) {
           )}
         </section>
 
-        {messageLoading ? (
-          <BarLoader color="green" />
-        ) : (
-          <section
-            id="chat-window"
-            className="flex flex-col bg-gray-50 rounded-lg w-full h-full justify-end overflow-y-auto p-2"
-          >
-            {activeUser ? (
-              <div className='flex flex-col justify-between items-start h-full'>
-                <IconTitleSection
-                  title={activeUser?.username ?? activeUser?.memberNames?.join(', ')}
-                  dataFeather="more-vertical"
-                  className="bg-slate-50 rounded-full"
-                  titleClassName='text-sm'
-                />
+        <section
+          id="chat-window"
+          className="flex flex-col bg-gray-50 rounded-lg w-full h-full justify-end overflow-y-auto p-2"
+        >
+          {messageLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <BarLoader color="green" />
+            </div>
+          ) : activeUser ? (
+            <div className='flex flex-col justify-between items-start h-full'>
+              <IconTitleSection
+                title={activeUser?.username ?? activeUser?.memberNames?.join(', ')}
+                dataFeather="more-vertical"
+                className="bg-slate-50 rounded-full"
+                titleClassName='text-sm'
+              />
 
-                <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
-                  {[...sentMessageData]
-                  .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
-                  .map((message) => (
-                    <section className='flex justify-end' key={message.timestamp}>
-                      <span
-                        className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
-                      >
-                        {message.text}
-                      </span>
-                    </section>
-                  ))}
+              <div id="messageDisplay" className="flex flex-col-reverse h-full w-full gap-1 pb-1">
+                {[...sentMessageData]
+                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                .map((message) => (
+                  <section className='flex justify-end' key={message.timestamp}>
+                    <span
+                      className='bg-green-50 p-2 text-sm rounded-md font-medium text-green-800  max-w-[60%] max-h-fit h-full w-fit'
+                    >
+                      {message.text}
+                    </span>
+                  </section>
+                ))}
 
-                  {[...receivedMessageData]
-                  .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
-                  .map((message) => (
-                    <section className="flex justify-start gap-1 items-center" key={message.timestamp}>
-                      <IconUser user={activeUser} />
-                      <span
-                        className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
-                      >
-                        {message.text}
-                      </span>
-                    </section>
-                  ))}
-                </div>
-                
-                <label
-                  htmlFor='messageInput'
-                  className="flex h-12 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center"
-                  >
-                  <input
-                    ref={messageRef}
-                    className="border border-gray-300 rounded-sm px-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
-                  />
-                  <IconAction
-                    dataFeather="send"
-                    text='Send'
-                    className='rounded-sm bg-green-50 h-full'
-                    iconOnClick={handleSendMessage}
-                  />
-                </label>
+                {[...receivedMessageData]
+                .sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds)
+                .map((message) => (
+                  <section className="flex justify-start gap-1 items-center" key={message.timestamp}>
+                    <IconUser user={activeUser} />
+                    <span
+                      className='bg-green-700 p-2 text-sm rounded-md font-medium text-white max-w-[60%] max-h-fit h-full justify-self-start w-fit'
+                    >
+                      {message.text}
+                    </span>
+                  </section>
+                ))}
               </div>
-            ) : (
-              <span className="text-gray-600">Select a user to chat with</span>
-            )}
+              
+              <label
+                htmlFor='messageInput'
+                className="flex h-12 w-full border-2 border-green-700 border-opacity-25 rounded-md self-end items-center"
+                >
+                <input
+                  ref={messageRef}
+                  className="border border-gray-300 rounded-sm px-1 w-full h-full focus:ring-1 focus:ring-green-600 focus:ring-opacity-50 focus:outline-none hover:cursor-pointer text-sm z-10"
+                />
+                <IconAction
+                  dataFeather="send"
+                  text='Send'
+                  className='rounded-sm bg-green-50 h-full'
+                  iconOnClick={handleSendMessage}
+                />
+              </label>
+            </div>
+          ) : (
+            <span className="text-gray-600">Select a user to chat with</span>
+          )}
 
-          </section>
-        )}
+        </section>
       </section>
     </div>
   );

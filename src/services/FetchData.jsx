@@ -188,7 +188,7 @@ const useFetchActiveProjectData = ( projectId, refreshKey ) => {
     }
   
     return () => unsubscribe();
-  }, [id, projectData, refreshKey]);
+  }, [id, refreshKey]);
 
 
   return { projectData, loading}
@@ -295,21 +295,28 @@ const useFetchMessageData = (activeUser, projectId) => {
   const fetchMessages = async (isInitial = false) => {
     const sentFilter = [];
     const receivedFilter = [];
+    const senderId = auth.currentUser?.uid;
+    const targetId = activeUser?.uid ?? activeUser?.tag;
 
-    if (!activeUser) return;
+    if (!activeUser || !projectId || !senderId || !targetId) {
+      setSentMessageData([]);
+      setReceivedMessageData([]);
+      if (isInitial) setLoading(false);
+      return;
+    }
 
     if (activeUser.uid) {
       sentFilter.push(where('messageTo', '==', activeUser.uid));
-      sentFilter.push(where('senderId', '==', auth.currentUser.uid));
+      sentFilter.push(where('senderId', '==', senderId));
 
-      receivedFilter.push(where('messageTo', '==', auth.currentUser.uid));
+      receivedFilter.push(where('messageTo', '==', senderId));
       receivedFilter.push(where('senderId', '==', activeUser.uid));
     } else if (activeUser.tag) {
       sentFilter.push(where('messageTo', '==', activeUser.tag));
-      sentFilter.push(where('senderId', '==', auth.currentUser.uid));
+      sentFilter.push(where('senderId', '==', senderId));
 
       receivedFilter.push(where('messageTo', '==', activeUser.tag));
-      receivedFilter.push(where('senderId', '!=', auth.currentUser.uid));
+      receivedFilter.push(where('senderId', '!=', senderId));
     }
 
     if (isInitial) setLoading(true);
@@ -346,11 +353,18 @@ const useFetchMessageData = (activeUser, projectId) => {
   }, []);
 
   useEffect(() => {
+    if (!activeUser || (!activeUser.uid && !activeUser.tag) || !projectId) {
+      setLoading(false);
+      return;
+    }
+
     fetchMessages(true); 
-  }, [activeUser]);
+  }, [activeUser, projectId]);
 
   useEffect(() => {
-    if (!initialLoad) fetchMessages();
+    if (!initialLoad && activeUser && (activeUser.uid || activeUser.tag) && projectId) {
+      fetchMessages();
+    }
   }, [refreshKey]);
 
   return { sentMessageData, receivedMessageData, loading };

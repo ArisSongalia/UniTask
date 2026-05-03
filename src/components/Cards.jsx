@@ -232,7 +232,7 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[18rem] h-fit rounded-md bg-white ${className}`} onClick={onClick ? onClick : toggleIsActive} >
+    <section className={`flex items-center border w-full max-w-[14rem] h-fit rounded-md bg-white ${className}`} onClick={onClick ? onClick : toggleIsActive} >
       <span
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
       >
@@ -265,7 +265,7 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   };
   
   return (
-    <section className={`flex border w-full max-w-[18rem] h-fit rounded-lg bg-white ${className}`}>
+    <section className={`flex border w-full max-w-[14rem] h-fit rounded-lg bg-white ${className}`}>
       <span
         className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
         onClick={toggleIsActive}
