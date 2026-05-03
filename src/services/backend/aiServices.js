@@ -78,7 +78,6 @@ export async function createProjectWithAI(prompt) {
                 "projectTitle":"",
                 "projectDescription":"",
                 "dueDate":"YYYY-MM-DD",
-                "notes":["",""],
                 "tasks":[
                   {
                     "title":"",
@@ -93,7 +92,6 @@ export async function createProjectWithAI(prompt) {
               Rules:
               - Generate 5-10 tasks in logical order
               - Keep titles/descriptions concise
-              - Notes should help team members
               - Use realistic due dates
               - Categories: Frontend, Backend, Design, Testing, Research, Planning, etc.
               - No markdown
