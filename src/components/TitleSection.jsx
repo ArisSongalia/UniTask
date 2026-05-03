@@ -31,7 +31,7 @@ function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', iconT
       <section className='flex flex-col w-full'>
         <p className={` w-full text-start max-w-[80%] overflow-hidden overflow-ellipsis font-bold text-[0.9rem] text-slate-800 ${titleClassName}`}>{title}</p>
         {(underTitle) && (
-          <p className='text-[0.8rem] text-gray-600 font-semibold'>{underTitle}</p>
+          <p className='text-[0.7rem] text-gray-600 font-semibold'>{underTitle}</p>
         )}
       </section>
       <span className='flex gap-2'>

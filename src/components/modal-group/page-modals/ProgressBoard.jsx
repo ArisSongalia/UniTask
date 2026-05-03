@@ -13,8 +13,8 @@ import CreateTask from '../create-modals/CreateTask'
 const COLUMNS = [
   { key: 'toDo',       status: 'To-do',       label: 'To-do',       color: 'slate',   loaderColor: '#94a3b8' },
   { key: 'inProgress', status: 'In-progress', label: 'In Progress', color: 'blue',    loaderColor: '#3b82f6' },
-  { key: 'toReview',   status: 'To-review',   label: 'To Review',   color: 'amber',   loaderColor: '#f59e0b' },
-  { key: 'finished',   status: 'Finished',    label: 'Finished',    color: 'emerald', loaderColor: '#10b981' },
+  { key: 'toReview',   status: 'To-review',   label: 'To Review',   color: 'yellow',   loaderColor: '#f59e0b' },
+  { key: 'finished',   status: 'Finished',    label: 'Finished',    color: 'green', loaderColor: '#10b981' },
 ]
 
 const theme = (color) => ({

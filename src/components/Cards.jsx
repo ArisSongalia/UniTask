@@ -128,15 +128,15 @@ function ProjectCard({projectData}) {
       flex-grow justify-between border gap-2 border-green-600 p-3 h-[12rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >
-      <section className="flex flex-col items-start w-full">
+      <section className="flex flex-col items-start w-full h-fit">
           <section className='relative w-full'>
-            <IconTitleSection title={projectData.title} dataFeather='more-vertical' iconOnClick={togglePopUp} underTitle={projectData.date}/>
+            <IconTitleSection title={projectData.title} dataFeather='more-vertical' iconOnClick={togglePopUp} underTitle={projectData.date} className="!mb-1"/>
             {showPopUp && <Popup closeModal={togglePopUp} projectData={projectData} collectionName='projects' />}
           </section>
       </section>
 
       <section className="flex flex-col justify-between h-full w-full overflow-hidden overflow-y-scroll">
-        <IconText text={projectData.description} color='green' border />
+        <IconText text={projectData.description} className="bg-slate-50 mr-1" color='green' border />
       </section>
       <span className="flex flex-wrap gap-1">
         <IconText text={isSharedProject ? 'Shared' : 'Solo'} color="slate" className="" />
@@ -189,6 +189,7 @@ function NoteCard({
               dataFeather={'more-vertical'} 
               iconOnClick={() => dispatch({ type: 'TOGGLE_POPUP'})}
               underTitle={noteData.date}
+              className="!mb-1"
             />
             {visibility.popUp &&
               <Popup closeModal={() => dispatch({ type: 'TOGGLE_POPUP'})} noteData={noteData} className='' collectionName='notes'/>
@@ -328,7 +329,7 @@ function TaskCard({taskData, className}) {
       <span className='flex flex-col'>
 
         <section className="relative">
-          <IconTitleSection title={taskData.title} underTitle={taskData.deadline.toDate().toLocaleString()} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} />
+          <IconTitleSection title={taskData.title} underTitle={taskData.deadline.toDate().toLocaleString()} dataFeather='more-vertical' iconOnClick={() => toggleVisbility('popUp')} className='!mb-1'/>
           {visibility.popUp &&
             <Popup
               taskData={taskData}
