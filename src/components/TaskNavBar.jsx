@@ -27,6 +27,7 @@ function TaskNavBar() {
   };
 
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
+  const isSharedProject = (projectData?.team?.length || 0) > 1;
 
   return (
     <div className='bg-white flex z-40 items-center py-2 px-4 justify-center sticky top-0 w-full h-fit shadow-sm'>
@@ -46,7 +47,7 @@ function TaskNavBar() {
             <span className='flex flex-col text-gray-800'>
               <h1 className='text-lg font-bold mb-1 text-green-800'>{projectData.title}</h1>
               <span className='flex gap-1'>
-                <p className="text-xs font-semibold">{projectData.type}</p>
+                <p className="text-xs font-semibold">{isSharedProject ? 'Shared' : 'Solo'}</p>
                 <span className="h-4 border-l border-gray-400"></span>
                 <p className="text-xs font-semibold">{projectData.targetDate.toDate().toLocaleString()}</p>
               </span>
@@ -55,12 +56,8 @@ function TaskNavBar() {
         </span>
 
         <span className='flex items-center gap-1'>
-          { projectData.type === 'Shared' ? (
-            <>
-              <IconAction dataFeather='user-plus' iconOnClick={() => toggleVisbility('addMembers')} />
-              {visibility.addMembers && <AddMembers closeModal={() => toggleVisbility('addMembers')} />}
-            </>
-          ) : (null)}
+          <IconAction dataFeather='user-plus' iconOnClick={() => toggleVisbility('addMembers')} />
+          {visibility.addMembers && <AddMembers closeModal={() => toggleVisbility('addMembers')} />}
 
           <IconAction dataFeather='message-square' iconOnClick={() => toggleVisbility('socialSection')} />
           {visibility.socialSection && <SocialSection closeModal={() => toggleVisbility('socialSection')} />}

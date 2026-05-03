@@ -19,7 +19,6 @@ export default function CreateProject({ closeModal, projectData }) {
     title: projectData?.title || "",
     description: projectData?.description || "",
     date: projectData?.date || "",
-    type: projectData?.type || "",
     team: projectData?.team || [],
     status: projectData?.status || "On-going"
   });

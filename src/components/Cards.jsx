@@ -106,6 +106,7 @@ function CreateCard({ title = "Title", description = "Description", onClick, col
 function ProjectCard({projectData}) {
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
+  const isSharedProject = (projectData?.team?.length || 0) > 1;
 
   const togglePopUp = () => { 
     setShowPopUp(!showPopUp);
@@ -138,7 +139,7 @@ function ProjectCard({projectData}) {
         <IconText text={projectData.description} color='green' border />
       </section>
       <span className="flex flex-wrap gap-1">
-        <IconText text={projectData.type} color="slate" className="" />
+        <IconText text={isSharedProject ? 'Shared' : 'Solo'} color="slate" className="" />
         <IconText text={projectData.status} color="blue" className="" />
       </span>
     </div>

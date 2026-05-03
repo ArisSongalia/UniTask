@@ -40,7 +40,7 @@ export default function CreateTask({ closeModal, taskData }) {
 
 
   useEffect(() => {
-    if (auth.currentUser && projectData?.type === 'Solo' && form.team.length === 0) {
+    if (auth.currentUser && form.team.length === 0) {
       const self = {
         uid: auth.currentUser.uid,
         username: auth.currentUser.displayName || 'You',
@@ -53,7 +53,7 @@ export default function CreateTask({ closeModal, taskData }) {
         'team-uids': [auth.currentUser.uid],
       }));
     }
-  }, [user, projectData?.type]);
+  }, [user, form.team.length]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,11 +63,6 @@ export default function CreateTask({ closeModal, taskData }) {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (isSaving) return;
-
-    if (projectData?.type === "Shared" && form.team.length === 0) {
-      setMessage({ text: 'Please select task members', color: 'red' });
-      return;
-    }
 
     setIsSaving(true);
     setMessage({ text: 'Saving task...', color: 'blue' });
@@ -240,7 +235,7 @@ export default function CreateTask({ closeModal, taskData }) {
             </label>
           </div>
 
-          {projectData?.type === 'Shared' && (
+          {projectData?.team?.length > 1 && (
             <div className="flex flex-col gap-2 text-gray-600">
               <p className="font-semibold">Assign Team Members</p>
               <section className="grid grid-cols-2 gap-2 p-4 rounded-md bg-slate-50 max-h-48 overflow-y-auto">

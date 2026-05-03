@@ -125,7 +125,6 @@ function CreateProjectWithAi({ prompt, closeModal }) {
         title: aiProjectData.projectTitle,
         description: aiProjectData.projectDescription,
         date: aiProjectData.dueDate,
-        type: "Solo",
         team: [{ uid: user.uid, username: user.displayName || 'You', email: user.email || '', photoURL: user.photoURL || '' }],
         status: "On-going",
         owner: user.uid,
@@ -137,7 +136,6 @@ function CreateProjectWithAi({ prompt, closeModal }) {
       const projectRef = await addDoc(collection(db, 'projects'), projectPayload);
       const projectId = projectRef.id;
 
-      // Create metrics document
       await setDoc(doc(db, "projects", projectId, "metrics", `${projectId}_metrics`), {
         projectActivity: 0,
         urgentTasks: 0,
