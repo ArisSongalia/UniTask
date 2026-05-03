@@ -6,6 +6,7 @@ import syncToSearch from '../../../services/SyncToSearch';
 import Button from '../../Button';
 import ModalOverlay from '../../ModalOverlay';
 import { IconTitleSection } from '../../TitleSection';
+import { ToggleCreateProjectWithAi } from '../ProSubscriptionModal';
 
 
 export default function CreateProject({ closeModal, projectData }) {
@@ -95,7 +96,10 @@ export default function CreateProject({ closeModal, projectData }) {
   return (
     <ModalOverlay onClick={closeModal}>
       <section className="absolute bg-white rounded-md w-full max-w-[35rem] p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title={projectData ? 'Update Project' : 'Create Project'} dataFeather='x' iconOnClick={closeModal} />
+        <IconTitleSection 
+          title={projectData ? 'Update Project' : 'Create Project'} 
+          dataFeather='x' iconOnClick={closeModal}
+        />
 
         <form onSubmit={handleCreateProject} className="flex flex-col space-y-4">
           <label className="flex flex-col text-gray-600">

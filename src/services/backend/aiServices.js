@@ -62,3 +62,71 @@ export async function analyzeTask(taskText) {
     throw new Error('AI returned invalid JSON');
   }
 }
+
+export async function createProjectWithAI(prompt) {
+  const model = getModel();
+
+  const request = {
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: `
+              Return valid JSON only:
+              {
+                "projectTitle":"",
+                "projectDescription":"",
+                "dueDate":"YYYY-MM-DD",
+                "notes":["",""],
+                "tasks":[
+                  {
+                    "title":"",
+                    "description":"",
+                    "priority":"Urgent|High|Medium|Low",
+                    "category":"",
+                    "dueDate":"YYYY-MM-DD"
+                  }
+                ]
+              }
+
+              Rules:
+              - Generate 5-10 tasks in logical order
+              - Keep titles/descriptions concise
+              - Notes should help team members
+              - Use realistic due dates
+              - Categories: Frontend, Backend, Design, Testing, Research, Planning, etc.
+              - No markdown
+              - No explanations
+              - JSON only
+
+              Project details:
+              ${prompt}
+            `
+          }
+        ]
+      }
+    ],
+    generationConfig: {
+      maxOutputTokens: 1200,
+      temperature: 0.2,
+    },
+  };
+
+  const result = await model.generateContent(request);
+  const response = result.response;
+  let text = response.candidates[0].content.parts[0].text.trim();
+
+  if (!text) throw new Error('No AI response');
+
+  if (text.startsWith("```")) {
+    text = text.replace(/```json|```/g, "").trim();
+  };
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error('AI JSON parse failed:', text);
+    throw new Error('AI returned invalid JSON');
+  }
+}

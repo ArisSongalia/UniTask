@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { handleAnalyzeTaskAI } from "../../services/frontend/createTaskWithAI";
+import { handleCreateProjectWithAI } from "../../services/frontend/createProjectWithAi";
 import { IconAction } from "../Icon";
 import { checkIsPro } from "../../services/CheckIsPro";
 import { UnlockPro } from "./PaymentModals";
 
-function ToggleAnalyzeTaskWithAI({ taskTitle, onAIResult }) {
+function ToggleAnalyzeTaskWithAI ({ taskTitle, onAIResult }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
@@ -57,6 +58,55 @@ function ToggleAnalyzeTaskWithAI({ taskTitle, onAIResult }) {
   );
 }
 
+function ToggleCreateProjectWithAi({ prompt, onAiResult}) {
+  const {isAiLoading, setAiLoading} = useState(false);
+  const {isPro, setIsPro} = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      const result = await checkIsPro();
+      setIsPro(true);
+    };
+
+    check();
+  }, []);
+
+  const toggleHandleCreateProjectWithAI = async () => {
+    if(!prompt) {
+      toast.warn("Prompt cannot be empty or try again later.");
+      return;
+    }
+
+    try {
+      setAiLoading(true);
+
+      const aiData = await handleCreateProjectWithAI(prompt);
+
+      if(!aiData) {
+        toast.error("Invalid AI response");
+        throw new Error("Invalid AI response");
+      };
+
+      onAiResult(aiData);
+      toast.success("Project created successfully by UniPro");
+    } catch (error) {
+      console.error('AI failed:', error)
+    } finally {
+      setAiLoading(false);
+    };
+  }
+
+  if (!isPro) return null;
+
+  return (
+    <IconAction
+      dataFeather={aiLoading ? "loader" : "zap"}
+      text={aiLoading ? "Creating Project..." : "Create Project With AI"}
+      iconOnClick={!aiLoading ? toggleHandleCreateProjectWithAI: undefined}
+    />
+  )
+}
+
 function ProSubscriptionButton() {
   const [unlockPro, setUnlockPro] = useState(false);
   const [isPro, setIsPro] = useState(false);
@@ -92,4 +142,4 @@ function ProSubscriptionButton() {
   );
 }
 
-export {ProSubscriptionButton, ToggleAnalyzeTaskWithAI}
+export {ProSubscriptionButton, ToggleAnalyzeTaskWithAI, ToggleCreateProjectWithAi}

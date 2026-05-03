@@ -143,17 +143,17 @@ export default function CreateTask({ closeModal, taskData }) {
           title={form.id ? 'Update Task' : 'Create Task'} 
           dataFeather='x' 
           iconOnClick={closeModal} 
-            extraIcon={
-              <ToggleAnalyzeTaskWithAI
-                taskTitle={form.title}
-                onAIResult={(aiData) => {
-                  setForm((prev) => ({
-                    ...prev,
-                    ...aiData
-                  }));
-                }}
-              />
-            }
+          extraIcon={
+            <ToggleAnalyzeTaskWithAI
+              taskTitle={form.title}
+              onAIResult={(aiData) => {
+                setForm((prev) => ({
+                  ...prev,
+                  ...aiData
+                }));
+              }}
+            />
+          }
         />
 
         <form className="flex flex-col space-y-4" onSubmit={handleCreateTask}>
