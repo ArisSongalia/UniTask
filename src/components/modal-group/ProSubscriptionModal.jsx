@@ -58,22 +58,23 @@ function ToggleAnalyzeTaskWithAI ({ taskTitle, onAIResult }) {
   );
 }
 
-function ToggleCreateProjectWithAi({ prompt, onAiResult}) {
-  const {isAiLoading, setAiLoading} = useState(false);
-  const {isPro, setIsPro} = useState(false);
+function ToggleCreateProjectWithAi({ prompt, onAiResult }) {
+  const [aiLoading, setAiLoading] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     const check = async () => {
       const result = await checkIsPro();
-      setIsPro(true);
+      setIsPro(result);
     };
 
     check();
   }, []);
 
   const toggleHandleCreateProjectWithAI = async () => {
-    if(!prompt) {
-      toast.warn("Prompt cannot be empty or try again later.");
+
+    if (!prompt) {
+      toast.warn("Prompt cannot be empty.");
       return;
     }
 
@@ -82,19 +83,22 @@ function ToggleCreateProjectWithAi({ prompt, onAiResult}) {
 
       const aiData = await handleCreateProjectWithAI(prompt);
 
-      if(!aiData) {
+      if (!aiData) {
         toast.error("Invalid AI response");
         throw new Error("Invalid AI response");
-      };
+      }
 
       onAiResult(aiData);
+
       toast.success("Project created successfully by UniPro");
+
     } catch (error) {
-      console.error('AI failed:', error)
+      console.error("AI failed:", error);
+
     } finally {
       setAiLoading(false);
-    };
-  }
+    }
+  };
 
   if (!isPro) return null;
 
@@ -102,9 +106,13 @@ function ToggleCreateProjectWithAi({ prompt, onAiResult}) {
     <IconAction
       dataFeather={aiLoading ? "loader" : "zap"}
       text={aiLoading ? "Creating Project..." : "Create Project With AI"}
-      iconOnClick={!aiLoading ? toggleHandleCreateProjectWithAI: undefined}
+      iconOnClick={
+        !aiLoading
+          ? toggleHandleCreateProjectWithAI
+          : undefined
+      }
     />
-  )
+  );
 }
 
 function ProSubscriptionButton() {

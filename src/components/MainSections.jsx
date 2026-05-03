@@ -9,6 +9,7 @@ import CreateProject from './modal-group/create-modals/CreateProject';
 import { FilterPopup } from './modal-group/Popup';
 import { ReloadIcon } from './ReloadComponent';
 import { IconTitleSection } from './TitleSection';
+import { ToggleCreateProjectWithAi } from './modal-group/ProSubscriptionModal';
 
 export function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
@@ -29,7 +30,7 @@ export function MainProjectSection() {
           title="Projects"
           dataFeather="filter"
           iconOnClick={() => setShowFilter(p => !p)}
-          extraIcon={<ReloadIcon />}
+          extraIcon={<ReloadIcon />, <ToggleCreateProjectWithAi />}
           titleClassName="text-lg font-merriweather"
           className="bg-transparent border-0 shadow-none px-1"
         />
