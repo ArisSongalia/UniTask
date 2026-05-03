@@ -6,7 +6,6 @@ import syncToSearch from '../../../services/SyncToSearch';
 import Button from '../../Button';
 import ModalOverlay from '../../ModalOverlay';
 import { IconTitleSection } from '../../TitleSection';
-import { ToggleCreateProjectWithAi } from '../ProSubscriptionModal';
 
 
 export default function CreateProject({ closeModal, projectData }) {

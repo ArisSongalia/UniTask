@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { handleAnalyzeTaskAI } from "../../services/frontend/createTaskWithAI";
 import { handleCreateProjectWithAI } from "../../services/frontend/createProjectWithAi";
-import { IconAction } from "../Icon";
+import Icon, { IconAction } from "../Icon";
 import { checkIsPro } from "../../services/CheckIsPro";
 import { UnlockPro } from "./PaymentModals";
+import ModalOverlay from "../ModalOverlay";
+import TitleSection, { IconTitleSection } from "../TitleSection";
+import Button from "../Button";
 
 function ToggleAnalyzeTaskWithAI ({ taskTitle, onAIResult }) {
   const [aiLoading, setAiLoading] = useState(false);
@@ -58,7 +61,7 @@ function ToggleAnalyzeTaskWithAI ({ taskTitle, onAIResult }) {
   );
 }
 
-function ToggleCreateProjectWithAi({ prompt, onAiResult }) {
+function CreateProjectWithAi({ prompt, onAiResult, closeModal }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
@@ -103,15 +106,55 @@ function ToggleCreateProjectWithAi({ prompt, onAiResult }) {
   if (!isPro) return null;
 
   return (
-    <IconAction
-      dataFeather={aiLoading ? "loader" : "zap"}
-      text={aiLoading ? "Creating Project..." : "Create Project With AI"}
-      iconOnClick={
-        !aiLoading
-          ? toggleHandleCreateProjectWithAI
-          : undefined
-      }
-    />
+    // <IconAction
+    //   dataFeather={aiLoading ? "loader" : "zap"}
+    //   text={aiLoading ? "Creating Project..." : "Create Project With AI"}
+    //   iconOnClick={
+    //     !aiLoading
+    //       ? toggleHandleCreateProjectWithAI
+    //       : undefined
+    //   }
+    // />
+
+    <ModalOverlay>
+      <div className="absolute bg-white rounded-md max-w-screen-md h-fit w-full p-4">
+        <IconTitleSection 
+          title="Create Project with UniPro"
+          underTitle="AI predefined project creator"
+          iconOnClick={closeModal}
+          dataFeather="x"
+        /> 
+
+        <div>
+          <h1 className="font-merriweather font-semibold text-2xl text-gray py-4">Everything starts here</h1>
+          <textarea
+            className="
+              h-[15rem]
+              w-full
+              resize-none
+              rounded-xl
+              border
+              border-green-300
+              bg-white
+              p-4
+              text-sm
+              text-gray-800
+              placeholder:text-gray-400
+              outline-none
+              transition-all
+              duration-200
+              focus:border-green-700
+              focus:ring-4
+              focus:ring-green-200
+              shadow-sm
+            "
+            placeholder="Describe your project idea..."
+          />
+          <Button text='Create Project' />
+        </div>
+      </div>
+
+    </ModalOverlay>
   );
 }
 
@@ -150,4 +193,4 @@ function ProSubscriptionButton() {
   );
 }
 
-export {ProSubscriptionButton, ToggleAnalyzeTaskWithAI, ToggleCreateProjectWithAi}
+export {ProSubscriptionButton, ToggleAnalyzeTaskWithAI, CreateProjectWithAi}

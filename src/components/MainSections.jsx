@@ -9,13 +9,19 @@ import CreateProject from './modal-group/create-modals/CreateProject';
 import { FilterPopup } from './modal-group/Popup';
 import { ReloadIcon } from './ReloadComponent';
 import { IconTitleSection } from './TitleSection';
-import { ToggleCreateProjectWithAi } from './modal-group/ProSubscriptionModal';
+import { CreateProjectWithAi } from './modal-group/ProSubscriptionModal';
+import { IconAction } from './Icon';
 
 export function MainProjectSection() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const { key } = useReloadContext();
   const { sortState } = useSort();
+  const [showCreateAIProject, setShowAiCreateAIProject] = useState(false);
+
+  const toggleShowCreateProjectWithAI = () => {
+    setShowAiCreateAIProject(!showCreateAIProject);
+  }
 
   const activeSort = Object.entries(sortState).find(([, v]) => v);
   const orderValue = activeSort?.[0] ?? null;
@@ -30,7 +36,14 @@ export function MainProjectSection() {
           title="Projects"
           dataFeather="filter"
           iconOnClick={() => setShowFilter(p => !p)}
-          extraIcon={<ReloadIcon />, <ToggleCreateProjectWithAi />}
+          extraIcon={
+            <ReloadIcon />, 
+            <IconAction 
+              text='Create Project With AI'
+              dataFeather='zap' 
+              iconOnClick={toggleShowCreateProjectWithAI}
+            />
+          }
           titleClassName="text-lg font-merriweather"
           className="bg-transparent border-0 shadow-none px-1"
         />
@@ -43,6 +56,7 @@ export function MainProjectSection() {
         <section id="project-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 p-4">
           <CreateCard onClick={() => setShowPopUp(true)} title="Create Project" description="Get started! Manage tasks individually or collaboratively." />
           {showPopUp && <CreateProject closeModal={() => setShowPopUp(false)} />}
+          {showCreateAIProject && <CreateProjectWithAi closeModal={toggleShowCreateProjectWithAI} />}
 
           {!loading && (projectData?.length > 0
             ? projectData.map(project => <ProjectCard key={project.id} projectData={project} />)
