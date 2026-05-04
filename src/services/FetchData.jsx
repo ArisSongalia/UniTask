@@ -52,13 +52,19 @@ const useFetchProjectData = (
 
         let q = query(
           projectRef,
-          where("team-uids", "array-contains", user.uid)
+          or(
+            where("team-uids", "array-contains", user.uid),
+            where("owner", "==", user.uid)
+          )
         );
 
         if (orderValue) {
           q = query(
             projectRef,
-            where("team-uids", "array-contains", user.uid),
+            or(
+              where("team-uids", "array-contains", user.uid),
+              where("owner", "==", user.uid)
+            ),
             orderBy(orderValue, orderPos)
           );
         }
@@ -72,20 +78,27 @@ const useFetchProjectData = (
 
         setProjectData(data);
       } catch (error) {
-        console.error("Error Fetching Project Data:", error);
+        console.error(
+          "Error Fetching Project Data:",
+          error
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoading(true);
-        fetchProjectData(user);
-      } else {
-        setLoading(false);
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        if (user) {
+          setLoading(true);
+          fetchProjectData(user);
+        } else {
+          setProjectData([]);
+          setLoading(false);
+        }
       }
-    });
+    );
 
     return () => unsubscribe();
   }, [orderValue, orderPos, refreshKey]);
