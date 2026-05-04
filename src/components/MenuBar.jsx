@@ -119,15 +119,16 @@ function MenuBar({ closeModal }) {
 
   const accountActions = [
     {
-      dataFeather: "user",
-      label: "Edit Profile",
-      sublabel: "Update your name and photo",
-      onClick: () => {},
-    },
-    {
       dataFeather: "lock",
       label: "Change Password",
       sublabel: "Update your login credentials",
+      onClick: () => {},
+    },
+    {
+      dataFeather: "user",
+      label: "Delete Account",
+      sublabel: "Permanently remove your account",
+      danger: true,
       onClick: () => {},
     },
     {
