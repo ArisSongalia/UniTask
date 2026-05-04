@@ -11,21 +11,17 @@ import paymentWebhook from '../routes/paymentsWebhook.js';
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://uni-task-lime.vercel.app",
-  "https://untroublesome-vaulted-vennie.ngrok-free.dev",
-  "https://uni-task-2vya64uc0-arissongalias-projects.vercel.app"
-];
-
 app.use(cors({
-  origin: allowedOrigins,
+  origin: [
+    "http://localhost:5173",
+    "https://uni-task-lime.vercel.app",
+    "https://untroublesome-vaulted-vennie.ngrok-free.dev",
+    "https://uni-task-2vya64uc0-arissongalias-projects.vercel.app"
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-app.options('/*', cors());
 
 app.use(express.json());
 
