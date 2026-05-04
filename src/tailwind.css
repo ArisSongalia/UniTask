@@ -60,3 +60,8 @@
 [data-compact="true"] .pb-5 { padding-bottom: 0.75rem; }
 [data-compact="true"] .pb-4 { padding-bottom: 0.5rem; }
 [data-compact="true"] .pb-3 { padding-bottom: 0.375rem; }
+
+[data-text-size="large"] .text-xs { font-size: 0.875rem; line-height: 1.25rem; }
+[data-text-size="large"] .text-sm { font-size: 1rem; line-height: 1.5rem; }
+[data-text-size="large"] .text-base { font-size: 1.125rem; line-height: 1.75rem; }
+[data-text-size="large"] .text-lg { font-size: 1.25rem; line-height: 1.75rem; }

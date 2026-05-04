@@ -8,13 +8,14 @@ import { useLayout } from '../context/LayoutContext';
 
 
 function App() {
-  const { compactView } = useLayout();
+  const { compactView, largeText } = useLayout();
 
   return (
         <div
           id="main-container"
           className=''
           data-compact={compactView ? 'true' : 'false'}
+          data-text-size={largeText ? 'large' : 'normal'}
         >
           <Routes>
             <Route path="/" element={<Navigate to="/Home" replace />} />

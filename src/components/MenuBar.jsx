@@ -83,7 +83,7 @@ function ActionRow({ dataFeather, label, sublabel, onClick, danger }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 function MenuBar({ closeModal }) {
-  const { compactView, toggleCompactView } = useLayout();
+  const { compactView, toggleCompactView, largeText, toggleLargeText } = useLayout();
   const [prefs, setPrefs] = useState({
     notifications: true,
     emailUpdates: false,
@@ -114,6 +114,13 @@ function MenuBar({ closeModal }) {
       sublabel: "Show more items with less spacing",
       enabled: compactView,
       onChange: toggleCompactView,
+    },
+    {
+      dataFeather: "type",
+      label: "Increase Font Size",
+      sublabel: "Make text easier to read",
+      enabled: largeText,
+      onChange: toggleLargeText,
     },
   ];
 
