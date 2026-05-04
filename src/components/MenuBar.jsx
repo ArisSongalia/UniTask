@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmailAuthProvider, GoogleAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import Icon from "./Icon";
 import ModalOverlay from "./ModalOverlay";
 import { IconTitleSection } from "./TitleSection";
 import { useLayout } from "../context/LayoutContext";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { disablePush, enablePush, registerPushToken } from "../services/pushNotifications";
 
 const GOOGLE_PROVIDER_ID = "google.com";
 
@@ -191,6 +193,8 @@ function MenuBar({ closeModal }) {
     emailUpdates: false,
   });
 
+  const [pushEnabled, setPushEnabled] = useState(true);
+
   const toggle = (key) =>
     setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -200,6 +204,21 @@ function MenuBar({ closeModal }) {
       dataFeather: "bell",
       label: "Push Notifications",
       sublabel: "Get notified about task updates",
+      enabled: pushEnabled,
+      onChange: async (next) => {
+        setPushEnabled(next);
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+
+        await setDoc(doc(db, 'users', uid), { pushEnabled: next }, { merge: true });
+
+        if (next) {
+          await enablePush(uid);
+          await registerPushToken(uid);
+        } else {
+          await disablePush(uid);
+        }
+      },
     },
   ];
 
@@ -266,8 +285,8 @@ function MenuBar({ closeModal }) {
                 dataFeather={item.dataFeather}
                 label={item.label}
                 sublabel={item.sublabel}
-                enabled={prefs[item.key]}
-                onChange={() => toggle(item.key)}
+                enabled={item.enabled}
+                onChange={item.onChange}
               />
             ))}
           </MenuSection>

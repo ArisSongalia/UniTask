@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/images/unitask.svg';
 import { auth, db } from '../config/firebase';
 import { checkIsPro } from '../services/CheckIsPro';
+import { registerPushToken } from '../services/pushNotifications';
 import HomeSideBar from './HomeSideBar';
 import { IconAction, IconUser } from './Icon';
 import MenuBar from './MenuBar';
@@ -61,6 +62,11 @@ function Navbar() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user?.uid) return;
+    registerPushToken(user.uid);
+  }, [user?.uid]);
 
   useEffect(() => {
     if (!user?.uid) return;

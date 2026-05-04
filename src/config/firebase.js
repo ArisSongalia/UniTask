@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getMessaging, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: "AIzaSyANEbqOmBO1iYDFXkYMUCC2vl3TaYRMgjs",
@@ -17,9 +18,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const messagingPromise = isSupported().then((supported) => (supported ? getMessaging(app) : null));
 
 
 auth.languageCode = 'it';
 
-export { auth, app, db, storage};
+export { auth, app, db, storage, messagingPromise };
 export const googleProvider = new GoogleAuthProvider();
