@@ -214,8 +214,16 @@ function NoteCard({
 }
 
 
-function UserCard({ className = '', user, onStateChange, withEmail = true, isActive = false, onClick=null }) {
-  const [localActive, setLocalActive] = useState(isActive);
+function UserCard({
+  className = '',
+  user,
+  onStateChange,
+  withEmail = true,
+  isActive = false,
+  onClick = null,
+}) {
+  const [localActive, setLocalActive] =
+    useState(isActive);
 
   useEffect(() => {
     setLocalActive(isActive);
@@ -223,23 +231,61 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
 
   const toggleIsActive = () => {
     const newState = !localActive;
+
     setLocalActive(newState);
 
     if (onStateChange && user) {
-      const { username, email, uid, photoURL } = user;
-      onStateChange({ username, email, uid, photoURL, isActive: newState });
+      const {
+        displayName,
+        email,
+        uid,
+        photoURL,
+      } = user;
+
+      onStateChange({
+        displayName,
+        email,
+        uid,
+        photoURL,
+        isActive: newState,
+      });
     }
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[14rem] h-fit rounded-card bg-surface-base ${className}`} onClick={onClick ? onClick : toggleIsActive} >
+    <section
+      className={`flex items-center border w-full max-w-[14rem] h-fit rounded-card bg-surface-base ${className}`}
+      onClick={() => {
+        toggleIsActive();
+
+        if (onClick) {
+          onClick();
+        }
+      }}
+    >
       <span
-        className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-card hover:bg-brand-50 items-center hover:cursor-pointer ${localActive ? 'bg-brand-700 hover:bg-brand-700 text-white' : ''}`}
+        className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-card hover:bg-brand-50 items-center hover:cursor-pointer ${
+          localActive
+            ? 'bg-brand-700 hover:bg-brand-700 text-white'
+            : ''
+        }`}
       >
-        <img className="w-6 h-6 rounded-full" src={user?.photoURL?? null} alt="user-icon" />
+        <img
+          className="w-6 h-6 rounded-full"
+          src={user?.photoURL ?? null}
+          alt="user-icon"
+        />
+
         <span className="flex flex-col w-full">
-          <p className="text-sm truncate">{user?.username ?? 'user'}</p>
-          {withEmail && <p className="text-xs opacity-80 truncate">{user?.email ?? null}</p>}
+          <p className="text-sm truncate">
+            {user?.displayName ?? 'user'}
+          </p>
+
+          {withEmail && (
+            <p className="text-xs opacity-80 truncate">
+              {user?.email ?? null}
+            </p>
+          )}
         </span>
       </span>
     </section>

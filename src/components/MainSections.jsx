@@ -37,12 +37,14 @@ export function MainProjectSection() {
           dataFeather="filter"
           iconOnClick={() => setShowFilter(p => !p)}
           extraIcon={
-            <ReloadIcon />, 
-            <IconAction 
-              text='Create Project With AI'
-              dataFeather='zap' 
-              iconOnClick={toggleShowCreateProjectWithAI}
-            />
+            <>
+              <IconAction
+                text="Create Project With AI"
+                dataFeather="zap"
+                iconOnClick={toggleShowCreateProjectWithAI}
+              />
+              <ReloadIcon />
+            </>
           }
           titleClassName="text-lg font-merriweather"
           className="bg-transparent border-0 shadow-none px-1"

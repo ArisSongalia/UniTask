@@ -28,7 +28,7 @@ export default function CreateProject({ closeModal, projectData }) {
       setForm(prev => ({
         ...prev,
         team: [{ uid: user.uid, username: user.displayName || 'You', email: user.email || '', photoURL: user.photoURL || '' }],
-        'team-uid': [user.uid]
+        'team-uids': [user.uid]
       }));
     }
   }, [user, projectData]);

@@ -22,113 +22,295 @@ import CreateTask from './create-modals/CreateTask';
 function AddMembers({ closeModal }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ text: "", color: ""})
-  const { key, reloadComponent } = useReloadContext();
-  const [members, setMembers] = useState([...new Set([])]);
-  const { projectId: routeProjectId } = useParams();
-  const storedProjectId = localStorage.getItem('activeProjectId');
-  const normalizedStoredProjectId = storedProjectId && storedProjectId !== 'undefined' ? storedProjectId : null;
-  const activeProjectId = normalizedStoredProjectId || routeProjectId || null;
-  const { projectData: activeProjectData, loading: projectLoading } = useFetchActiveProjectData(activeProjectId, key);
 
-  useFetchUsers(setUsers, setLoading, key);
-  
+  const [message, setMessage] = useState({
+    text: "",
+    color: "",
+  });
+
+  const { key, reloadComponent } =
+    useReloadContext();
+
+  const [members, setMembers] = useState([]);
+
+  const {
+    projectId: routeProjectId,
+  } = useParams();
+
+  const storedProjectId =
+    localStorage.getItem(
+      "activeProjectId"
+    );
+
+  const normalizedStoredProjectId =
+    storedProjectId &&
+    storedProjectId !== "undefined"
+      ? storedProjectId
+      : null;
+
+  const activeProjectId =
+    normalizedStoredProjectId ||
+    routeProjectId ||
+    null;
+
+  const {
+    projectData: activeProjectData,
+    loading: projectLoading,
+  } = useFetchActiveProjectData(
+    activeProjectId,
+    key
+  );
+
+  useFetchUsers(
+    setUsers,
+    setLoading,
+    key
+  );
+
   const handleAddMembers = (user) => {
     setMembers((prevMembers) => {
-      if(user.isActive) {
-        return [...prevMembers, { username: user.username, uid: user.uid, email: user.email, photoURL: user.photoURL}]
-      } else {
-        return prevMembers.filter((member) => member.uid !== user.uid);
+      if (user.isActive) {
+        const alreadyExists =
+          prevMembers.some(
+            member =>
+              member.uid === user.uid
+          );
+
+        if (alreadyExists)
+          return prevMembers;
+
+        return [
+          ...prevMembers,
+          {
+            displayName:
+              user.displayName,
+            uid: user.uid,
+            email: user.email,
+            photoURL: user.photoURL,
+          },
+        ];
       }
+
+      return prevMembers.filter(
+        member =>
+          member.uid !== user.uid
+      );
     });
   };
 
-  const addMembersToProject = async () => {
-    if (!activeProjectId) {
-      setMessage({ text: "No active project selected.", color: "red" });
-      return;
-    }
+  const addMembersToProject =
+    async () => {
+      if (!activeProjectId) {
+        setMessage({
+          text: "No active project selected.",
+          color: "red",
+        });
 
-    if (!Array.isArray(members) || members.length === 0) {
-      setMessage({ text: "No members to add. Please select at least one member.", color: "red" });
-      return;
-    }
+        return;
+      }
 
-    try {
-      const projectDocRef = doc(db, 'projects', activeProjectId);
-      const projectDoc = await getDoc(projectDocRef);
+      if (members.length === 0) {
+        setMessage({
+          text: "No members selected.",
+          color: "red",
+        });
 
-      if (projectDoc.exists()) {
-        const existingTeam = Array.isArray(projectDoc.data().team) ? projectDoc.data().team : [];
-        const mergedTeam = [...existingTeam, ...members];
-        const uniqueTeam = mergedTeam.filter((member, index, self) =>
-          member?.uid && index === self.findIndex((m) => m?.uid === member.uid)
+        return;
+      }
+
+      try {
+        const projectDocRef = doc(
+          db,
+          "projects",
+          activeProjectId
         );
-        const teamUids = uniqueTeam.map((member) => member.uid);
 
-        await updateDoc(projectDocRef, { team: uniqueTeam, 'team-uids': teamUids });
+        const projectDoc =
+          await getDoc(projectDocRef);
 
-        const notifyUids = members
-          .map((member) => member.uid)
-          .filter((uid) => uid && uid !== auth.currentUser?.uid);
+        if (projectDoc.exists()) {
+          const existingTeam =
+            Array.isArray(
+              projectDoc.data().team
+            )
+              ? projectDoc.data().team
+              : [];
 
-        if (notifyUids.length > 0) {
-          await createNotificationsForUids({
-            uids: notifyUids,
-            title: 'Added to project',
-            message: `You were added to "${activeProjectData?.title || 'a project'}".`,
-            type: 'project_added',
-            projectId: activeProjectId,
+          const mergedTeam = [
+            ...existingTeam,
+            ...members,
+          ];
+
+          const uniqueTeam =
+            mergedTeam.filter(
+              (
+                member,
+                index,
+                self
+              ) =>
+                member?.uid &&
+                index ===
+                  self.findIndex(
+                    m =>
+                      m?.uid ===
+                      member.uid
+                  )
+            );
+
+          const teamUids =
+            uniqueTeam.map(
+              member => member.uid
+            );
+
+          await updateDoc(
+            projectDocRef,
+            {
+              team: uniqueTeam,
+              "team-uids":
+                teamUids,
+            }
+          );
+
+          const notifyUids =
+            members
+              .map(
+                member => member.uid
+              )
+              .filter(
+                uid =>
+                  uid &&
+                  uid !==
+                    auth.currentUser
+                      ?.uid
+              );
+
+          if (
+            notifyUids.length > 0
+          ) {
+            await createNotificationsForUids(
+              {
+                uids: notifyUids,
+                title:
+                  "Added to project",
+                message: `You were added to "${
+                  activeProjectData?.title ||
+                  "a project"
+                }".`,
+                type:
+                  "project_added",
+                projectId:
+                  activeProjectId,
+              }
+            );
+          }
+
+          reloadComponent();
+
+          closeModal();
+        } else {
+          setMessage({
+            text: "Project not found",
+            color: "red",
           });
         }
-        closeModal();
-        reloadComponent();
-      } else {
-        setMessage({ text: "Project not found", color: "red"});
-      }
-    } catch (error) {
-      setMessage({ text: `Error adding member/s: ${error}`, color: "red"});
-      console.error(error)
-    }
-  };
+      } catch (error) {
+        console.error(error);
 
+        setMessage({
+          text: `Error adding members: ${error.message}`,
+          color: "red",
+        });
+      }
+    };
 
   return (
-    <ModalOverlay onClick={closeModal}>
-      <section className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
-        <IconTitleSection title='Select Users to Contribute' iconOnClick={closeModal} dataFeather='x'/>
-        <input 
-          className='w-full p-2 flex gap-2 bg-gray-50 mb-2 focus:outline-none focus:ring-0 rounded-md'
-          placeholder='Selected project contributors will appear here'
-          readOnly
-          value={
-            members.length > 0
-              ? members.map((member) => member.username).join(', ')
-              : ''
-          }
+    <ModalOverlay
+      onClick={closeModal}
+    >
+      <section
+        className="flex flex-col bg-white rounded-md w-[35rem] p-6 shadow-lg"
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+      >
+        <IconTitleSection
+          title="Select Users to Contribute"
+          iconOnClick={closeModal}
+          dataFeather="x"
         />
-        <span id='contributors' className='flex flex-col bg-gray-50 h-[25rem] gap-4'>
 
-          <span id='users' className='grid grid-cols-2 p-4   rounded-md h-fit overflow-y-scroll'>
+        <input
+          className="w-full p-2 flex gap-2 bg-gray-50 mb-2 focus:outline-none focus:ring-0 rounded-md"
+          placeholder="Selected project contributors will appear here"
+          readOnly
+          value={members
+            .map(
+              member =>
+                member.displayName
+            )
+            .join(", ")}
+        />
 
-            { loading ? (
+        <span
+          id="contributors"
+          className="flex flex-col bg-gray-50 h-[25rem] gap-4"
+        >
+          <span
+            id="users"
+            className="grid grid-cols-2 p-4 rounded-md h-fit overflow-y-scroll"
+          >
+            {loading ? (
               <BarLoader />
-            ) : users.length > 0 && (
+            ) : (
               users
-                .filter((user) => user.uid !== auth.currentUser?.uid)
-                .filter((user) => !activeProjectData?.team?.some((member) => member?.uid === user.uid))
+                .filter(
+                  user =>
+                    user.uid !==
+                    auth
+                      .currentUser
+                      ?.uid
+                )
+                .filter(
+                  user =>
+                    !activeProjectData?.team?.some(
+                      member =>
+                        member?.uid ===
+                        user.uid
+                    )
+                )
                 .map((user) => (
-                  <UserCard key={user.id} user={user} className='w-full' onStateChange={handleAddMembers} />
+                  <UserCard
+                    key={user.uid}
+                    user={user}
+                    className="w-full"
+                    onStateChange={
+                      handleAddMembers
+                    }
+                  />
                 ))
             )}
           </span>
         </span>
-        <p style={{color: message.color}}>{message.text}</p>
-        <Button text='Add Members' className='w-full' onClick={addMembersToProject}/>
+
+        <p
+          style={{
+            color: message.color,
+          }}
+        >
+          {message.text}
+        </p>
+
+        <Button
+          text="Add Members"
+          className="w-full"
+          onClick={
+            addMembersToProject
+          }
+        />
       </section>
     </ModalOverlay>
   );
-};
+}
 
 
 function NoteFocus({ closeModal, noteData}) {
