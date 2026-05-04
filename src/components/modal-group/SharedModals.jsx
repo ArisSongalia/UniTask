@@ -66,7 +66,7 @@ function AddMembers({ closeModal }) {
         );
         const teamUids = uniqueTeam.map((member) => member.uid);
 
-        await updateDoc(projectDocRef, { team: uniqueTeam, 'team-uid': teamUids });
+        await updateDoc(projectDocRef, { team: uniqueTeam, 'team-uids': teamUids });
 
         const notifyUids = members
           .map((member) => member.uid)

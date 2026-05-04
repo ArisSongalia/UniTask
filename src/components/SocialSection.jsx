@@ -120,7 +120,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
             <>
               <EveryOneCard
                 projectData={projectData}
-                isActive={activeUser?.tag === 'everyone'}
+                isActive={activeUser?.displayname === 'everyone'}
                 onStateChange={(data) => {
                   dispatch({ type: 'SET_ACTIVE_USER', payload: data.isActive ? data : null });
                 }}
@@ -165,31 +165,75 @@ function SocialSection({ className = '', closeModal = () => {} }) {
                 />
               </div>
 
-              <div id="messageDisplay" className="flex flex-col h-full w-full gap-2 overflow-y-auto p-3">
-                {[...sentMessageData]
-                .sort((a, b) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0))
-                .map((message) => (
-                  <section className='flex justify-end' key={message.id || message.timestamp}>
-                    <span
-                      className='bg-green-100 px-3 py-2 text-sm rounded-2xl font-medium text-green-900 max-w-[70%]'
-                    >
-                      {message.text}
-                    </span>
-                  </section>
-                ))}
+              <div
+                id="messageDisplay"
+                className="flex flex-col h-full w-full gap-3 overflow-y-auto p-3"
+              >
+                {[
+                  ...sentMessageData.map(msg => ({
+                    ...msg,
+                    isOwn: true,
+                  })),
+                  ...receivedMessageData.map(msg => ({
+                    ...msg,
+                    isOwn: false,
+                  })),
+                ]
+                  .sort(
+                    (a, b) =>
+                      (a.timestamp?.seconds || 0) -
+                      (b.timestamp?.seconds || 0)
+                  )
+                  .map((message) => {
+                    const sender =
+                      projectData?.team?.find(
+                        member => member.uid === message.senderId
+                      ) || {};
 
-                {[...receivedMessageData]
-                .sort((a, b) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0))
-                .map((message) => (
-                  <section className="flex justify-start gap-2 items-end" key={message.id || message.timestamp}>
-                    <IconUser user={activeUser} />
-                    <span
-                      className='bg-white px-3 py-2 text-sm rounded-2xl font-medium text-gray-800 border border-gray-100 max-w-[70%]'
-                    >
-                      {message.text}
-                    </span>
-                  </section>
-                ))}
+                    const timestamp = message.timestamp?.toDate
+                      ? message.timestamp.toDate().toLocaleString()
+                      : '';
+
+                    return (
+                      <section
+                        key={message.id}
+                        className={`flex flex-col ${
+                          message.isOwn ? 'items-end' : 'items-start'
+                        }`}
+                      >
+                        {/* Sender Info */}
+                        <div className="flex items-center gap-2 mb-1">
+                          {!message.isOwn && (
+                            <IconUser user={sender} />
+                          )}
+
+                          <span className="flex flex-col">
+                            <span className="text-xs font-semibold text-gray-700">
+                              {message.isOwn
+                                ? ''
+                                : sender.displayName ||
+                                  sender.username ||
+                                  'Unknown User'}
+                            </span>
+                            <span className="text-[10px] text-gray-400">
+                              {timestamp}
+                            </span>
+                          </span>
+                        </div>
+
+                        {/* Message Bubble */}
+                        <div
+                          className={`px-3 py-2 text-sm rounded-2xl font-medium max-w-[70%] ${
+                            message.isOwn
+                              ? 'bg-green-100 text-green-900'
+                              : 'bg-white text-gray-800 border border-gray-100'
+                          }`}
+                        >
+                          {message.text}
+                        </div>
+                      </section>
+                    );
+                  })}
               </div>
               
               <label

@@ -52,13 +52,13 @@ const useFetchProjectData = (
 
         let q = query(
           projectRef,
-          where("owner", "==", user.uid)
+          where("team-uids", "array-contains", user.uid)
         );
 
         if (orderValue) {
           q = query(
             projectRef,
-            where("owner", "==", user.uid),
+            where("team-uids", "array-contains", user.uid),
             orderBy(orderValue, orderPos)
           );
         }
@@ -106,7 +106,7 @@ const useFetchNoteData = ( refreshKey, customWhere ) => {
           const noteRef = collection(db, 'notes');
           const q = customWhere 
             ? query(noteRef, customWhere) 
-            : query(noteRef, where("ownerUid", "==", user.uid));
+            : query(noteRef, where("team-uids", "array-contains", user.uid));
           const querySnapshot = await getDocs(q);
       
           if (!querySnapshot.empty) {
