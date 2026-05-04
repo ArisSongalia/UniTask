@@ -1,8 +1,9 @@
 import { onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs, onSnapshot, orderBy, query, updateDoc, writeBatch } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import unitask from '../assets/images/unitask.svg';
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { checkIsPro } from '../services/CheckIsPro';
 import HomeSideBar from './HomeSideBar';
 import { IconAction, IconUser } from './Icon';
@@ -26,11 +27,31 @@ function Navbar() {
     notification: false
   })
 
+  const [notifications, setNotifications] = useState([]);
+  const [hasUnread, setHasUnread] = useState(false);
+
+  const markAllRead = async () => {
+    if (!user?.uid) return;
+    const notifRef = collection(db, 'users', user.uid, 'notifications');
+    const unreadQuery = query(notifRef, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(unreadQuery);
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((docSnap) => {
+      if (docSnap.data().read) return;
+      batch.update(docSnap.ref, { read: true });
+    });
+    await batch.commit();
+  };
+
   const toggleVisibility = (section) => {
-    setVisbility((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }))
+    setVisbility((prev) => {
+      const next = { ...prev, [section]: !prev[section] };
+      if (section === 'notification' && next.notification) {
+        setHasUnread(false);
+        markAllRead();
+      }
+      return next;
+    })
   };
 
   useEffect(() => {
@@ -40,6 +61,24 @@ function Navbar() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const notifRef = collection(db, 'users', user.uid, 'notifications');
+    const notifQuery = query(notifRef, orderBy('createdAt', 'desc'));
+
+    const unsub = onSnapshot(notifQuery, (snapshot) => {
+      const items = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+      }));
+      setNotifications(items);
+      setHasUnread(items.some((item) => item.read === false));
+    });
+
+    return () => unsub();
+  }, [user?.uid]);
 
   if (location.pathname === '/Home/Project') {
     return null;
@@ -63,8 +102,18 @@ function Navbar() {
         <span className="flex w-fit gap-2 items-center">
           <ProSubscriptionButton />
 
-          <IconAction dataFeather='bell' className='' iconOnClick={() => toggleVisibility('notification')} />
-          {visibilitity.notification && <NotificationPopup message="You have 3 new notifications" />}
+          <span className='relative'>
+            <IconAction dataFeather='bell' className='' iconOnClick={() => toggleVisibility('notification')} />
+            {hasUnread && (
+              <span className='absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-red-500 border border-white' />
+            )}
+            {visibilitity.notification && (
+              <NotificationPopup
+                notifications={notifications}
+                onClear={markAllRead}
+              />
+            )}
+          </span>
 
           <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={() => toggleVisibility('sideBar')} />
           {visibilitity.sideBar && 

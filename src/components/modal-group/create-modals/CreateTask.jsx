@@ -1,11 +1,12 @@
 import { Timestamp, addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { auth, db } from '../../../config/firebase';
 import { useReloadContext } from '../../../context/ReloadContext';
 import { useFetchActiveProjectData } from '../../../services/FetchData';
 import syncToSearch from '../../../services/SyncToSearch';
 import { logAnalytics } from '../../../services/logAnalytics';
+import { createNotificationsForUids } from '../../../services/notifications';
 import Button from '../../Button';
 import { UserCard } from '../../Cards';
 import ModalOverlay from '../../ModalOverlay';
@@ -20,6 +21,7 @@ export default function CreateTask({ closeModal, taskData }) {
   const { projectId } = useParams();
   const { projectData, loading } = useFetchActiveProjectData(projectId, key);
   const user = auth.currentUser;
+  const autoAssignedSelfRef = useRef(false);
 
   const [form, setForm] = useState({
     title: taskData?.title || '',
@@ -40,7 +42,26 @@ export default function CreateTask({ closeModal, taskData }) {
 
 
   useEffect(() => {
-    if (auth.currentUser && form.team.length === 0) {
+    if (loading) return;
+
+    const isSharedProject = (projectData?.team?.length || 0) > 1;
+    const selfUid = auth.currentUser?.uid;
+    const onlySelfSelected =
+      selfUid &&
+      form['team-uids']?.length === 1 &&
+      form['team-uids'][0] === selfUid;
+
+    if (isSharedProject && onlySelfSelected && autoAssignedSelfRef.current) {
+      setForm((prev) => ({
+        ...prev,
+        team: [],
+        'team-uids': [],
+      }));
+      autoAssignedSelfRef.current = false;
+      return;
+    }
+
+    if (auth.currentUser && form.team.length === 0 && !isSharedProject) {
       const self = {
         uid: auth.currentUser.uid,
         username: auth.currentUser.displayName || 'You',
@@ -52,8 +73,9 @@ export default function CreateTask({ closeModal, taskData }) {
         team: [self],
         'team-uids': [auth.currentUser.uid],
       }));
+      autoAssignedSelfRef.current = true;
     }
-  }, [user, form.team.length]);
+  }, [user, form.team.length, form['team-uids'], projectData?.team?.length, loading]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,6 +117,35 @@ export default function CreateTask({ closeModal, taskData }) {
         const docRef = await addDoc(collection(db, 'tasks'), payload);
         taskId = docRef.id;
         logAnalytics({projectId, event: 'created a task', taskData: {...payload, id: docRef.id}});
+      }
+
+      const previousUids = taskData?.['team-uids'] || [];
+      const assignedUids = payload['team-uids'] || [];
+      const newAssignments = assignedUids.filter((uid) => !previousUids.includes(uid));
+
+      const notifyUids = newAssignments;
+      const selfAssigned = notifyUids.includes(user.uid);
+      const otherUids = notifyUids.filter((uid) => uid !== user.uid);
+
+      if (selfAssigned) {
+        await createNotificationsForUids({
+          uids: [user.uid],
+          title: 'Task assigned',
+          message: 'You assigned yourself to this task.',
+          type: 'task_assigned_self',
+          projectId,
+          taskId,
+        });
+      }
+      if (otherUids.length > 0) {
+        await createNotificationsForUids({
+          uids: otherUids,
+          title: 'Task assigned',
+          message: `You were assigned to "${payload.title}".`,
+          type: 'task_assigned',
+          projectId,
+          taskId,
+        });
       }
 
       await syncToSearch('task', taskId, payload);

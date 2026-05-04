@@ -64,12 +64,12 @@ function Home() {
         />
       )}
 
-      <div className="flex flex-col h-screen w-full overflow-hidden items-center">
+      <div className="flex flex-col h-screen w-full max-w-[126rem] overflow-hidden items-center">
         <Navbar />
 
         {!isProjectView && (
           <SortProvider>
-            <div className="flex flex-1 min-h-0 w-full gap-2 max-w-[126rem] my-2">
+            <div className="flex flex-1 min-h-0 w-full gap-2 max-w-[126rem] p-2">
               <RecentTasks className="flex-1 min-h-0" />
               <HomeSideBar className="hidden lg:flex flex-col w-80" />
             </div>

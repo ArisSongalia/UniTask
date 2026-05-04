@@ -5,6 +5,7 @@ import { BarLoader } from 'react-spinners';
 import { auth, db } from '../config/firebase';
 import { useReloadContext } from '../context/ReloadContext';
 import { useFetchActiveProjectData, useFetchMessageData } from '../services/FetchData';
+import { createNotification } from '../services/notifications';
 import { EveryOneCard, UserCard } from './Cards';
 import { IconAction, IconUser } from './Icon';
 import { IconTitleSection } from './TitleSection';
@@ -71,6 +72,16 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         messageTo: activeUser.uid ?? (activeUser.tag === 'everyone' ? 'everyone' : activeUser.uid),
         projectId: activeProjectId,
       })
+
+      if (activeUser?.uid && activeUser.uid !== auth.currentUser.uid) {
+        await createNotification({
+          uid: activeUser.uid,
+          title: 'New message',
+          message: messageText,
+          type: 'direct_message',
+          projectId: activeProjectId,
+        });
+      }
     } catch(error) {
         console.log('Error sending message: ', error)
     } finally {

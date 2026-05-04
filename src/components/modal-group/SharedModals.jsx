@@ -8,6 +8,7 @@ import { useReloadContext } from '../../context/ReloadContext';
 import deleteData from '../../services/DeleteData';
 import { useFetchActiveProjectData, useFetchNoteData, useFetchProjectData, useFetchTaskData, useFetchTeams, useFetchUsers } from '../../services/FetchData';
 import { useMoveStatus } from '../../services/useMoveStatus';
+import { createNotificationsForUids } from '../../services/notifications';
 import Button from '../Button';
 import { UserCard } from '../Cards';
 import Icon, { IconAction, IconText, IconUser } from '../Icon';
@@ -66,6 +67,20 @@ function AddMembers({ closeModal }) {
         const teamUids = uniqueTeam.map((member) => member.uid);
 
         await updateDoc(projectDocRef, { team: uniqueTeam, 'team-uid': teamUids });
+
+        const notifyUids = members
+          .map((member) => member.uid)
+          .filter((uid) => uid && uid !== auth.currentUser?.uid);
+
+        if (notifyUids.length > 0) {
+          await createNotificationsForUids({
+            uids: notifyUids,
+            title: 'Added to project',
+            message: `You were added to "${activeProjectData?.title || 'a project'}".`,
+            type: 'project_added',
+            projectId: activeProjectId,
+          });
+        }
         closeModal();
         reloadComponent();
       } else {
