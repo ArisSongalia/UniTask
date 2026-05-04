@@ -44,13 +44,13 @@ function Navbar() {
   }
 
   return (
-    <section className="bg-white flex z-50 i-center justify-center w-full h-fit px-4 sticky top-0 shadow-sm">
+    <section className="bg-surface-base flex z-50 i-center justify-center w-full h-fit px-4 sticky top-0 shadow-soft">
       <div className="flex relative items-center gap-2 justify-between max-w-[144rem] w-full py-3">
         <div className="flex gap-4">
           <IconAction dataFeather='menu' iconOnClick={() => toggleVisibility('menuBar')} />
           {visibilitity.menuBar && <MenuBar closeModal={() => toggleVisibility('menuBar')} />}
 
-          <Link to="/Home" className="hidden md:flex items-center gap-2 text-green-900 text-lg font-bold">
+          <Link to="/Home" className="hidden md:flex items-center gap-2 text-brand-900 text-lg font-bold">
             <img src={unitask} alt="UniTask" className="w-6 h-6" />
             <span className="font-merriweather w-fit pr-8">UniTask</span>
           </Link>

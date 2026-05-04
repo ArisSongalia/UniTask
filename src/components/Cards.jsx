@@ -22,7 +22,7 @@ function SummaryCard({
   const [showSummary, setShowSummary] = useState(false);
 
   return (
-    <section className={`flex flex-col bg-green-800 w-full rounded-md gap-4 shadow-md p-4 text-white ${className}`}>
+    <section className={`flex flex-col bg-brand-800 w-full rounded-card gap-4 shadow-soft p-card text-white ${className}`}>
       <span className='flex flex-col w-full border-b-2 border-white/20 pb-2'>
         <h2 className='font-bold mb-1'>{title}</h2>
         <p className='font-semibold text-sm opacity-90'>{description}</p>
@@ -50,7 +50,7 @@ function SummaryCard({
         <Button
           text='View Details' 
           onClick={() => setShowSummary(true)} 
-          className="bg-white !text-green-900 hover:bg-slate-100 py-1" 
+          className="!bg-white !text-green-900 hover:!bg-green-100 py-1" 
         />
       )}
 
@@ -86,8 +86,8 @@ function AlertCard({text = 'text', className = ''}) {
 function CreateCard({ title = "Title", description = "Description", onClick, color = 'green', className = ''}) {
   return (
     <div
-      className={`flex flex-col bg-green-700 rounded-md overflow-hidden text-white hover:cursor-pointer 
-      flex-grow justify-between border-2 gap-4 border-opacity-30 hover:bg-green-800 p-4 font-semibold h-[12rem] min-w-[9rem] ${className}`}
+      className={`flex flex-col bg-brand-700 rounded-card overflow-hidden text-white hover:cursor-pointer 
+      flex-grow justify-between border-2 gap-4 border-opacity-30 hover:bg-brand-800 p-card font-semibold h-[12rem] min-w-[9rem] ${className}`}
       onClick={onClick}
     >
       <span className="flex flex-col justify-between gap-4 w-full h-full items-center">
@@ -124,8 +124,8 @@ function ProjectCard({projectData}) {
   return (
     
     <div
-      className="flex flex-col bg-white rounded-md cursor-pointer hover:bg-green-50
-      flex-grow justify-between border gap-2 border-green-600 p-3 h-[12rem] min-w-[9rem]"
+      className="flex flex-col bg-surface-base rounded-card cursor-pointer hover:bg-brand-50
+      flex-grow justify-between border gap-2 border-brand-600 p-cardCompact h-[12rem] min-w-[9rem]"
       onClick={handleHeaderToProject}
     >
       <section className="flex flex-col items-start w-full h-fit">
@@ -176,8 +176,8 @@ function NoteCard({
           e.stopPropagation();
           dispatch({ type: 'NOTE_FOCUS' });
         }}
-        className={`flex flex-col bg-white rounded-md cursor-pointer hover:bg-yellow-50
-      flex-grow justify-between border gap-2 border-yellow-600 p-3 h-[12rem] min-w-[9rem]${className}`}
+        className={`flex flex-col bg-surface-base rounded-card cursor-pointer hover:bg-yellow-50
+      flex-grow justify-between border gap-2 border-yellow-600 p-cardCompact h-[12rem] min-w-[9rem]${className}`}
       >
       {visibility.noteFocus && 
         <NoteFocus closeModal={() => dispatch({ type: 'NOTE_FOCUS' })} noteData={noteData} 
@@ -232,9 +232,9 @@ function UserCard({ className = '', user, onStateChange, withEmail = true, isAct
   };
 
   return (
-    <section className={`flex items-center border w-full max-w-[14rem] h-fit rounded-md bg-white ${className}`} onClick={onClick ? onClick : toggleIsActive} >
+    <section className={`flex items-center border w-full max-w-[14rem] h-fit rounded-card bg-surface-base ${className}`} onClick={onClick ? onClick : toggleIsActive} >
       <span
-        className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 items-center hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
+        className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-card hover:bg-brand-50 items-center hover:cursor-pointer ${localActive ? 'bg-brand-700 hover:bg-brand-700 text-white' : ''}`}
       >
         <img className="w-6 h-6 rounded-full" src={user?.photoURL?? null} alt="user-icon" />
         <span className="flex flex-col w-full">
@@ -265,9 +265,9 @@ function EveryOneCard({projectData, className, onStateChange, isActive = false})
   };
   
   return (
-    <section className={`flex border w-full max-w-[14rem] h-fit rounded-lg bg-white ${className}`}>
+    <section className={`flex border w-full max-w-[14rem] h-fit rounded-card bg-surface-base ${className}`}>
       <span
-        className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-md hover:bg-green-50 hover:cursor-pointer ${localActive ? 'bg-green-700 hover:bg-green-700 text-white' : ''}`}
+        className={`flex flex-col font-semibold px-3 gap-2 w-full h-full p-2 rounded-card hover:bg-brand-50 hover:cursor-pointer ${localActive ? 'bg-brand-700 hover:bg-brand-700 text-white' : ''}`}
         onClick={toggleIsActive}
       >   
       <span className='flex gap-1 w-full p-1 rounded-md'>
@@ -308,7 +308,7 @@ function TaskCard({taskData, className}) {
 
   return (
     <div 
-      className={`flex flex-col bg-white rounded-md h-auto shadow-md border-opacity-75
+      className={`flex flex-col bg-surface-base rounded-card h-auto shadow-soft border-opacity-75
         w-full justify-between border p-2 hover:cursor-pointer hover:shadow-lg ${borderColor} ${className}`}
       onClick={() => {
         if (location.pathname === '/Home') {
@@ -380,8 +380,8 @@ function ProgressAlertCard({title = 'Task Title', description = 'Lorem ipsum dol
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-md h-auto border-opacity-50
-                      w-full justify-between border gap-2 border-green-700 p-4">
+    <div className="flex flex-col bg-surface-base rounded-card h-auto border-opacity-50
+              w-full justify-between border gap-2 border-brand-700 p-card">
       <span className='flex justify-between'>
         <span>
           <h2 className="font-bold mb-2">{title}</h2>
@@ -421,8 +421,8 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
 
   return(
     <div 
-      className={`flex flex-col bg-white p-4 gap-2 h-[15rem] justify-between w-full rounded-md border-opacity-50 
-      shadow-sm border border-green-600 ${className}`}
+      className={`flex flex-col bg-surface-base p-card gap-2 h-[15rem] justify-between w-full rounded-card border-opacity-50 
+      shadow-soft border border-brand-600 ${className}`}
     >
       <span className='flex justify-between'>
         <span>
@@ -432,7 +432,7 @@ function CanvasCard({title = 'Canvas Title', date = '00/00/00', id, className}) 
         <IconAction dataFeather='more-vertical' className='' iconOnClick={togglePopUp}/>
         {showPopUp && <Popup title={title} id={id} closeModal={togglePopUp} collectionName='tasks' />}
       </span>
-      <span className='w-full h-full bg-gray-50 rounded-md'></span>
+      <span className='w-full h-full bg-surface-muted rounded-card'></span>
 
       <Button text='Open Canvas' onClick={toggleShowCanvas} dataFeather='maximize'/>
       {showCanvas && <MainCanvas closeModal={toggleShowCanvas}/>}
