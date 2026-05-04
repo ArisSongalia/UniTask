@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "nodemon ./src/config/server.js"
+    "server": "nodemon ./src/config/server.js",
+    "start": "node ./src/config/server.js"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^6.4.0",
