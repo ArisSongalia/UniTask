@@ -203,7 +203,7 @@ function UserProfile({ closeModal, user={}, overlay = true}) {
 
           <span className='flex flex-col min-w-0 w-full'>
             <p className='font-bold truncate text-gray-800'>
-              {user.username}
+              {user.displayName}
             </p>
             <p className='text-sm text-gray-600 truncate'>
               {user.email}

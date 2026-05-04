@@ -5,7 +5,7 @@ function Button({ text = 'Button', onClick, className = '', type = 'button'}) {
   return (
     <button
       type={`${type}`}
-      className={`justify-center bg-brand-700 text-xs px-4 font-bold rounded-card py-3 w-full
+      className={`justify-center bg-brand-700 text-xs px-4 font-bold rounded-md py-3 w-full
       hover:bg-brand-800 hover:text-white border-opacity-60 border border-brand-600 text-white p-2 ${className}`}
       onClick={onClick}
     >

@@ -13,23 +13,31 @@ function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
-  const [showCreateUsername, setShowCreateUsername] = useState(false)
   const navigate = useNavigate();
-
-  const handleShowCreateUsername = () => {
-    setShowCreateUsername(!showCreateUsername);
-  };
 
   const switchToSignIn = () => {
     navigate('/Sign-in');
   }
 
+  const ensureUserDoc = async (user) => {
+    if (!user?.uid) return;
+    const payload = {
+      uid: user.uid,
+      email: user.email || '',
+      displayName: user.displayName || '',
+      photoURL: user.photoURL || '',
+    };
+    await setDoc(doc(db, 'users', user.uid), payload, { merge: true });
+  };
+
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await ensureUserDoc(userCredential.user);
       setEmail('');
       setPassword('');
-      setShowCreateUsername(true)
+      setMessage({ text: 'Account created successfully.', color: 'green' });
+      navigate('/Home');
     } catch (error) {
       setMessage({ text: 'Error during sign-up: ' + error.message, color: 'red' });
     }
@@ -38,17 +46,9 @@ function SignUp() {
 const handleSignInWithGoogle = async () => {
   try {
     const userCredintial = await signInWithPopup(auth, googleProvider);
-
-    const user = userCredintial.user;
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    const userData = userDoc.data();
-
-    if (!userData?.username) {
-      setShowCreateUsername(true);
-    } else {
-      setMessage({text: "User succesfully signed in", color: "green"})
-      navigate('/Home');
-    }
+    await ensureUserDoc(userCredintial.user);
+    setMessage({text: "User succesfully signed in", color: "green"})
+    navigate('/Home');
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
   }
@@ -107,13 +107,6 @@ const handleSignInWithGoogle = async () => {
         <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle} />
 
       </div>
-      {showCreateUsername && (
-        <CreateUsername 
-          email={auth.currentUser?.email} 
-          user={auth.currentUser}
-          closeModal={handleShowCreateUsername} 
-        />
-      )}
     </div>
   );
 }
@@ -122,12 +115,7 @@ function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', color: '' });
-  const [showCreateUsername, setShowCreateUsername] = useState(false)
   const navigate = useNavigate();
-
-  const handleShowCreateUsername = () => {
-    setShowCreateUsername(!showCreateUsername);
-  };
 
   const switchToSignUp = () => {
     navigate('/Sign-up')
@@ -137,17 +125,21 @@ function SignIn() {
   const handleSignIn = async () => {
     try {
       const userCredintial = await signInWithEmailAndPassword(auth, email, password);  
-
-      const user = userCredintial.user;
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      const userData = userDoc.data();
-
-      if (!userData?.username) {
-        setShowCreateUsername(true);
-      } else {
-        setMessage({text: "User succesfully signed in", color: "green"});
-        navigate('/Home');
+      const userDoc = await getDoc(doc(db, 'users', userCredintial.user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(
+          doc(db, 'users', userCredintial.user.uid),
+          {
+            uid: userCredintial.user.uid,
+            email: userCredintial.user.email || '',
+            displayName: userCredintial.user.displayName || '',
+            photoURL: userCredintial.user.photoURL || '',
+          },
+          { merge: true }
+        );
       }
+      setMessage({text: "User succesfully signed in", color: "green"});
+      navigate('/Home');
     } catch (error) {
       setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
     }
@@ -156,17 +148,18 @@ function SignIn() {
 const handleSignInWithGoogle = async () => {
   try {
     const userCredintial = await signInWithPopup(auth, googleProvider);
-
-    const user = userCredintial.user;
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    const userData = userDoc.data();
-
-    if (!userData?.username) {
-      setShowCreateUsername(true);
-    } else {
-      setMessage({text: "User succesfully signed in", color: "green"});
-      navigate('/Home');
-    }
+    await setDoc(
+      doc(db, 'users', userCredintial.user.uid),
+      {
+        uid: userCredintial.user.uid,
+        email: userCredintial.user.email || '',
+        displayName: userCredintial.user.displayName || '',
+        photoURL: userCredintial.user.photoURL || '',
+      },
+      { merge: true }
+    );
+    setMessage({text: "User succesfully signed in", color: "green"});
+    navigate('/Home');
   } catch (error) {
     setMessage({ text: 'Error during login: ' + error.message, color: 'red' });
   }
@@ -222,13 +215,6 @@ const handleSignInWithGoogle = async () => {
         <SignInOptions handleSignInWithGoogle={handleSignInWithGoogle}/>
 
       </div>
-      {showCreateUsername && (
-        <CreateUsername 
-          email={auth.currentUser?.email} 
-          user={auth.currentUser}
-          closeModal={handleShowCreateUsername} 
-        />
-      )}
     </div>
   );
 }
@@ -249,85 +235,6 @@ function SignInOptions({handleSignInWithGoogle, handleSignInWithFacebook}) {
   )
 }
 
-function CreateUsername({ email, additionalData, closeModal, user }) {
-  const [username, setUsername] = useState('');
-  const [message, setMessage] = useState({ text: '', color: '' });
-  const Navigate = useNavigate();
-
-  const handleSetUsername = (e) => {
-    const username = e.target.value.trim(); 
-    if (username === '') {
-      setMessage({ text: 'Username cannot be empty', color: 'red' });
-    } else {
-      setMessage({ text: '', color: '' });
-    }
-    setUsername(username);
-  };
-
-  const handleConfirm = async () => {
-    if (username.trim() === '') {
-      setMessage({ text: 'Please enter a valid username', color: 'red' });
-      return;
-    }
-
-    try {
-      const userUid = user.uid;
-      const userEmail = auth.currentUser?.email || email;
-
-      const payload = {
-        email: userEmail,
-        username: username,
-        photoURL: user.photoUrl || '',
-        uid: userUid,
-        ...additionalData,
-      };
-
-      await setDoc(doc(db, 'users', user.uid), payload);
-
-      alert('Username saved successfully!');
-      Navigate('/Home');
-    } catch (error) {
-      setMessage({ text: `Error: ${error.message}`, color: 'red' });
-    };
-  };
-
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <section className="flex flex-col bg-white rounded-xl w-[35rem] p-6 shadow-lg">
-        <span className="flex w-full justify-between items-center">
-          <HeadTitleSection
-            title="Create Username"
-            className="mb-0"
-          />
-        </span>
-
-        <div className="flex flex-col gap-2">
-          <AlertCard
-            text="Welcome to UniTask! Please use identifiable username and avoiding inappropriate language."
-            email={email}
-            className="mb-4"
-          />
-
-          <label htmlFor="username" className="flex flex-col gap-2">
-            <span>Please Enter Your Username</span>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={handleSetUsername}
-              className="mt-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-              required
-            />
-          </label>
-          <p style={{ color: message.color }}>{message.text}</p>
-
-          <Button text="Confirm" onClick={handleConfirm} />
-        </div>
-      </section>
-    </div>
-  );
-}
-
 function HandleSignOut() {
   const navigate = useNavigate();
   
@@ -346,4 +253,4 @@ function HandleSignOut() {
 }
 
 
-export { CreateUsername, HandleSignOut, SignIn, SignUp };
+export { HandleSignOut, SignIn, SignUp };

@@ -30,7 +30,7 @@ function Toggle({ enabled, onChange }) {
 function MenuSection({ label, children }) {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 px-2 mb-1">
+      <p className="text-[10px] font-extrabold uppercase tracking-widest text-green-600 px-2 mb-1">
         {label}
       </p>
       <div className="flex flex-col gap-0.5">{children}</div>
