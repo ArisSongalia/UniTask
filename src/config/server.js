@@ -12,11 +12,7 @@ import paymentWebhook from '../routes/paymentsWebhook.js';
 const app = express();
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://uni-task-lime.vercel.app",
-    "https://untroublesome-vaulted-vennie.ngrok-free.dev"
-  ],
+  origin: true,
   credentials: true
 }));
 
