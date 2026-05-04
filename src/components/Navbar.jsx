@@ -10,6 +10,7 @@ import MenuBar from './MenuBar';
 import SearchBar from './SearchBar';
 import SocialSection from './SocialSection';
 import { ProSubscriptionButton } from './modal-group/ProSubscriptionModal';
+import { NotificationPopup } from './modal-group/Popup';
 
 const isPro = await checkIsPro();
 
@@ -22,6 +23,7 @@ function Navbar() {
     sideBar: false,
     menuBar: false,
     unlockPro: false,
+    notification: false
   })
 
   const toggleVisibility = (section) => {
@@ -60,6 +62,9 @@ function Navbar() {
 
         <span className="flex w-fit gap-2 items-center">
           <ProSubscriptionButton />
+
+          <IconAction dataFeather='bell' className='' iconOnClick={() => toggleVisibility('notification')} />
+          {visibilitity.notification && <NotificationPopup message="You have 3 new notifications" />}
 
           <IconAction dataFeather='bar-chart-2' className='lg:hidden' iconOnClick={() => toggleVisibility('sideBar')} />
           {visibilitity.sideBar && 

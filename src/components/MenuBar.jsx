@@ -201,12 +201,6 @@ function MenuBar({ closeModal }) {
       label: "Push Notifications",
       sublabel: "Get notified about task updates",
     },
-    {
-      key: "emailUpdates",
-      dataFeather: "mail",
-      label: "Email Updates",
-      sublabel: "Receive weekly project summaries",
-    },
   ];
 
   const displaySettings = [

@@ -306,12 +306,14 @@ const useFetchMessageData = (activeUser, projectId) => {
     }
 
     if (activeUser.uid) {
+      // Direct message to specific user
       sentFilter.push(where('messageTo', '==', activeUser.uid));
       sentFilter.push(where('senderId', '==', senderId));
 
       receivedFilter.push(where('messageTo', '==', senderId));
       receivedFilter.push(where('senderId', '==', activeUser.uid));
     } else if (activeUser.tag) {
+      // Group message to 'everyone'
       sentFilter.push(where('messageTo', '==', activeUser.tag));
       sentFilter.push(where('senderId', '==', senderId));
 
@@ -322,9 +324,12 @@ const useFetchMessageData = (activeUser, projectId) => {
     if (isInitial) setLoading(true);
 
     try {
+      // Query from project-specific messages subcollection
+      const messagesCollection = collection(db, 'projects', projectId, 'messages');
+      
       const [snapshotSent, snapshotReceived] = await Promise.all([
-        getDocs(query(collection(db, 'messages'), ...sentFilter, where('messageFrom', '==', projectId))),
-        getDocs(query(collection(db, 'messages'), ...receivedFilter, where('messageFrom', '==', projectId))),
+        getDocs(query(messagesCollection, ...sentFilter)),
+        getDocs(query(messagesCollection, ...receivedFilter)),
       ]);
 
       const sentMessages = snapshotSent.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -369,6 +374,8 @@ const useFetchMessageData = (activeUser, projectId) => {
 
   return { sentMessageData, receivedMessageData, loading };
 };
+
+export default useFetchMessageData;
 
 const useFetchTeams = (userId, refreshKey) => {
   const [teamsData, setTeamsData] = useState([]);

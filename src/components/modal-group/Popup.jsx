@@ -8,6 +8,7 @@ import { IconTitleSection } from '../TitleSection';
 import CreateNote from './create-modals/CreateNote';
 import CreateProject from './create-modals/CreateProject';
 import CreateTask from './create-modals/CreateTask';
+import TitleSection from '../TitleSection';
 
 
 function Popup({ closeModal, className = '',  collectionName, taskData, projectData, noteData }) {
@@ -100,8 +101,19 @@ function FilterPopup({ closeModal }) {
   );
 }
 
+function NotificationPopup({ message, className = ''}) {
+  return (
+    <div className={`bg-white flex flex-col gap-4 p-4 rounded-md shadow-md w-64 absolute top-12 right-0 z-50 border ${className}`}>
+      <TitleSection title="Notifications" className='border-b' />
+      <div className="">
+        
+      </div>
+    </div>
+  )
+}
+
 
 export default Popup;
 
-export { FilterPopup };
+export { FilterPopup, NotificationPopup };
 
