@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { EmailAuthProvider, GoogleAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup } from "firebase/auth";
 import { auth } from "../config/firebase";
 import Icon from "./Icon";
 import ModalOverlay from "./ModalOverlay";
 import { IconTitleSection } from "./TitleSection";
 import { useLayout } from "../context/LayoutContext";
 
+const GOOGLE_PROVIDER_ID = "google.com";
 
 // ─── Toggle switch ────────────────────────────────────────────────────────────
 
@@ -80,10 +82,110 @@ function ActionRow({ dataFeather, label, sublabel, onClick, danger }) {
   );
 }
 
+function DeleteAccountModal({ onClose }) {
+  const [confirmText, setConfirmText] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", color: "" });
+
+  const user = auth.currentUser;
+  const providerIds = user?.providerData?.map((provider) => provider.providerId) || [];
+  const isGoogleUser = providerIds.includes(GOOGLE_PROVIDER_ID);
+  const email = user?.email || "";
+
+  const handleDelete = async () => {
+    if (!user) {
+      setMessage({ text: "No user signed in.", color: "red" });
+      return;
+    }
+
+    if (confirmText.trim().toUpperCase() !== "DELETE") {
+      setMessage({ text: "Type DELETE to confirm.", color: "red" });
+      return;
+    }
+
+    setLoading(true);
+    setMessage({ text: "", color: "" });
+
+    try {
+      if (isGoogleUser) {
+        const provider = new GoogleAuthProvider();
+        await reauthenticateWithPopup(user, provider);
+      } else {
+        if (!password) {
+          throw new Error("Password is required for re-authentication.");
+        }
+        const credential = EmailAuthProvider.credential(email, password);
+        await reauthenticateWithCredential(user, credential);
+      }
+
+      await user.delete();
+      await auth.signOut();
+      setMessage({ text: "Account deleted.", color: "green" });
+      setTimeout(onClose, 600);
+    } catch (error) {
+      setMessage({ text: error.message || "Failed to delete account.", color: "red" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ModalOverlay onClick={onClose}>
+      <div className="flex flex-col bg-white rounded-xl w-full max-w-md p-6 shadow-lg">
+        <IconTitleSection
+          title="Delete Account"
+          dataFeather="x"
+          iconOnClick={onClose}
+          className="mb-2"
+        />
+
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-gray-700">
+            This permanently deletes your account. Type DELETE to continue.
+          </p>
+          <input
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            placeholder="Type DELETE"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+          />
+
+          {!isGoogleUser && (
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+            />
+          )}
+
+          <button
+            onClick={handleDelete}
+            disabled={loading}
+            className="w-full bg-red-600 text-white rounded-md py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+          >
+            {loading ? "Deleting..." : "Delete Account"}
+          </button>
+        </div>
+
+        {message.text && (
+          <p className="text-xs mt-3" style={{ color: message.color }}>
+            {message.text}
+          </p>
+        )}
+      </div>
+    </ModalOverlay>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 function MenuBar({ closeModal }) {
   const { compactView, toggleCompactView, largeText, toggleLargeText } = useLayout();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [prefs, setPrefs] = useState({
     notifications: true,
     emailUpdates: false,
@@ -126,17 +228,10 @@ function MenuBar({ closeModal }) {
 
   const accountActions = [
     {
-      dataFeather: "lock",
-      label: "Change Password",
-      sublabel: "Update your login credentials",
-      onClick: () => {},
-    },
-    {
       dataFeather: "user",
       label: "Delete Account",
-      sublabel: "Permanently remove your account",
       danger: true,
-      onClick: () => {},
+      onClick: () => setShowDeleteModal(true),
     },
     {
       dataFeather: "log-out",
@@ -152,6 +247,9 @@ function MenuBar({ closeModal }) {
         className="z-50 absolute h-full left-0 max-w-sm w-full bg-white flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
+        {showDeleteModal && (
+          <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />
+        )}
         {/* Header */}
         <div className="border-b border-gray-100">
           <IconTitleSection
