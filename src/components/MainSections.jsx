@@ -53,7 +53,7 @@ export function MainProjectSection() {
       {loading && <BarLoader color="#228B22" width="100%" height={3} />}
 
       <div className="overflow-y-auto flex-1">
-        <section id="project-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 p-4">
+        <section id="project-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-4">
           <CreateCard onClick={() => setShowPopUp(true)} title="Create Project" description="Get started! Manage tasks individually or collaboratively." />
           {showPopUp && <CreateProject closeModal={() => setShowPopUp(false)} />}
           {showCreateAIProject && <CreateProjectWithAi closeModal={toggleShowCreateProjectWithAI} />}
@@ -98,7 +98,7 @@ export function MainNotesSection() {
       {loading && <BarLoader color="#228B22" width="100%" height={3} />}
 
       <div className="overflow-y-auto flex-1">
-        <section id="note-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 p-4">
+        <section id="note-container" className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-4">
           <CreateCard onClick={() => setShowPopUp(true)} title="Create Note" description="Write a personal note." />
           {showPopUp && <CreateNote closeModal={() => setShowPopUp(false)} />}
 

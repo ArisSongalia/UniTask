@@ -112,7 +112,7 @@ function IconUser({ user = {}, className = ""}) {
 function IconText({ text = "", className = "", border = false, onClick }) {
   const baseClass = border
     ? "text-xs bg-green-50 p-1 w-fit font-semibold border border-green-500 text-slate-800"
-    : "text-xs bg-slate-100 p-1 w-fit font-semibold text-slate-800";
+    : "text-xs bg-slate-100 p-1 w-fit font-semibold text-slate-800 rounded-sm";
 
   return (
     <div className={`${baseClass} rounded-sm break-words whitespace-normal ${className}`} onClick={onClick}>

@@ -5,16 +5,19 @@ import '../tailwind.css';
 import App from '../components/App';
 import { ProjectProvider } from '../context/ProjectContext';
 import { ReloadProvider } from '../context/ReloadContext';
+import { LayoutProvider } from '../context/LayoutContext';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ReloadProvider>
-      <ProjectProvider>
-        <Router>
-          <App />
-        </Router>
-      </ProjectProvider>
-    </ReloadProvider>
+    <LayoutProvider>
+      <ReloadProvider>
+        <ProjectProvider>
+          <Router>
+            <App />
+          </Router>
+        </ProjectProvider>
+      </ReloadProvider>
+    </LayoutProvider>
   </StrictMode>
 );

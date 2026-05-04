@@ -25,11 +25,11 @@ function HeadTitleSection({title = 'Title', className = '', nextTitle}) {
   )
 }
 
-function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', iconText='',  extraIcon, className= '', titleClassName = "", underTitle = ''}) {
+function IconTitleSection({title = 'Title', iconOnClick, dataFeather = '', iconText='',  extraIcon, className= '', titleClassName = "", underTitle = '', flipped = false}) {
   return ( 
-    <section className={`flex w-full mb-4 justify-between z-0 ${className}`}>
+    <section className={`flex w-full mb-4 justify-between z-0 gap-2 ${flipped ? 'flex-row-reverse' : ''} ${className}`}>
       <section className='flex flex-col w-full'>
-        <p className={` w-full text-start max-w-[80%] overflow-hidden overflow-ellipsis font-bold text-[0.9rem] text-slate-800 ${titleClassName}`}>{title}</p>
+        <p className={`w-full text-start max-w-[80%] overflow-hidden overflow-ellipsis font-bold text-[0.9rem] text-slate-800 ${titleClassName}`}>{title}</p>
         {(underTitle) && (
           <p className='text-[0.7rem] text-gray-600 font-semibold'>{underTitle}</p>
         )}

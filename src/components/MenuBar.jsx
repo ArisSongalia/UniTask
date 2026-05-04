@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { auth } from "../config/firebase";
-import Icon, { IconText } from "./Icon";
+import Icon from "./Icon";
 import ModalOverlay from "./ModalOverlay";
 import { IconTitleSection } from "./TitleSection";
-import { UserProfile } from "./modal-group/SharedModals";
+import { useLayout } from "../context/LayoutContext";
 
 
 // ─── Toggle switch ────────────────────────────────────────────────────────────
@@ -83,19 +83,60 @@ function ActionRow({ dataFeather, label, sublabel, onClick, danger }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 function MenuBar({ closeModal }) {
-  const user = auth.currentUser;
-
+  const { compactView, toggleCompactView } = useLayout();
   const [prefs, setPrefs] = useState({
     notifications: true,
     emailUpdates: false,
-    soundEffects: false,
-    compactView: false,
-    showDeadlines: true,
-    autoArchive: false,
   });
 
   const toggle = (key) =>
     setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const notificationSettings = [
+    {
+      key: "notifications",
+      dataFeather: "bell",
+      label: "Push Notifications",
+      sublabel: "Get notified about task updates",
+    },
+    {
+      key: "emailUpdates",
+      dataFeather: "mail",
+      label: "Email Updates",
+      sublabel: "Receive weekly project summaries",
+    },
+  ];
+
+  const displaySettings = [
+    {
+      dataFeather: "layout",
+      label: "Compact View",
+      sublabel: "Show more items with less spacing",
+      enabled: compactView,
+      onChange: toggleCompactView,
+    },
+  ];
+
+  const accountActions = [
+    {
+      dataFeather: "user",
+      label: "Edit Profile",
+      sublabel: "Update your name and photo",
+      onClick: () => {},
+    },
+    {
+      dataFeather: "lock",
+      label: "Change Password",
+      sublabel: "Update your login credentials",
+      onClick: () => {},
+    },
+    {
+      dataFeather: "log-out",
+      label: "Sign Out",
+      onClick: () => auth.signOut(),
+      danger: true,
+    },
+  ];
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -109,8 +150,9 @@ function MenuBar({ closeModal }) {
             iconOnClick={closeModal}
             dataFeather="x"
             title="Menu"
-            className="px-4 py-3"
+            className="px-4 py-5 gap-4"
             titleClassName="text-lg font-merriweather"
+            flipped
           />
         </div>
 
@@ -118,75 +160,42 @@ function MenuBar({ closeModal }) {
         <div className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-5">
 
           <MenuSection label="Notifications">
-            <SettingRow
-              dataFeather="bell"
-              label="Push Notifications"
-              sublabel="Get notified about task updates"
-              enabled={prefs.notifications}
-              onChange={() => toggle("notifications")}
-            />
-            <SettingRow
-              dataFeather="mail"
-              label="Email Updates"
-              sublabel="Receive weekly project summaries"
-              enabled={prefs.emailUpdates}
-              onChange={() => toggle("emailUpdates")}
-            />
-            <SettingRow
-              dataFeather="volume-2"
-              label="Sound Effects"
-              sublabel="Play sounds on task completion"
-              enabled={prefs.soundEffects}
-              onChange={() => toggle("soundEffects")}
-            />
+            {notificationSettings.map((item) => (
+              <SettingRow
+                key={item.key}
+                dataFeather={item.dataFeather}
+                label={item.label}
+                sublabel={item.sublabel}
+                enabled={prefs[item.key]}
+                onChange={() => toggle(item.key)}
+              />
+            ))}
           </MenuSection>
 
           <MenuSection label="Display">
-            <SettingRow
-              dataFeather="layout"
-              label="Compact View"
-              sublabel="Show more items with less spacing"
-              enabled={prefs.compactView}
-              onChange={() => toggle("compactView")}
-            />
-            <SettingRow
-              dataFeather="clock"
-              label="Show Deadlines"
-              sublabel="Display due dates on task cards"
-              enabled={prefs.showDeadlines}
-              onChange={() => toggle("showDeadlines")}
-            />
-          </MenuSection>
-
-          <MenuSection label="Tasks">
-            <SettingRow
-              dataFeather="archive"
-              label="Auto-Archive Finished"
-              sublabel="Archive completed tasks after 7 days"
-              enabled={prefs.autoArchive}
-              onChange={() => toggle("autoArchive")}
-            />
+            {displaySettings.map((item) => (
+              <SettingRow
+                key={item.label}
+                dataFeather={item.dataFeather}
+                label={item.label}
+                sublabel={item.sublabel}
+                enabled={item.enabled}
+                onChange={item.onChange}
+              />
+            ))}
           </MenuSection>
 
           <MenuSection label="Account">
-            <ActionRow
-              dataFeather="user"
-              label="Edit Profile"
-              sublabel="Update your name and photo"
-              onClick={() => {}}
-            />
-            <ActionRow
-              dataFeather="lock"
-              label="Change Password"
-              sublabel="Update your login credentials"
-              onClick={() => {}}
-            />
-            <ActionRow
-              dataFeather="log-out"
-              label="Sign Out"
-              danger
-              onClick={() => auth.signOut()}
-            />
+            {accountActions.map((item) => (
+              <ActionRow
+                key={item.label}
+                dataFeather={item.dataFeather}
+                label={item.label}
+                sublabel={item.sublabel}
+                onClick={item.onClick}
+                danger={item.danger}
+              />
+            ))}
           </MenuSection>
 
         </div>

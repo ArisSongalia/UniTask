@@ -15,6 +15,7 @@ import Navbar from "./Navbar";
 import RecentTasks from "./RecentTasks";
 import { PaymentResultsModal } from "./modal-group/PaymentModals";
 import { BarLoader } from "react-spinners";
+import MenuBar from "./MenuBar";
 
 function Home() {
   const [user, setUser] = useState(undefined);
@@ -68,7 +69,7 @@ function Home() {
 
         {!isProjectView && (
           <SortProvider>
-            <div className="flex flex-1 min-h-0 w-full gap-2 max-w-screen-2xl my-2">
+            <div className="flex flex-1 min-h-0 w-full gap-2 max-w-[126rem] my-2">
               <RecentTasks className="flex-1 min-h-0" />
               <HomeSideBar className="hidden lg:flex flex-col w-80" />
             </div>

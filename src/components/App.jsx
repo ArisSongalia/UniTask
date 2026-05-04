@@ -4,13 +4,17 @@ import Project from './Project';
 import { SignIn, SignUp } from './modal-group/ModalAuth';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useLayout } from '../context/LayoutContext';
 
 
 function App() {
+  const { compactView } = useLayout();
+
   return (
         <div
           id="main-container"
           className=''
+          data-compact={compactView ? 'true' : 'false'}
         >
           <Routes>
             <Route path="/" element={<Navigate to="/Home" replace />} />
