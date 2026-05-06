@@ -9,6 +9,7 @@ import { createNotification } from '../services/notifications';
 import { EveryOneCard, UserCard } from './Cards';
 import { IconAction, IconUser } from './Icon';
 import { IconTitleSection } from './TitleSection';
+import TitleSection from './TitleSection';
 
 
 function reducer(state, action) {
@@ -110,7 +111,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
         iconOnClick={closeModal}
       />
 
-      <section className="flex gap-3 h-full">
+      <section className="flex gap-3 h-full min-w-0">
         <section id="user-chat-heads" className="flex flex-col min-w-fit h-full w-[16rem] border-r border-gray-100 pr-2">
           {projectLoading ? (
             <BarLoader color="green" />
@@ -120,7 +121,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
             <>
               <EveryOneCard
                 projectData={projectData}
-                isActive={activeUser?.displayname === 'everyone'}
+                isActive={activeUser?.tag === 'everyone'}
                 onStateChange={(data) => {
                   dispatch({ type: 'SET_ACTIVE_USER', payload: data.isActive ? data : null });
                 }}
@@ -146,7 +147,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
         <section
           id="chat-window"
-          className="flex flex-col bg-gray-50 rounded-lg w-full h-full overflow-hidden"
+          className="flex flex-col bg-gray-50 rounded-lg flex-1 min-w-0 h-full overflow-hidden"
         >
           {messageLoading ? (
             <div className="flex items-center justify-center h-full">
@@ -156,14 +157,14 @@ function SocialSection({ className = '', closeModal = () => {} }) {
             <span className="text-gray-600">You don't have access to this project's chat</span>
           ) : activeUser ? (
             <div className='flex flex-col h-full'>
-              <div className='flex items-center justify-between border-b border-gray-100 px-3 py-2 bg-white'>
-                <IconTitleSection
-                  title={activeUser?.username ?? activeUser?.memberNames?.join(', ') ?? 'Everyone'}
-                  dataFeather="more-vertical"
-                  className="gap-2"
-                  titleClassName='text-sm'
-                />
-              </div>
+              <TitleSection
+                title={activeUser?.displayName ?? activeUser?.displayName?.join(', ') ?? 'Everyone'}
+                dataFeather="more-vertical"
+                className="gap-2"
+                titleClassName='text-sm'
+                className="bg-white"
+              />
+  
 
               <div
                 id="messageDisplay"
@@ -223,7 +224,7 @@ function SocialSection({ className = '', closeModal = () => {} }) {
 
                         {/* Message Bubble */}
                         <div
-                          className={`px-3 py-2 text-sm rounded-2xl font-medium max-w-[70%] ${
+                          className={`px-3 py-2 text-sm rounded-2xl font-medium max-w-[70%]${
                             message.isOwn
                               ? 'bg-green-100 text-green-900'
                               : 'bg-white text-gray-800 border border-gray-100'

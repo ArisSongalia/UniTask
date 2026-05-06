@@ -213,41 +213,18 @@ function NoteCard({
   );
 }
 
-
 function UserCard({
   className = '',
   user,
   onStateChange,
   withEmail = true,
   isActive = false,
-  onClick = null,
 }) {
-  const [localActive, setLocalActive] =
-    useState(isActive);
-
-  useEffect(() => {
-    setLocalActive(isActive);
-  }, [isActive]);
-
-  const toggleIsActive = () => {
-    const newState = !localActive;
-
-    setLocalActive(newState);
-
+  const handleClick = () => {
     if (onStateChange && user) {
-      const {
-        displayName,
-        email,
-        uid,
-        photoURL,
-      } = user;
-
       onStateChange({
-        displayName,
-        email,
-        uid,
-        photoURL,
-        isActive: newState,
+        ...user,
+        isActive: !isActive,
       });
     }
   };
@@ -255,17 +232,11 @@ function UserCard({
   return (
     <section
       className={`flex items-center border w-full max-w-[14rem] h-fit rounded-card bg-surface-base ${className}`}
-      onClick={() => {
-        toggleIsActive();
-
-        if (onClick) {
-          onClick();
-        }
-      }}
+      onClick={handleClick}
     >
       <span
         className={`flex font-semibold px-3 gap-2 w-full h-full p-2 rounded-card hover:bg-brand-50 items-center hover:cursor-pointer ${
-          localActive
+          isActive
             ? 'bg-brand-700 hover:bg-brand-700 text-white'
             : ''
         }`}
@@ -276,9 +247,9 @@ function UserCard({
           alt="user-icon"
         />
 
-        <span className="flex flex-col w-full">
+        <span className="flex flex-col w-full overflow-hidden">
           <p className="text-sm truncate">
-            {user?.displayName ?? 'user'}
+            {user?.displayName || user?.username || 'Unknown User'}
           </p>
 
           {withEmail && (
